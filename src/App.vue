@@ -1,16 +1,14 @@
 <template>
-  hello wrold
-  <button @click="getMessage"></button>
+	<div class="header">
+		<MusicHeader></MusicHeader>
+		<MusicTab></MusicTab>
+	</div>
+	<div class="content">
+		<router-view></router-view>
+	</div>
 </template>
 
 <script setup>
-import { get } from "@/service/base.js";
-
-function getMessage() {
-  get("/banner", {
-    type: 2,
-  }).then((res) => {
-    console.log(res);
-  });
-}
+	import MusicHeader from '@/components/header';
+	import MusicTab from '@/components/tab';
 </script>
