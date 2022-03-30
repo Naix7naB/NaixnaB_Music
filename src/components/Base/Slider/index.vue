@@ -1,11 +1,12 @@
 <template>
 	<div class="slider" ref="slideRef">
+		<!-- 轮播图片 -->
 		<div class="slider-banner">
 			<div class="slider-page" v-for="item in banners" :key="item.bannerId">
 				<img :src="item.pic" />
 			</div>
 		</div>
-
+		<!-- 图片索引标识 -->
 		<div class="dots-wrapper">
 			<span
 				class="dot"
@@ -18,7 +19,7 @@
 </template>
 
 <script setup>
-	import { slideAni } from './slide.js';
+	import { useSlide } from './useSlide.js';
 
 	const props = defineProps({
 		banners: {
@@ -26,7 +27,7 @@
 			require: true,
 		},
 	});
-	const { slideRef, currentPageIndex } = slideAni();
+	const { slideRef, currentPageIndex } = useSlide();
 </script>
 
 <style lang="scss" scoped>
@@ -36,6 +37,7 @@
 		touch-action: pan-y;
 		position: relative;
 
+		// 轮播图片
 		.slider-banner {
 			position: relative;
 			overflow: hidden;
@@ -52,7 +54,7 @@
 				}
 			}
 		}
-
+		// 图片索引标识
 		.dots-wrapper {
 			position: absolute;
 			left: 50%;

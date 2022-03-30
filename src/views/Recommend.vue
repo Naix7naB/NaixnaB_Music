@@ -1,16 +1,25 @@
 <template>
-	<div class="recommend">
+	<div class="recommend" v-load="isLoading">
+		<!-- 滚动区 -->
 		<Scroll class="recommend-content">
 			<div class="scroll-content">
+				<!-- 轮播图 -->
 				<div class="recommend-banner">
-					<Slider :banners="banners"></Slider>
+					<div class="banner-content">
+						<Slider :banners="recommend.banners"></Slider>
+					</div>
 				</div>
+				<!-- 歌单列表 -->
 				<div class="recommend-list">
 					<h1 class="list-title">热门歌单推荐</h1>
 					<ul>
-						<li class="list-item" v-for="item in recommendList" :key="item.id">
+						<li
+							class="list-item"
+							v-for="item in recommend.playLists"
+							:key="item.id"
+						>
 							<div class="image">
-								<img :src="item.coverImgUrl" />
+								<img v-img-lazy="item.coverImgUrl" />
 							</div>
 							<div class="text">
 								<p class="name">{{ item.name }}</p>
@@ -25,22 +34,27 @@
 </template>
 
 <script setup>
-	import { onMounted, ref } from 'vue';
-	import { getBanner, getRecommendList } from '@/service/recommend-api';
+	import { computed, onMounted, reactive } from 'vue';
+	import { getBanner, getRecommendList } from '@/service/recommendApi';
 	import Slider from '@/components/base/slider';
 	import Scroll from '@/components/base/scroll';
 
-	const banners = ref([]),
-		recommendList = ref([]);
+	const recommend = reactive({
+		banners: [],
+		playLists: [],
+	});
+	const isLoading = computed(
+		() => !recommend.banners.length || !recommend.playLists.length
+	);
 
 	onMounted(() => {
 		getBanner().then(res => {
 			// 轮播图数据
-			if (res.code === 200) banners.value = res.banners;
+			if (res.code === 200) recommend.banners = res.banners;
 		});
 		getRecommendList().then(res => {
-			// 推荐歌单数据
-			if (res.code === 200) recommendList.value = res.playlists;
+			// 推荐歌单列表数据
+			if (res.code === 200) recommend.playLists = res.playlists;
 		});
 	});
 </script>
@@ -53,14 +67,29 @@
 		bottom: 0;
 		overflow: scroll;
 
+		// 滚动区
 		.recommend-content {
 			height: 100%;
 			overflow: hidden;
 
+			// 轮播图
 			.recommend-banner {
+				position: relative;
 				width: 100%;
+				height: 0;
+				padding-top: 40%;
+				overflow: hidden;
+
+				.banner-content {
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+				}
 			}
 
+			// 歌单列表
 			.recommend-list {
 				.list-title {
 					height: 65px;

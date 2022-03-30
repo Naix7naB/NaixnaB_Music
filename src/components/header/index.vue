@@ -1,4 +1,5 @@
 <template>
+	<!-- 固定头部 -->
 	<div class="header">
 		<span class="icon"></span>
 		<h1 class="text">NaixnaB Music</h1>

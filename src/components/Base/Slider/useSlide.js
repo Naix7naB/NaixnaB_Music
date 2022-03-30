@@ -3,7 +3,7 @@ import Slide from '@better-scroll/slide';
 import { onMounted, onUnmounted, onActivated, onDeactivated, ref } from 'vue';
 BScroll.use(Slide);
 
-export function slideAni() {
+export function useSlide() {
 	const slideRef = ref(null);
 	const slide = ref(null);
 	const currentPageIndex = ref(0);
