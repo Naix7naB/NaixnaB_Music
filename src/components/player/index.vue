@@ -51,7 +51,7 @@
 				<!-- 操作栏 -->
 				<div class="operators">
 					<div class="icon i-left">
-						<i class="icon-sequence"></i>
+						<i :class="modeIcon" @click="toggleMode"></i>
 					</div>
 					<div class="icon i-left">
 						<i class="icon-prev" @click="prev"></i>
@@ -75,25 +75,20 @@
 <script setup>
 	import { computed, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
-	// getSongLyric
-	import { getSongUrl } from '@/service/songApi';
+	import { getSongUrl, getSongLyric } from '@/service/songApi';
 
 	const store = useStore();
 	const audioRef = ref(null);
 
 	/****************************   Vuex   ****************************/
 	const currentSong = computed(() => store.getters.currentSong);
-	const playerStyle = computed(() => store.state.playerStyle);
 	const playList = computed(() => store.state.playList);
 	const curPlayList = computed(() => store.state.curPlayList);
 	const curPlayIndex = computed(() => store.state.curPlayIndex);
 	const playState = computed(() => store.state.playState);
+	const playMode = computed(() => store.state.playMode);
+	const playerStyle = computed(() => store.state.playerStyle);
 	/******************************************************************/
-
-	/* 播放/暂停 图标 */
-	const playIcon = computed(() => {
-		return playState.value ? 'icon-pause' : 'icon-play';
-	});
 
 	/* CD转盘动画 */
 	const cdStyle = computed(() => {
@@ -102,24 +97,21 @@
 		};
 	});
 
-	/* 处理歌曲作者名 */
-	function handleName(item) {
-		const ar = item.ar;
-		return ar.map((artist) => artist.name).join(' / ');
-	}
+	/* 播放/暂停 图标 */
+	const playIcon = computed(() => {
+		return playState.value ? 'icon-pause' : 'icon-play';
+	});
 
-	/* 播放/暂停 按钮 */
-	function togglePlay() {
-		store.commit('setPlayState', !playState.value);
-	}
-
-	/* 监视播放状态 */
-	watch(playState, (newState) => {
-		let audio = audioRef.value;
-		if (newState) {
-			audio.play();
-		} else {
-			audio.pause();
+	/* 播放模式图标 */
+	const modeIcon = computed(() => {
+		const mode = playMode.value;
+		switch (mode) {
+			case 0:
+				return 'icon-sequence';
+			case 1:
+				return 'icon-loop';
+			case 2:
+				return 'icon-random';
 		}
 	});
 
@@ -154,11 +146,67 @@
 		}
 	});
 
+	/* 监视播放状态 */
+	watch(playState, (newState) => {
+		let audio = audioRef.value;
+		if (newState) {
+			audio.play();
+		} else {
+			audio.pause();
+		}
+	});
+
+	/* 处理歌曲作者名 */
+	function handleName(item) {
+		const ar = item.ar;
+		return ar.map((artist) => artist.name).join(' / ');
+	}
+
+	/* 切换播放状态 */
+	function togglePlay() {
+		store.commit('setPlayState', !playState.value);
+	}
+
+	/* 切换播放模式 */
+	function toggleMode() {
+		// 0 => 1 => 2 => 0
+		const mode = (playMode.value + 1) % 3;
+		store.commit('setPlayMode', mode);
+	}
+
+	/* 循环播放 */
+	function loop() {
+		const audio = audioRef.value;
+		audio.currentTime = 0; // 重头播放 时间清零
+		audio.play();
+		store.commit('curPlayState', 1);
+	}
+
 	/* 上一首 */
-	function prev() {}
+	function prev() {
+		const list = curPlayList.value;
+		if (!list.length) return; // 播放列表没有歌曲时
+		if (list.length === 1) return loop(); // 播放列表只有一首歌时
+		let index = curPlayIndex.value - 1;
+		if (index < 0) {
+			// 当前歌曲是第一首时
+			index = list.length - 1;
+		}
+		store.commit('setCurPlayIndex', index);
+	}
 
 	/* 下一首 */
-	function next() {}
+	function next() {
+		const list = curPlayList.value;
+		if (!list.length) return; // 播放列表没有歌曲时
+		if (list.length === 1) return loop(); // 播放列表只有一首歌时
+		let index = curPlayIndex.value + 1;
+		if (index === list.length) {
+			// 当前歌曲是最后一首时
+			index = 0;
+		}
+		store.commit('setCurPlayIndex', index);
+	}
 
 	/*  */
 	/*  */

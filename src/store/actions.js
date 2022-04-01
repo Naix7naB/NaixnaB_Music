@@ -29,7 +29,7 @@ const actions = {
 	},
 };
 
-//返回 return 为 true时的 index下标   如果都不满足 -1
+// 返回 return为 true时的 index下标  如果都不满足 -1
 function findInd(list, song) {
 	return list.findIndex((item) => item.id === song.id);
 }
