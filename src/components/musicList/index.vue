@@ -110,8 +110,7 @@
 	}
 
 	function sequencePlayAll() {
-		store.dispatch('addWholeList', { list: props.songs, index: 0 });
-		store.commit('setPlayMode', 0); // 顺序播放
+		store.dispatch('addWholeList', props.songs);
 	}
 
 	onMounted(() => {

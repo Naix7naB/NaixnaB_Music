@@ -3,8 +3,7 @@ const actions = {
 	addOneSong({ commit, state }, index) {},
 
 	// 添加歌单所有歌曲到播放列表
-	addWholeList({ commit }, data) {
-		const { list, index } = data;
+	addWholeList({ commit }, list) {
 		/* 设置当前歌曲播放状态 */
 		commit('setPlayState', 1);
 		/* 设置源歌曲播放列表 */
@@ -12,12 +11,14 @@ const actions = {
 		/* 设置当前歌曲播放列表 */
 		commit('setCurPlayList', list);
 		/* 设置当前播放索引值 */
-		commit('setCurPlayIndex', index);
+		commit('setCurPlayIndex', 0);
+		/* 设置当前播放模式 */
+		commit('setPlayMode', 0);
 		/* 设置播放器样式 */
 		commit('setPlayerStyle', 1);
 	},
 
-	// 更改播放模式
+	/* 更改播放模式 */
 	changeMode({ state, commit }, mode) {
 		if (mode === 2) {
 			// 随机播放  把当前播放列表换成打乱后的播放列表
