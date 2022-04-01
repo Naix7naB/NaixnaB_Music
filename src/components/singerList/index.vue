@@ -1,18 +1,23 @@
 <template>
 	<Scroll class="singer-list" :probeType="3" @onScroll="onScroll" ref="rootRef">
 		<!-- 歌手列表 -->
-		<ul class="view-scroll" ref="groupRef" @click="getSingerId">
-			<li class="group" v-for="group in singerList" :key="group.tag">
+		<ul class="view-scroll" ref="groupRef" @click="getSingerDetail">
+			<li
+				class="group"
+				v-for="(group, index) in singerList"
+				:key="group.tag"
+				:data-gindex="index"
+			>
 				<h2 class="title">{{ group.tag }}</h2>
 				<ul>
 					<li
 						class="item"
-						v-for="item in group.singers"
+						v-for="(item, index) in group.singers"
 						:key="item.id"
-						:data-id="item.id"
+						:data-sindex="index"
 					>
 						<div class="avatar">
-							<img v-img-lazy="item.img1v1Url" />
+							<img v-img-lazy="item.picUrl" />
 						</div>
 						<span class="name">{{ item.name }}</span>
 					</li>
@@ -60,15 +65,21 @@
 	const { rootRef, onShortCutTouchStart, onShortCutTouchMove } =
 		useShortCut(groupRef);
 
-	function getSingerId(e) {
+	function getSingerDetail(e) {
 		let curNode = e.target;
+		const I = {};
 		while (1) {
-			if (curNode.className === 'item') break;
+			if (curNode.className === 'item') {
+				I.sindex = curNode.dataset.sindex;
+			} else if (curNode.className === 'group') {
+				I.gindex = curNode.dataset.gindex;
+				break;
+			}
 			curNode = curNode.parentNode;
 		}
 		// 获取当前点击的歌手id
-		const curId = curNode.dataset.id;
-		emit('toDetail', curId);
+		const item = props.singerList[I.gindex].singers[I.sindex];
+		emit('toDetail', item);
 	}
 </script>
 

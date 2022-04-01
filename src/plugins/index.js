@@ -54,7 +54,6 @@ function appendEl(el) {
 	const _style = getComputedStyle(el);
 	const posArr = ['relative', 'absolute', 'fixed'];
 	if (!posArr.includes(_style.position)) {
-		console.log(1);
 		// 如果父元素没有定位属性 则添加上 g-relative类名 => position: relative
 		el.classList.add('g-relative');
 	}

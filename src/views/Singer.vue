@@ -2,7 +2,12 @@
 	<div class="singer" v-load="!singerList.length">
 		<SingerList :singerList="singerList" @toDetail="toDetail"></SingerList>
 	</div>
-	<router-view :singerId="singerId"></router-view>
+
+	<router-view v-slot="{ Component }">
+		<transition name="slide" appear>
+			<component :is="Component" :singerDetail="singerDetail" />
+		</transition>
+	</router-view>
 </template>
 
 <script setup>
@@ -30,11 +35,18 @@
 		}
 	});
 
-	const singerId = ref(null);
-	function toDetail(id) {
-		singerId.value = id;
+	const singerDetail = ref({});
+	function toDetail(item) {
+		singerDetail.value = {
+			id: item.id,
+			name: item.name,
+			picUrl: item.picUrl,
+		};
+		// 缓存 singerDetail数据
+		storage.setLocal('__singerDetail__', singerDetail.value);
+		// 跳转相应歌手的详细页
 		router.push({
-			path: `/singer/${id}`,
+			path: `/singer/${item.id}`,
 		});
 	}
 </script>

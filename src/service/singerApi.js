@@ -41,8 +41,8 @@ function getSinger(letter) {
 
 // 接口地址: /artists  必传 id
 // 获取歌手单曲
-export function getSingerMusic(id) {
+export function getSingerMusic(item) {
 	return get('/artists', {
-		id,
+		id: item.id,
 	});
 }
