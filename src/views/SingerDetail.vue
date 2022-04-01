@@ -30,7 +30,7 @@
 		} else {
 			// props的值不存在时
 			const cached = storage.getLocal('__singerDetail__');
-			if (cached && cached.id == route.params.id) {
+			if (cached && cached.id === route.params.id / 1) {
 				result = cached;
 			}
 		}

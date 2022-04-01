@@ -11,7 +11,7 @@
 			<div class="play-btn-wrapper" v-if="showBtn">
 				<div class="play-btn">
 					<i class="icon-play"></i>
-					<span class="text">顺序播放全部</span>
+					<span class="text" @click="sequencePlayAll">顺序播放全部</span>
 				</div>
 			</div>
 			<div class="filter" :style="filterStyle"></div>
@@ -33,10 +33,12 @@
 <script setup>
 	import { computed, onMounted, ref } from 'vue';
 	import { useRouter } from 'vue-router';
+	import { useStore } from 'vuex';
 	import Scroll from '@/components/base/scroll';
 	import SongList from '@/components/base/songList';
 
 	const router = useRouter();
+	const store = useStore();
 	const props = defineProps({
 		isLoading: Boolean,
 		listTitle: String,
@@ -105,6 +107,11 @@
 
 	function onScroll(pos) {
 		scrollY.value = -pos.y;
+	}
+
+	function sequencePlayAll() {
+		store.dispatch('addWholeList', { list: props.songs, index: 0 });
+		store.commit('setPlayMode', 0); // 顺序播放
 	}
 
 	onMounted(() => {

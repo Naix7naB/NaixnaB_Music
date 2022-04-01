@@ -1,9 +1,14 @@
 <template>
-	<ul class="song-list">
-		<li class="item" v-for="item in songs" :key="item">
+	<ul class="song-list" @click="playSong">
+		<li
+			class="item"
+			v-for="(item, index) in songs"
+			:key="item"
+			:data-index="index"
+		>
 			<div class="content">
 				<h2 class="name">{{ item.name }}</h2>
-				<p class="desc">{{ handleName(item.ar) }}</p>
+				<p class="desc">{{ handleName(item) }}</p>
 			</div>
 		</li>
 	</ul>
@@ -11,12 +16,23 @@
 
 <script setup>
 	import { computed } from 'vue';
+	import { useStore } from 'vuex';
 
+	const store = useStore();
 	const props = defineProps(['songs']);
 
-	function handleName(ar) {
-		const artists = ar.map(item => item.name);
-		return artists.join(' / ');
+	function handleName(item) {
+		const ar = item.ar;
+		return ar.map(artist => artist.name).join(' / ');
+	}
+
+	function playSong(e) {
+		let curNode = e.target;
+		while (curNode.className !== 'item') {
+			curNode = curNode.parentElement;
+		}
+		const curIndex = curNode.dataset.index / 1;
+		store.dispatch('addWholeList', { list: props.songs, index: curIndex });
 	}
 </script>
 

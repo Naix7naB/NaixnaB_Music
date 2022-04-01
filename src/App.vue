@@ -2,13 +2,13 @@
 	<div class="header">
 		<MusicHeader></MusicHeader>
 		<MusicTab></MusicTab>
-	</div>
-	<div class="content">
 		<router-view></router-view>
 	</div>
+	<Player></Player>
 </template>
 
 <script setup>
 	import MusicHeader from '@/components/header';
 	import MusicTab from '@/components/tab';
+	import Player from '@/components/player';
 </script>
