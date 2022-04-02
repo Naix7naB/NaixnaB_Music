@@ -14,7 +14,7 @@
 	import { onMounted, ref } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { getAllSinger } from '@/service/singerApi.js';
-	import storage from '@/utils/storage';
+	import { storage } from '@/utils';
 	import SingerList from '@/components/singerList';
 
 	const router = useRouter();
@@ -28,7 +28,7 @@
 			singerList.value = list;
 		} else {
 			// 如果存储不存在
-			getAllSinger().then(res => {
+			getAllSinger().then((res) => {
 				singerList.value = res;
 				storage.setLocal('__singerList__', res);
 			});

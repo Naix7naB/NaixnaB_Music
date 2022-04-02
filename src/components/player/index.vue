@@ -44,9 +44,9 @@
 				</div>
 				<!-- 歌曲进度条 -->
 				<div class="progress-wrapper">
-					<span class="time time-l">当前时间</span>
+					<span class="time time-l">{{ formatTime(curTime) }}</span>
 					<div class="progress-bar-wrapper"></div>
-					<span class="time time-r">总时间</span>
+					<span class="time time-r">{{ formatTime(durTime) }}</span>
 				</div>
 				<!-- 操作栏 -->
 				<div class="operators">
@@ -69,17 +69,19 @@
 			</div>
 		</div>
 	</div>
-	<audio ref="audioRef"></audio>
+	<audio ref="audioRef" @timeupdate="updateTime" @canplay="ready"></audio>
 </template>
 
 <script setup>
-	import { computed, ref, watch } from 'vue';
+	import { computed, onMounted, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
 	import { getSongUrl, getSongLyric } from '@/service/songApi';
-	import storage from '@/utils/storage';
+	import { storage, formatTime } from '@/utils';
 
 	const store = useStore();
 	const audioRef = ref(null);
+	const curTime = ref(0);
+	const durTime = ref(0);
 
 	/****************************   Vuex   ****************************/
 	const currentSong = computed(() => store.getters.currentSong);
@@ -196,7 +198,7 @@
 			list.splice(index, 1);
 		}
 		store.commit('setFavoriteList', list);
-		storage.setLocal('___favoriteList__', list);
+		storage.setLocal('__favoriteList__', list);
 	}
 
 	/* isFavorite */
@@ -238,9 +240,25 @@
 		store.commit('setCurPlayIndex', index);
 	}
 
+	/* 更新进度条时间 */
+	function updateTime() {
+		curTime.value = audioRef.value.currentTime;
+	}
+
+	/* 歌曲总时长 */
+	function ready() {
+		durTime.value = audioRef.value.duration;
+	}
+
 	/*  */
-	/*  */
-	/*  */
+	onMounted(() => {
+		if (!favoriteList.value.length) {
+			const list = storage.getLocal('__favoriteList__', []);
+			if (list.length) {
+				store.commit('setFavoriteList', list);
+			}
+		}
+	});
 </script>
 
 <style lang="scss" scoped>

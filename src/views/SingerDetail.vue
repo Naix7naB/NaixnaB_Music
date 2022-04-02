@@ -13,7 +13,7 @@
 	import { computed, onMounted, ref } from 'vue';
 	import { useRoute, useRouter } from 'vue-router';
 	import { getSingerMusic } from '@/service/singerApi';
-	import storage from '@/utils/storage';
+	import { storage } from '@/utils';
 	import MusicList from '@/components/musicList';
 
 	const router = useRouter();
@@ -54,7 +54,7 @@
 			});
 			return;
 		}
-		getSingerMusic(data).then(res => {
+		getSingerMusic(data).then((res) => {
 			songs.value = res.hotSongs;
 			isLoading.value = false;
 		});
