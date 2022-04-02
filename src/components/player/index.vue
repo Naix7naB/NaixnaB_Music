@@ -45,7 +45,13 @@
 				<!-- 歌曲进度条 -->
 				<div class="progress-wrapper">
 					<span class="time time-l">{{ formatTime(curTime) }}</span>
-					<div class="progress-bar-wrapper"></div>
+					<div class="progress-bar-wrapper">
+						<ProgressBar
+							:progress="progress"
+							@progressChanging="progressChanging"
+							@progressChanged="progressChanged"
+						></ProgressBar>
+					</div>
 					<span class="time time-r">{{ formatTime(durTime) }}</span>
 				</div>
 				<!-- 操作栏 -->
@@ -69,7 +75,12 @@
 			</div>
 		</div>
 	</div>
-	<audio ref="audioRef" @timeupdate="updateTime" @canplay="ready"></audio>
+	<audio
+		ref="audioRef"
+		@timeupdate="updateTime"
+		@canplay="ready"
+		@ended="end"
+	></audio>
 </template>
 
 <script setup>
@@ -77,11 +88,16 @@
 	import { useStore } from 'vuex';
 	import { getSongUrl, getSongLyric } from '@/service/songApi';
 	import { storage, formatTime } from '@/utils';
+	import ProgressBar from './components/progressBar';
 
 	const store = useStore();
 	const audioRef = ref(null);
+	/* 歌曲当前时间 */
 	const curTime = ref(0);
+	/* 歌曲总时长 */
 	const durTime = ref(0);
+	/* 进度条拖动状态 */
+	const changeState = ref(false);
 
 	/****************************   Vuex   ****************************/
 	const currentSong = computed(() => store.getters.currentSong);
@@ -124,6 +140,12 @@
 		return isFavorite(favoriteList.value, currentSong.value) === -1
 			? 'icon-not-favorite'
 			: 'icon-favorite';
+	});
+
+	/* 进度条时间比例 */
+	const progress = computed(() => {
+		if (!audioRef.value) return;
+		return curTime.value / durTime.value;
 	});
 
 	/* 监视当前歌曲是否存在 或 是否被修改 */
@@ -182,7 +204,9 @@
 	function toggleMode() {
 		// 0 => 1 => 2 => 0
 		const mode = (playMode.value + 1) % 3;
-		store.commit('setPlayMode', mode);
+		store.dispatch('changeMode', mode);
+		/* 把当前模式存储到本地 */
+		storage.setLocal('__mode__', mode);
 	}
 
 	/* 切换喜欢 */
@@ -201,7 +225,7 @@
 		storage.setLocal('__favoriteList__', list);
 	}
 
-	/* isFavorite */
+	/* 判断是否是我喜欢的歌曲 */
 	function isFavorite(list, song) {
 		return list.findIndex((item) => item.id === song.id);
 	}
@@ -211,7 +235,7 @@
 		const audio = audioRef.value;
 		audio.currentTime = 0; // 重头播放 时间清零
 		audio.play();
-		store.commit('curPlayState', 1);
+		store.commit('setPlayState', 1);
 	}
 
 	/* 上一首 */
@@ -240,18 +264,48 @@
 		store.commit('setCurPlayIndex', index);
 	}
 
-	/* 更新进度条时间 */
-	function updateTime() {
-		curTime.value = audioRef.value.currentTime;
-	}
-
-	/* 歌曲总时长 */
+	/* 歌曲能够播放时 */
 	function ready() {
 		durTime.value = audioRef.value.duration;
 	}
 
-	/*  */
+	/* 歌曲播放结束 */
+	function end() {
+		/* 让歌曲的播放状态设置为暂停 */
+		store.commit('setPlayState', 0);
+		if (playMode.value === 1) {
+			/* 当前播放模式为单曲循环 */
+			loop();
+		} else {
+			next();
+		}
+	}
+
+	/* 更新进度条时间 */
+	function updateTime() {
+		/* 正在拖动进度条 */
+		if (changeState.value) return;
+		curTime.value = audioRef.value.currentTime;
+	}
+
+	/* 进度值正在更新 */
+	function progressChanging(progress) {
+		changeState.value = true;
+		curTime.value = progress * durTime.value;
+	}
+
+	/* 进度值更新完毕 */
+	function progressChanged(progress) {
+		changeState.value = false;
+		curTime.value = progress * durTime.value;
+		audioRef.value.currentTime = curTime.value;
+	}
+
 	onMounted(() => {
+		const mode = storage.getLocal('__mode__');
+		/* 如果本地有 mode值 则使用本地的值 */
+		if (mode) store.commit('setPlayMode', mode);
+		/* 如果 Vuex没有 我喜欢的歌曲列表 */
 		if (!favoriteList.value.length) {
 			const list = storage.getLocal('__favoriteList__', []);
 			if (list.length) {

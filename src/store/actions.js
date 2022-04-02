@@ -54,16 +54,16 @@ const actions = {
 
 	/* 更改播放模式 */
 	changeMode({ commit, state, getters }, mode) {
-		// 获取当前播放歌曲的id
+		// 获取当前播放歌曲
 		const currentSong = getters.currentSong;
 		if (mode === 2) {
 			// 随机播放  把当前播放列表换成打乱后的播放列表
-			commit('setCurPlayList', shuffle(state.playList));
+			commit('setCurPlayList', shuffle(state.curPlayList));
 		} else {
 			// 顺序播放和单曲循环
-			commit('setCurPlayList', state.playList);
+			commit('setCurPlayList', state.curPlayList);
 		}
-		const index = findInd(state.playList, currentSong);
+		const index = findInd(state.curPlayList, currentSong);
 		commit('setCurPlayIndex', index);
 		commit('setPlayMode', mode);
 	},
