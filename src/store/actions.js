@@ -72,7 +72,7 @@ const actions = {
 	removeSong() {},
 
 	/* 清空播放列表 */
-	clearSongs() {},
+	clearSongList() {},
 };
 
 // 返回 return为 true时的 index下标  如果都不满足 -1

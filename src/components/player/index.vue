@@ -63,7 +63,7 @@
 						<i class="icon-next" @click="next"></i>
 					</div>
 					<div class="icon i-right">
-						<i class="icon-favorite"></i>
+						<i :class="favoriteIcon" @click="toggleFavorite"></i>
 					</div>
 				</div>
 			</div>
@@ -76,6 +76,7 @@
 	import { computed, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
 	import { getSongUrl, getSongLyric } from '@/service/songApi';
+	import storage from '@/utils/storage';
 
 	const store = useStore();
 	const audioRef = ref(null);
@@ -87,6 +88,7 @@
 	const curPlayIndex = computed(() => store.state.curPlayIndex);
 	const playState = computed(() => store.state.playState);
 	const playMode = computed(() => store.state.playMode);
+	const favoriteList = computed(() => store.state.favoriteList);
 	const playerStyle = computed(() => store.state.playerStyle);
 	/******************************************************************/
 
@@ -113,6 +115,13 @@
 			case 2:
 				return 'icon-random';
 		}
+	});
+
+	/* 喜欢歌曲图标 */
+	const favoriteIcon = computed(() => {
+		return isFavorite(favoriteList.value, currentSong.value) === -1
+			? 'icon-not-favorite'
+			: 'icon-favorite';
 	});
 
 	/* 监视当前歌曲是否存在 或 是否被修改 */
@@ -172,6 +181,27 @@
 		// 0 => 1 => 2 => 0
 		const mode = (playMode.value + 1) % 3;
 		store.commit('setPlayMode', mode);
+	}
+
+	/* 切换喜欢 */
+	function toggleFavorite() {
+		const song = currentSong.value;
+		const list = favoriteList.value.slice();
+		const index = isFavorite(list, song);
+		if (index === -1) {
+			// 歌曲不在喜欢列表里 把歌曲添加到喜欢列表
+			list.unshift(song);
+		} else {
+			// 歌曲在喜欢列表里 取消喜欢 把歌曲在喜欢列表中删除
+			list.splice(index, 1);
+		}
+		store.commit('setFavoriteList', list);
+		storage.setLocal('___favoriteList__', list);
+	}
+
+	/* isFavorite */
+	function isFavorite(list, song) {
+		return list.findIndex((item) => item.id === song.id);
 	}
 
 	/* 循环播放 */
