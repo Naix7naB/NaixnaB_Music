@@ -9,6 +9,11 @@ const mutations = {
 		state.playList = list;
 	},
 
+	//设置播放索引值
+	setCurPlayIndex(state, index) {
+		state.curPlayIndex = index;
+	},
+
 	// 设置播放状态
 	setPlayState(state, playState) {
 		state.playState = playState;
@@ -22,11 +27,6 @@ const mutations = {
 	// 设置播放器样式
 	setPlayerStyle(state, style) {
 		state.playerStyle = style;
-	},
-
-	//设置播放索引值
-	setCurPlayIndex(state, index) {
-		state.curPlayIndex = index;
 	},
 };
 

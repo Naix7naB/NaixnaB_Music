@@ -23,7 +23,7 @@
 
 	function handleName(item) {
 		const ar = item.ar;
-		return ar.map(artist => artist.name).join(' / ');
+		return ar.map((artist) => artist.name).join(' / ');
 	}
 
 	function playSong(e) {
@@ -33,6 +33,7 @@
 		}
 		const curIndex = curNode.dataset.index / 1;
 		store.dispatch('addWholeList', { list: props.songs, index: curIndex });
+		store.dispatch('addOneSong', props.songs[curIndex]);
 	}
 </script>
 

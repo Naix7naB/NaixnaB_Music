@@ -5,6 +5,9 @@ const state = {
 	// 源播放列表
 	playList: [],
 
+	//当前的播放索引值
+	curPlayIndex: 0,
+
 	// 播放状态 [0 off] [1 on]
 	playState: 0,
 
@@ -13,9 +16,6 @@ const state = {
 
 	// 播放器样式 [0 mini] [1 full]
 	playerStyle: 1,
-
-	//当前的播放索引值
-	curPlayIndex: 0,
 };
 
 export default state;
