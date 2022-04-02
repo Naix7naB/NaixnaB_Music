@@ -10,7 +10,7 @@ export function handleFixed(props) {
 	function onScroll(pos) {
 		posY.value = -pos.y;
 		for (let i = 0; i < heightRange.length - 1; i++) {
-			// 判断当前位置处于哪个区间
+			/* 判断当前位置处于哪个区间 */
 			if (posY.value >= heightRange[i] && posY.value < heightRange[i + 1]) {
 				curIndex.value = i;
 				diffHeight.value = heightRange[i + 1] - posY.value;
@@ -21,7 +21,7 @@ export function handleFixed(props) {
 		}
 	}
 
-	// 计算每个歌手组别的高度 如 'A'组的高度
+	/* 计算每个歌手组别的高度 如 'A'组的高度 */
 	function calcHeight() {
 		const groups = groupRef.value.children;
 		let index = 0,
@@ -35,19 +35,21 @@ export function handleFixed(props) {
 		}
 	}
 
+	/* 当前歌手组别的标签 */
 	const curTag = computed(() => {
-		// 往上划的话 则让 fixed的tag标签 不显示
+		/* 往上划的话 则让 fixed的tag标签 不显示 */
 		if (posY.value <= 0) return '';
 		return props.singerList[curIndex.value]
 			? props.singerList[curIndex.value].tag
 			: '';
 	});
 
+	/* 固定栏样式 */
 	const fixedStyle = computed(() => {
 		let trnasY = 0;
-		// 当滑动距离差值大于0且小于固定栏高度时 创建位移动画
+		/* 当滑动距离差值大于0且小于固定栏高度时 创建位移动画 */
 		if (diffHeight.value > 0 && diffHeight.value < 30) {
-			// 固定栏高度是30px
+			/* 固定栏高度是30px */
 			trnasY = diffHeight.value - 30;
 		}
 		return {

@@ -15,7 +15,6 @@
 </template>
 
 <script setup>
-	import { computed } from 'vue';
 	import { useStore } from 'vuex';
 
 	const store = useStore();
@@ -26,6 +25,7 @@
 		return ar.map((artist) => artist.name).join(' / ');
 	}
 
+	/* 点击歌单中的歌曲 播放歌曲 并把歌单的歌曲添加到播放列表中 */
 	function playSong(e) {
 		let curNode = e.target;
 		while (curNode.className !== 'item') {

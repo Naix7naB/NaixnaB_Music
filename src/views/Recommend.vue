@@ -48,12 +48,12 @@
 	);
 
 	onMounted(() => {
-		getBanner().then(res => {
-			// 轮播图数据
+		/* 轮播图数据 */
+		getBanner().then((res) => {
 			if (res.code === 200) recommend.banners = res.banners;
 		});
-		getRecommendList().then(res => {
-			// 推荐歌单列表数据
+		/* 推荐歌单列表数据 */
+		getRecommendList().then((res) => {
 			if (res.code === 200) recommend.playLists = res.playlists;
 		});
 	});

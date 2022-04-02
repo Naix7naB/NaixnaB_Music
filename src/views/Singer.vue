@@ -18,37 +18,37 @@
 	import SingerList from '@/components/singerList';
 
 	const router = useRouter();
-
 	const singerList = ref([]);
-	onMounted(() => {
-		// 先往本地存储获取歌手列表
-		let list = storage.getLocal('__singerList__', []);
-		if (list.length) {
-			// 如果存储存在
-			singerList.value = list;
-		} else {
-			// 如果存储不存在
-			getAllSinger().then((res) => {
-				singerList.value = res;
-				storage.setLocal('__singerList__', res);
-			});
-		}
-	});
-
 	const singerDetail = ref({});
+	/* 跳转相应歌手的详细页 */
 	function toDetail(item) {
 		singerDetail.value = {
 			id: item.id,
 			name: item.name,
 			picUrl: item.picUrl,
 		};
-		// 缓存 singerDetail数据
+		/* 缓存 singerDetail数据 */
 		storage.setLocal('__singerDetail__', singerDetail.value);
-		// 跳转相应歌手的详细页
+		/* 跳转 */
 		router.push({
 			path: `/singer/${item.id}`,
 		});
 	}
+
+	onMounted(() => {
+		/* 先往本地存储获取歌手列表 */
+		let list = storage.getLocal('__singerList__', []);
+		if (list.length) {
+			/* 如果存储存在 */
+			singerList.value = list;
+		} else {
+			/* 如果存储不存在 */
+			getAllSinger().then((res) => {
+				singerList.value = res;
+				storage.setLocal('__singerList__', res);
+			});
+		}
+	});
 </script>
 
 <style lang="scss" scoped>

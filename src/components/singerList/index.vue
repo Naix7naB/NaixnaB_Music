@@ -65,6 +65,7 @@
 	const { rootRef, onShortCutTouchStart, onShortCutTouchMove } =
 		useShortCut(groupRef);
 
+	/* 点击歌手 获取当前歌手的详细信息 */
 	function getSingerDetail(e) {
 		let curNode = e.target;
 		const I = {};

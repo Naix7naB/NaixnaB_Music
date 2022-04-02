@@ -1,5 +1,5 @@
 export default {
-	// 会话存储 (临时存储)
+	/* 会话存储 (临时存储) */
 	getSession(key, type) {
 		let val = JSON.parse(sessionStorage.getItem(key));
 		if (!val) val = type;
@@ -12,7 +12,7 @@ export default {
 		sessionStorage.removeItem(key);
 	},
 
-	// 本地存储 (永久存储)
+	/* 本地存储 (永久存储) */
 	getLocal(key, type) {
 		let val = JSON.parse(localStorage.getItem(key));
 		if (!val) val = type;
