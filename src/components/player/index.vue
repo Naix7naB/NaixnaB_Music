@@ -33,8 +33,9 @@
 					<div class="middle-r" :style="middleRStyle">
 						<!-- 全部歌词页 -->
 						<div class="lyric-wrapper">
-							<div ref="lyricRef" v-for="item in 20" :key="item">
-								<p class="text">全部歌词</p>
+							<div ref="lyricRef" v-for="item in lyric" :key="item.time">
+								<p class="text">{{ item.content }}</p>
+								<!-- :class="{current: }" -->
 							</div>
 						</div>
 					</div>
@@ -80,12 +81,12 @@
 			</div>
 		</transition>
 		<!-- mini播放器 -->
-		<miniPlayer
+		<MiniPlayer
 			:playerStyle="playerStyle"
 			:cdStyle="cdStyle"
 			:progress="progress"
 			:togglePlay="togglePlay"
-		></miniPlayer>
+		></MiniPlayer>
 	</div>
 	<!-- 真实播放器 -->
 	<audio
@@ -99,11 +100,12 @@
 <script setup>
 	import { computed, onMounted, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
-	import { getSongUrl, getSongLyric } from '@/service/songApi';
+	import { getSongUrl } from '@/service/songApi';
 	import { storage, handleName, formatTime } from '@/utils';
-	import middle from './middle';
+	import Middle from './middle';
+	import Lyric from './lyric';
 	import ProgressBar from './components/progressBar';
-	import miniPlayer from './components/miniPlayer';
+	import MiniPlayer from './components/miniPlayer';
 
 	const store = useStore();
 	const audioRef = ref(null);
@@ -125,7 +127,10 @@
 	const playerStyle = computed(() => store.state.playerStyle);
 	/******************************************************************/
 
-	const { toggleMiddle, middleLStyle, middleRStyle } = middle();
+	/****************************   hook   ****************************/
+	const { toggleMiddle, middleLStyle, middleRStyle } = Middle();
+	const { lyric } = Lyric(curTime);
+	/******************************************************************/
 
 	/* CD转盘动画 */
 	const cdStyle = computed(() => {
@@ -167,7 +172,7 @@
 
 	/* 监视当前歌曲是否存在 或 是否被修改 */
 	watch(currentSong, async (newSong) => {
-		if (!newSong) return;
+		if (!newSong.id) return;
 		/* 先让上一首歌暂停 */
 		store.commit('setPlayState', 0);
 		const { data } = await getSongUrl(newSong);
@@ -251,7 +256,8 @@
 	/* 循环播放 */
 	function loop() {
 		const audio = audioRef.value;
-		audio.currentTime = 0; // 重头播放 时间清零
+		/* 重头播放 时间清零 */
+		audio.currentTime = 0;
 		audio.play();
 		store.commit('setPlayState', 1);
 	}
@@ -306,13 +312,13 @@
 		curTime.value = audioRef.value.currentTime;
 	}
 
-	/* 进度值正在更新 */
+	/* 进度值正在拖动 */
 	function progressChanging(progress) {
 		changeState.value = true;
 		curTime.value = progress * durTime.value;
 	}
 
-	/* 进度值更新完毕 */
+	/* 进度值拖动完毕 */
 	function progressChanged(progress) {
 		changeState.value = false;
 		curTime.value = progress * durTime.value;

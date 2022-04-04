@@ -21,7 +21,7 @@ export function useSlide() {
 			stopPropagation: true,
 			probeType: 2,
 		});
-		slide.value.on('slideWillChange', page => {
+		slide.value.on('slideWillChange', (page) => {
 			currentPageIndex.value = page.pageX;
 		});
 	}
