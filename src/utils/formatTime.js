@@ -1,3 +1,4 @@
+/* 格式化歌曲时间 */
 export default (interval) => {
 	// 256.032s
 	/** 我自己写的方法

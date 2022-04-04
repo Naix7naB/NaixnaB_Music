@@ -15,16 +15,14 @@
 </template>
 
 <script setup>
+	import { computed } from 'vue';
 	import { useStore } from 'vuex';
+	import { handleName } from '@/utils';
 
 	const store = useStore();
 	const props = defineProps(['songs']);
 
-	function handleName(item) {
-		const ar = item.ar;
-		return ar.map((artist) => artist.name).join(' / ');
-	}
-
+	const playList = computed(() => store.state.playList);
 	/* 点击歌单中的歌曲 播放歌曲 并把歌单的歌曲添加到播放列表中 */
 	function playSong(e) {
 		let curNode = e.target;
@@ -32,7 +30,10 @@
 			curNode = curNode.parentElement;
 		}
 		const curIndex = curNode.dataset.index / 1;
-		store.dispatch('addWholeList', { list: props.songs, index: curIndex });
+		if (!playList.value.length || playList.value !== props.songs) {
+			/* 当播放列表没有歌曲时 或 当前播放列表跟当前点击的歌曲所在的歌单不一致时(歌单与歌单之间) */
+			store.dispatch('addWholeList', props.songs);
+		}
 		store.dispatch('addOneSong', props.songs[curIndex]);
 	}
 </script>

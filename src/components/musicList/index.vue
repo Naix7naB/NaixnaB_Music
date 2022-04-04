@@ -110,9 +110,8 @@
 	}
 
 	function sequencePlayAll() {
-		// 添加整个歌单歌曲
-		store.dispatch('addWholeList', { list: props.songs, index: 0 });
-		store.commit('setPlayMode', 0); // 顺序播放
+		// 顺序播放歌单歌曲
+		store.dispatch('playSequenceList', props.songs);
 	}
 
 	onMounted(() => {

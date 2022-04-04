@@ -1,80 +1,93 @@
 <template>
 	<div class="player" v-if="playList.length">
-		<div class="normal-player" v-show="playerStyle">
-			<!-- 歌曲背景图 -->
-			<div class="background">
-				<img :src="currentSong.al.picUrl" />
-			</div>
-			<!-- 顶部 -->
-			<div class="top">
-				<!-- 返回按钮 -->
-				<div class="back">
-					<i class="icon-back"></i>
+		<transition name="normal">
+			<!-- 全屏播放器 -->
+			<div class="normal-player" v-show="playerStyle">
+				<!-- 歌曲背景图 -->
+				<div class="background">
+					<img :src="currentSong.al.picUrl" />
 				</div>
-				<h1 class="title">{{ currentSong.name }}</h1>
-				<h2 class="subtitle">{{ handleName(currentSong) }}</h2>
-			</div>
-			<!-- 中间 -->
-			<div class="middle">
-				<div class="middle-l">
-					<!-- CD转盘 -->
-					<div class="cd-wrapper playing" :style="cdStyle">
-						<div class="cd">
-							<img class="image" :src="currentSong.al.picUrl" />
+				<!-- 顶部 -->
+				<div class="top">
+					<!-- 返回按钮 -->
+					<div class="back" @click="hide">
+						<i class="icon-back"></i>
+					</div>
+					<h1 class="title">{{ currentSong.name }}</h1>
+					<h2 class="subtitle">{{ handleName(currentSong) }}</h2>
+				</div>
+				<!-- 中间 -->
+				<div class="middle" @click="toggleMiddle">
+					<div class="middle-l" :style="middleLStyle">
+						<!-- CD转盘 -->
+						<div class="cd-wrapper playing" :style="cdStyle">
+							<div class="cd">
+								<img class="image" :src="currentSong.al.picUrl" />
+							</div>
+						</div>
+						<!-- 歌词 -->
+						<div class="playing-lyric-wrapper">
+							<div class="playing-lyric">歌词占位</div>
 						</div>
 					</div>
-					<!-- 歌词 -->
-					<div class="playing-lyric-wrapper">
-						<div class="playing-lyric">歌词占位</div>
+					<div class="middle-r" :style="middleRStyle">
+						<!-- 全部歌词页 -->
+						<div class="lyric-wrapper">
+							<div ref="lyricRef" v-for="item in 20" :key="item">
+								<p class="text">全部歌词</p>
+							</div>
+						</div>
 					</div>
 				</div>
-				<!-- 全部歌词页 -->
-				<!-- <div class="lyric-wrapper">
-					<div ref="lyricRef">
-						<p class="text">全部歌词</p>
+				<!-- 底部 -->
+				<div class="bottom">
+					<!-- 标识 -->
+					<!-- <div class="dot-wrapper">
+						<span class="dot"></span>
+						<span class="dot"></span>
+					</div> -->
+					<!-- 歌曲进度条 -->
+					<div class="progress-wrapper">
+						<span class="time time-l">{{ formatTime(curTime) }}</span>
+						<div class="progress-bar-wrapper">
+							<ProgressBar
+								:progress="progress"
+								@progressChanging="progressChanging"
+								@progressChanged="progressChanged"
+							></ProgressBar>
+						</div>
+						<span class="time time-r">{{ formatTime(durTime) }}</span>
 					</div>
-				</div> -->
-			</div>
-			<!-- 底部 -->
-			<div class="bottom">
-				<!-- 标识 -->
-				<div class="dot-wrapper">
-					<span class="dot"></span>
-					<span class="dot"></span>
-				</div>
-				<!-- 歌曲进度条 -->
-				<div class="progress-wrapper">
-					<span class="time time-l">{{ formatTime(curTime) }}</span>
-					<div class="progress-bar-wrapper">
-						<ProgressBar
-							:progress="progress"
-							@progressChanging="progressChanging"
-							@progressChanged="progressChanged"
-						></ProgressBar>
-					</div>
-					<span class="time time-r">{{ formatTime(durTime) }}</span>
-				</div>
-				<!-- 操作栏 -->
-				<div class="operators">
-					<div class="icon i-left">
-						<i :class="modeIcon" @click="toggleMode"></i>
-					</div>
-					<div class="icon i-left">
-						<i class="icon-prev" @click="prev"></i>
-					</div>
-					<div class="icon i-center">
-						<i :class="playIcon" @click="togglePlay"></i>
-					</div>
-					<div class="icon i-right">
-						<i class="icon-next" @click="next"></i>
-					</div>
-					<div class="icon i-right">
-						<i :class="favoriteIcon" @click="toggleFavorite"></i>
+					<!-- 操作栏 -->
+					<div class="operators">
+						<div class="icon i-left">
+							<i :class="modeIcon" @click="toggleMode"></i>
+						</div>
+						<div class="icon i-left">
+							<i class="icon-prev" @click="prev"></i>
+						</div>
+						<div class="icon i-center">
+							<i :class="playIcon" @click="togglePlay"></i>
+						</div>
+						<div class="icon i-right">
+							<i class="icon-next" @click="next"></i>
+						</div>
+						<div class="icon i-right">
+							<i :class="favoriteIcon" @click="toggleFavorite"></i>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</transition>
+		<!-- mini播放器 -->
+		<miniPlayer
+			:playerStyle="playerStyle"
+			:cdStyle="cdStyle"
+			:progress="progress"
+			:togglePlay="togglePlay"
+		></miniPlayer>
 	</div>
+	<!-- 真实播放器 -->
 	<audio
 		ref="audioRef"
 		@timeupdate="updateTime"
@@ -87,8 +100,10 @@
 	import { computed, onMounted, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
 	import { getSongUrl, getSongLyric } from '@/service/songApi';
-	import { storage, formatTime } from '@/utils';
+	import { storage, handleName, formatTime } from '@/utils';
+	import middle from './middle';
 	import ProgressBar from './components/progressBar';
+	import miniPlayer from './components/miniPlayer';
 
 	const store = useStore();
 	const audioRef = ref(null);
@@ -109,6 +124,8 @@
 	const favoriteList = computed(() => store.state.favoriteList);
 	const playerStyle = computed(() => store.state.playerStyle);
 	/******************************************************************/
+
+	const { toggleMiddle, middleLStyle, middleRStyle } = middle();
 
 	/* CD转盘动画 */
 	const cdStyle = computed(() => {
@@ -151,6 +168,8 @@
 	/* 监视当前歌曲是否存在 或 是否被修改 */
 	watch(currentSong, async (newSong) => {
 		if (!newSong) return;
+		/* 先让上一首歌暂停 */
+		store.commit('setPlayState', 0);
 		const { data } = await getSongUrl(newSong);
 		const url = data[0].url;
 		let playListVal = playList.value.slice();
@@ -189,10 +208,9 @@
 		}
 	});
 
-	/* 处理歌曲作者名 */
-	function handleName(item) {
-		const ar = item.ar;
-		return ar.map((artist) => artist.name).join(' / ');
+	/* 隐藏全屏播放器 */
+	function hide() {
+		store.commit('setPlayerStyle', 0);
 	}
 
 	/* 切换播放状态 */
@@ -354,13 +372,13 @@
 			// 顶部
 			.top {
 				position: relative;
-				margin-bottom: 25px;
+				margin: 25px 0;
 
 				// 返回按钮
 				.back {
 					position: absolute;
 					top: 0;
-					left: 6px;
+					left: 16px;
 					z-index: 50;
 
 					.icon-back {
@@ -394,18 +412,18 @@
 			.middle {
 				position: fixed;
 				width: 100%;
-				top: 80px;
-				bottom: 170px;
+				top: 120px;
+				bottom: 140px;
 				white-space: nowrap;
 				font-size: 0;
 
 				.middle-l {
-					display: inline-block;
 					vertical-align: top;
-					position: relative;
+					position: absolute;
 					width: 100%;
 					height: 0;
 					padding-top: 80%;
+					transition: all 0.4s ease-out;
 
 					// CD转盘
 					.cd-wrapper {
@@ -455,11 +473,13 @@
 				}
 
 				.middle-r {
-					display: inline-block;
+					opacity: 0;
 					vertical-align: top;
+					position: absolute;
 					width: 100%;
 					height: 100%;
 					overflow: hidden;
+					transition: all 0.4s ease-out;
 
 					// 全部歌词
 					.lyric-wrapper {
