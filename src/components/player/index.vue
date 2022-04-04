@@ -30,15 +30,21 @@
 							<div class="playing-lyric">歌词占位</div>
 						</div>
 					</div>
-					<div class="middle-r" :style="middleRStyle">
+					<Scroll class="middle-r" :style="middleRStyle" ref="lyricScrollRef">
 						<!-- 全部歌词页 -->
 						<div class="lyric-wrapper">
-							<div ref="lyricRef" v-for="item in lyric" :key="item.time">
-								<p class="text">{{ item.content }}</p>
-								<!-- :class="{current: }" -->
+							<div ref="lyricRef">
+								<p
+									class="text"
+									v-for="(item, index) in lyric"
+									:key="index"
+									:class="{ current: curLyricIndex === index }"
+								>
+									{{ item.content }}
+								</p>
 							</div>
 						</div>
-					</div>
+					</Scroll>
 				</div>
 				<!-- 底部 -->
 				<div class="bottom">
@@ -104,6 +110,7 @@
 	import { storage, handleName, formatTime } from '@/utils';
 	import Middle from './middle';
 	import Lyric from './lyric';
+	import Scroll from '@/components/base/scroll';
 	import ProgressBar from './components/progressBar';
 	import MiniPlayer from './components/miniPlayer';
 
@@ -129,7 +136,8 @@
 
 	/****************************   hook   ****************************/
 	const { toggleMiddle, middleLStyle, middleRStyle } = Middle();
-	const { lyric } = Lyric(curTime);
+	const { lyric, curLyricIndex, play, stop, lyricScrollRef, lyricRef } =
+		Lyric(curTime);
 	/******************************************************************/
 
 	/* CD转盘动画 */
@@ -208,13 +216,17 @@
 		let audio = audioRef.value;
 		if (newState) {
 			audio.play();
+			stop();
+			play();
 		} else {
 			audio.pause();
+			stop();
 		}
 	});
 
 	/* 隐藏全屏播放器 */
 	function hide() {
+		stop();
 		store.commit('setPlayerStyle', 0);
 	}
 
@@ -257,9 +269,11 @@
 	function loop() {
 		const audio = audioRef.value;
 		/* 重头播放 时间清零 */
-		audio.currentTime = 0;
+		audio.currentTime = curTime.value = 0;
 		audio.play();
 		store.commit('setPlayState', 1);
+		stop();
+		play();
 	}
 
 	/* 上一首 */
@@ -314,6 +328,7 @@
 
 	/* 进度值正在拖动 */
 	function progressChanging(progress) {
+		stop();
 		changeState.value = true;
 		curTime.value = progress * durTime.value;
 	}
@@ -321,8 +336,9 @@
 	/* 进度值拖动完毕 */
 	function progressChanged(progress) {
 		changeState.value = false;
-		curTime.value = progress * durTime.value;
-		audioRef.value.currentTime = curTime.value;
+		audioRef.value.currentTime = curTime.value = progress * durTime.value;
+		stop();
+		play();
 	}
 
 	onMounted(() => {
@@ -419,7 +435,7 @@
 				position: fixed;
 				width: 100%;
 				top: 120px;
-				bottom: 140px;
+				bottom: 155px;
 				white-space: nowrap;
 				font-size: 0;
 
@@ -489,8 +505,9 @@
 
 					// 全部歌词
 					.lyric-wrapper {
-						width: 80%;
+						width: 66%;
 						margin: 0 auto;
+						white-space: pre-wrap;
 						overflow: hidden;
 						text-align: center;
 

@@ -6,7 +6,7 @@ export default (lyric) => {
 			const obj = {};
 			const temp = cur.replace('[', '').split(']');
 			/* 歌词不为空 */
-			if (temp[1]) {
+			if (temp[1].trim()) {
 				/* 处理歌词时间 */
 				const timeArr = temp[0].split(':');
 				const first = Number(timeArr[0]) * 60;
