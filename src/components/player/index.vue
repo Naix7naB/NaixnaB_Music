@@ -80,7 +80,10 @@
 							<i class="icon-next" @click="next"></i>
 						</div>
 						<div class="icon i-right">
-							<i :class="favoriteIcon" @click="toggleFavorite"></i>
+							<i
+								:class="favoriteIcon(currentSong)"
+								@click="toggleFavorite(currentSong)"
+							></i>
 						</div>
 					</div>
 				</div>
@@ -108,6 +111,8 @@
 	import { useStore } from 'vuex';
 	import { getSongUrl } from '@/service/songApi';
 	import { storage, handleName, formatTime } from '@/utils';
+	import Mode from './mode';
+	import Favorite from './favorite';
 	import Middle from './middle';
 	import Lyric from './lyric';
 	import Scroll from '@/components/base/scroll';
@@ -130,11 +135,12 @@
 	const curPlayIndex = computed(() => store.state.curPlayIndex);
 	const playState = computed(() => store.state.playState);
 	const playMode = computed(() => store.state.playMode);
-	const favoriteList = computed(() => store.state.favoriteList);
 	const playerStyle = computed(() => store.state.playerStyle);
 	/******************************************************************/
 
-	/****************************   hook   ****************************/
+	/***************************   Hooks   ****************************/
+	const { modeIcon, toggleMode } = Mode();
+	const { favoriteIcon, toggleFavorite } = Favorite();
 	const { toggleMiddle, middleLStyle, middleRStyle } = Middle();
 	const { lyric, curLyricIndex, play, stop, lyricScrollRef, lyricRef } =
 		Lyric(curTime);
@@ -150,26 +156,6 @@
 	/* 播放/暂停 图标 */
 	const playIcon = computed(() => {
 		return playState.value ? 'icon-pause' : 'icon-play';
-	});
-
-	/* 播放模式图标 */
-	const modeIcon = computed(() => {
-		const mode = playMode.value;
-		switch (mode) {
-			case 0:
-				return 'icon-sequence';
-			case 1:
-				return 'icon-loop';
-			case 2:
-				return 'icon-random';
-		}
-	});
-
-	/* 喜欢歌曲图标 */
-	const favoriteIcon = computed(() => {
-		return isFavorite(favoriteList.value, currentSong.value) === -1
-			? 'icon-not-favorite'
-			: 'icon-favorite';
 	});
 
 	/* 进度条时间比例 */
@@ -206,7 +192,6 @@
 			// 请求成功
 			let audio = audioRef.value;
 			audio.src = url;
-			audio.play();
 			store.commit('setPlayState', 1);
 		}
 	});
@@ -233,36 +218,6 @@
 	/* 切换播放状态 */
 	function togglePlay() {
 		store.commit('setPlayState', !playState.value);
-	}
-
-	/* 切换播放模式 */
-	function toggleMode() {
-		// 0 => 1 => 2 => 0
-		const mode = (playMode.value + 1) % 3;
-		store.dispatch('changeMode', mode);
-		/* 把当前模式存储到本地 */
-		storage.setLocal('__mode__', mode);
-	}
-
-	/* 切换喜欢 */
-	function toggleFavorite() {
-		const song = currentSong.value;
-		const list = favoriteList.value.slice();
-		const index = isFavorite(list, song);
-		if (index === -1) {
-			// 歌曲不在喜欢列表里 把歌曲添加到喜欢列表
-			list.unshift(song);
-		} else {
-			// 歌曲在喜欢列表里 取消喜欢 把歌曲在喜欢列表中删除
-			list.splice(index, 1);
-		}
-		store.commit('setFavoriteList', list);
-		storage.setLocal('__favoriteList__', list);
-	}
-
-	/* 判断是否是我喜欢的歌曲 */
-	function isFavorite(list, song) {
-		return list.findIndex((item) => item.id === song.id);
 	}
 
 	/* 循环播放 */
@@ -340,19 +295,6 @@
 		stop();
 		play();
 	}
-
-	onMounted(() => {
-		const mode = storage.getLocal('__mode__');
-		/* 如果本地有 mode值 则使用本地的值 */
-		if (mode) store.commit('setPlayMode', mode);
-		/* 如果 Vuex没有 我喜欢的歌曲列表 */
-		if (!favoriteList.value.length) {
-			const list = storage.getLocal('__favoriteList__', []);
-			if (list.length) {
-				store.commit('setFavoriteList', list);
-			}
-		}
-	});
 </script>
 
 <style lang="scss" scoped>

@@ -1,9 +1,9 @@
 const state = {
-	/* 当前播放列表 */
-	curPlayList: [],
-
 	/* 源播放列表 */
 	playList: [],
+
+	/* 当前播放列表 */
+	curPlayList: [],
 
 	/* 当前的播放索引值 */
 	curPlayIndex: 0,

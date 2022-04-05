@@ -3,27 +3,28 @@ const actions = {
 	addOneSong({ commit, state }, song) {
 		const playList = state.playList.slice();
 		const curPlayList = state.curPlayList.slice();
+		/* 如果点击的歌曲是同一个歌单内的 则不重复添加 直接跳转到歌曲索引值 */
 		let curPlayIndex = state.curPlayIndex;
-		// 查找当前点击歌曲 在当前播放列表中的索引值 不存在则返回 -1
+		/* 查找当前点击歌曲 在当前播放列表中的索引值 不存在则返回 -1 */
 		let existIndex = findInd(curPlayList, song);
-		// 在当前播放歌曲后面 添加当前点击歌曲
+		/* 在当前播放歌曲后面 添加当前点击歌曲 */
 		curPlayList.splice(curPlayIndex + 1, 0, song);
 		if (existIndex === -1) {
-			// 当前点击歌曲不存在当前播放列表时
-			// playList.unshift(song);
+			/* 当前点击歌曲不存在当前播放列表时 */
+			/* playList.unshift(song); */
 			curPlayIndex++;
 		} else {
-			// 当前点击歌曲存在当前播放列表时
+			/* 当前点击歌曲存在当前播放列表时 */
 			if (curPlayIndex < existIndex) {
-				// 歌曲存在当前播放歌曲 之后
+				/* 歌曲存在当前播放歌曲 之后 */
 				curPlayList.splice(existIndex + 1, 1);
 				curPlayIndex++;
 			} else {
-				// 歌曲存在当前播放歌曲 之前
+				/* 歌曲存在当前播放歌曲 之前 */
 				curPlayList.splice(existIndex, 1);
 			}
 		}
-		// 边界情况 只有一首歌曲时 并且添加的歌曲是同一首歌曲
+		/* 边界情况 只有一首歌曲时 并且添加的歌曲是同一首歌曲 */
 		if (curPlayList.length === 1) {
 			curPlayIndex = 0;
 		}

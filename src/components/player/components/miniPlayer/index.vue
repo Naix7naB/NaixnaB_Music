@@ -15,15 +15,15 @@
 			</div>
 			<!-- 播放按钮 进度条 -->
 			<div class="control">
-				<progressCircle :radius="32" :progress="progress">
+				<ProgressCircle :radius="32" :progress="progress">
 					<i class="icon-mini" :class="playIconMini" @click="togglePlay"></i>
-				</progressCircle>
+				</ProgressCircle>
 			</div>
 			<!-- 歌曲播放列表 -->
 			<div class="control">
 				<i class="icon-playlist"></i>
 			</div>
-			<div>歌曲列表</div>
+			<MiniList></MiniList>
 		</div>
 	</transition>
 </template>
@@ -32,7 +32,8 @@
 	import { computed } from 'vue';
 	import { useStore } from 'vuex';
 	import { handleName } from '@/utils';
-	import progressCircle from '../progressCircle';
+	import ProgressCircle from '../progressCircle';
+	import MiniList from '../miniList';
 
 	const store = useStore();
 	const props = defineProps({

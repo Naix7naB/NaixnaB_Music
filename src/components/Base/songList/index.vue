@@ -34,7 +34,7 @@
 			/* 当播放列表没有歌曲时 或 当前播放列表跟当前点击的歌曲所在的歌单不一致时(歌单与歌单之间) */
 			store.dispatch('addWholeList', props.songs);
 		}
-		store.dispatch('addOneSong', props.songs[curIndex]);
+		store.commit('setCurPlayIndex', curIndex);
 	}
 </script>
 
