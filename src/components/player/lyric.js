@@ -59,10 +59,10 @@ export default (curTime) => {
 	function currentIndex() {
 		const lyricVal = lyric.value;
 		const nowTime = curTime.value;
-		/* 如果没有歌词 */
-		if (!lyricVal.length) return;
 
 		let index = 0;
+		/* 如果没有歌词 或 歌词不支持滚动 */
+		if (!lyricVal.length || !lyricVal[index].time) return;
 		for (let i = 0; i < lyricVal.length; i++) {
 			if (nowTime >= lyricVal[lyricVal.length - 1].time) {
 				/* 处理歌词到达最后一句时 */
@@ -82,9 +82,9 @@ export default (curTime) => {
 	function start() {
 		const lyricVal = lyric.value;
 		const nowTime = curTime.value;
-		/* 如果没有歌词 */
-		if (!lyricVal.length) return;
 		let index = curLyricIndex.value;
+		/* 如果没有歌词 或 歌词不支持滚动 */
+		if (!lyricVal.length || !lyricVal[index].time) return;
 		/* 如果是最后一句歌词 就不再开启定时器 */
 		if (index === lyricVal.length - 1) return;
 		/* 定时器延时时间为 = 下一句歌词时间 - 当前播放时间 (单位: ms) */

@@ -17,9 +17,14 @@
 					</h1>
 				</div>
 				<!-- 列表歌曲 -->
-				<Scroll class="list-content" ref="scrollRef">
-					<transition-group ref="listRef" tag="ul" name="list">
-						<li class="item" v-for="song in curPlayList" :key="song.id">
+				<Scroll class="list-content" ref="listScrollRef">
+					<ul ref="listRef" @click="playSong">
+						<li
+							class="item"
+							v-for="(song, index) in curPlayList"
+							:key="song.id"
+							:data-index="index"
+						>
 							<i class="current" :class="curPlayIcon(song)"></i>
 							<span class="text">{{ song.name }}</span>
 							<span class="favorite" @click="toggleFavorite(song)">
@@ -29,7 +34,7 @@
 								<i class="icon-delete"></i>
 							</span>
 						</li>
-					</transition-group>
+					</ul>
 				</Scroll>
 				<div class="list-footer">
 					<span>关闭</span>
@@ -40,13 +45,16 @@
 </template>
 
 <script setup>
-	import { computed } from 'vue';
+	import { computed, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
 	import Mode from '@/components/player/mode';
 	import Favorite from '@/components/player/favorite';
 	import Scroll from '@/components/base/scroll';
 
 	const store = useStore();
+	const listScrollRef = ref(null);
+	const listRef = ref(null);
+	// const curSongIndex = computed
 
 	const currentSong = computed(() => store.getters.currentSong);
 	const curPlayList = computed(() => store.state.curPlayList);
@@ -54,10 +62,32 @@
 	const { modeIcon, modeText, toggleMode } = Mode();
 	const { favoriteIcon, toggleFavorite } = Favorite();
 
+	watch(currentSong, (newSong) => {
+		if (!newSong.id) return;
+		const index = curPlayList.value.findIndex((item) => item.id === newSong.id);
+		scrollToCurSong(index);
+	});
+
+	/* 正在播放图标 */
 	function curPlayIcon(song) {
 		if (song.id === currentSong.value.id) {
 			return 'icon-play';
 		}
+	}
+
+	/* 点击播放列表歌曲 */
+	function playSong(e) {
+		const target = e.path.filter((item) => item.className === 'item')[0];
+		const index = target.dataset.index;
+		store.commit('setCurPlayIndex', index);
+		scrollToCurSong(index);
+	}
+
+	/* 滚动到当前播放歌曲 */
+	function scrollToCurSong(index) {
+		const scroll = listScrollRef.value.scroll;
+		const target = listRef.value.children[index];
+		scroll.scrollToElement(target, 500);
 	}
 </script>
 

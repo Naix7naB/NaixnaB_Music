@@ -1,5 +1,5 @@
 <template>
-	<div class="header">
+	<div class="nav">
 		<MusicHeader></MusicHeader>
 		<MusicTab></MusicTab>
 		<router-view></router-view>
