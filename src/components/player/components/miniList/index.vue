@@ -1,6 +1,6 @@
 <template>
 	<transition name="list-fade">
-		<div class="mini-list">
+		<div class="mini-list" v-show="visible">
 			<div class="list-wrapper">
 				<!-- 列表头部 -->
 				<div class="list-header">
@@ -11,32 +11,32 @@
 							<span class="text">{{ modeText }}</span>
 						</div>
 						<!-- 清空列表 -->
-						<span class="clear">
+						<span class="clear" @click="clearList">
 							<i class="icon-clear"></i>
 						</span>
 					</h1>
 				</div>
 				<!-- 列表歌曲 -->
-				<Scroll class="list-content" ref="listScrollRef">
+				<Scroll class="list-content" ref="listScrollRef" :probeType="2">
 					<ul ref="listRef" @click="playSong">
 						<li
 							class="item"
-							v-for="(song, index) in curPlayList"
+							v-for="(song, index) in playList"
 							:key="song.id"
 							:data-index="index"
 						>
 							<i class="current" :class="curPlayIcon(song)"></i>
 							<span class="text">{{ song.name }}</span>
-							<span class="favorite" @click="toggleFavorite(song)">
+							<span class="favorite" @click.stop="toggleFavorite(song)">
 								<i :class="favoriteIcon(song)"></i>
 							</span>
-							<span class="delete">
+							<span class="delete" @click.stop="removeSong(song)">
 								<i class="icon-delete"></i>
 							</span>
 						</li>
 					</ul>
 				</Scroll>
-				<div class="list-footer">
+				<div class="list-footer" @click="hide">
 					<span>关闭</span>
 				</div>
 			</div>
@@ -54,18 +54,20 @@
 	const store = useStore();
 	const listScrollRef = ref(null);
 	const listRef = ref(null);
-	// const curSongIndex = computed
+	const visible = ref(false);
+	/* 节流阀 */
+	const flag = ref(true);
 
 	const currentSong = computed(() => store.getters.currentSong);
 	const curPlayList = computed(() => store.state.curPlayList);
+	const playList = computed(() => store.state.playList);
 
 	const { modeIcon, modeText, toggleMode } = Mode();
 	const { favoriteIcon, toggleFavorite } = Favorite();
 
 	watch(currentSong, (newSong) => {
-		if (!newSong.id) return;
-		const index = curPlayList.value.findIndex((item) => item.id === newSong.id);
-		scrollToCurSong(index);
+		if (!newSong.id || !visible.value) return;
+		scrollToCurSong();
 	});
 
 	/* 正在播放图标 */
@@ -80,15 +82,47 @@
 		const target = e.path.filter((item) => item.className === 'item')[0];
 		const index = target.dataset.index;
 		store.commit('setCurPlayIndex', index);
-		scrollToCurSong(index);
+		scrollToCurSong();
 	}
 
 	/* 滚动到当前播放歌曲 */
-	function scrollToCurSong(index) {
-		const scroll = listScrollRef.value.scroll;
+	function scrollToCurSong() {
+		const song = currentSong.value;
+		const index = curPlayList.value.findIndex((item) => item.id === song.id);
 		const target = listRef.value.children[index];
-		scroll.scrollToElement(target, 500);
+		listScrollRef.value.scroll.scrollToElement(target, 500);
 	}
+
+	/* 删除一首歌曲 */
+	function removeSong(song) {
+		if (!flag.value) return;
+		flag.value = false;
+		store.dispatch('removeSong', song);
+		/* 等待 1.5s 开启节流阀 */
+		setTimeout(() => {
+			flag.value = true;
+		}, 1500);
+	}
+
+	/* 清空播放列表 */
+	function clearList() {
+		store.dispatch('clearSongList');
+	}
+
+	/* 展示 mini歌单列表 */
+	function show() {
+		visible.value = true;
+	}
+
+	/* 隐藏 mini歌单列表 */
+	function hide() {
+		visible.value = false;
+	}
+
+	defineExpose({
+		show,
+		hide,
+	});
 </script>
 
 <style lang="scss" scoped>

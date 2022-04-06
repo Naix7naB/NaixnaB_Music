@@ -107,10 +107,10 @@
 </template>
 
 <script setup>
-	import { computed, onMounted, ref, watch } from 'vue';
+	import { computed, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
 	import { getSongUrl } from '@/service/songApi';
-	import { storage, handleName, formatTime } from '@/utils';
+	import { handleName, formatTime } from '@/utils';
 	import Mode from './mode';
 	import Favorite from './favorite';
 	import Middle from './middle';

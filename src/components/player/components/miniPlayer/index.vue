@@ -20,16 +20,16 @@
 				</ProgressCircle>
 			</div>
 			<!-- 歌曲播放列表 -->
-			<div class="control">
+			<div class="control" @click="showMiniList">
 				<i class="icon-playlist"></i>
 			</div>
-			<MiniList></MiniList>
+			<MiniList ref="miniListRef"></MiniList>
 		</div>
 	</transition>
 </template>
 
 <script setup>
-	import { computed } from 'vue';
+	import { computed, ref } from 'vue';
 	import { useStore } from 'vuex';
 	import { handleName } from '@/utils';
 	import ProgressCircle from '../progressCircle';
@@ -52,6 +52,7 @@
 		togglePlay: Function,
 	});
 
+	const miniListRef = ref(null);
 	const currentSong = computed(() => store.getters.currentSong);
 	const playState = computed(() => store.state.playState);
 
@@ -63,6 +64,11 @@
 	/* 展示全屏播放器 */
 	function showFull() {
 		store.commit('setPlayerStyle', 1);
+	}
+
+	/* 展示 mini播放列表 */
+	function showMiniList() {
+		miniListRef.value.show();
 	}
 </script>
 

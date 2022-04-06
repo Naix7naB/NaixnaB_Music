@@ -47,11 +47,10 @@ export default (curTime) => {
 	/* 开始计算需要滚动到歌词索引值 */
 	function play() {
 		const lyricVal = lyric.value;
-		if (lyricVal.length) {
-			currentIndex();
-			if (playState.value) {
-				start();
-			}
+		if (!lyricVal || !lyricVal.length) return;
+		currentIndex();
+		if (playState.value) {
+			start();
 		}
 	}
 

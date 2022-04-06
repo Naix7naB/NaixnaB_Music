@@ -100,7 +100,7 @@
 		};
 	});
 
-	// 返回上一级
+	/* 返回上一级 */
 	function goBack() {
 		router.back();
 	}
@@ -110,7 +110,7 @@
 	}
 
 	function sequencePlayAll() {
-		// 顺序播放歌单歌曲
+		/* 顺序播放歌单歌曲 */
 		store.dispatch('playSequenceList', props.songs);
 	}
 
