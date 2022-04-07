@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-	import { computed, ref, watch } from 'vue';
+	import { computed, nextTick, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
 	import { handleName } from '@/utils';
 	import Mode from '@/components/player/mode';
@@ -137,6 +137,10 @@
 	/* 展示 mini歌单列表 */
 	function show() {
 		visible.value = true;
+		nextTick(() => {
+			listScrollRef.value.scroll.refresh();
+			scrollToCurSong();
+		});
 	}
 
 	/* 隐藏 mini歌单列表 */
