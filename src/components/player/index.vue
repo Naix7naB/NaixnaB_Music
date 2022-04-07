@@ -95,6 +95,8 @@
 			:cdStyle="cdStyle"
 			:progress="progress"
 			:togglePlay="togglePlay"
+			@slidePrev="prev"
+			@slideNext="next"
 		></MiniPlayer>
 	</div>
 	<!-- 真实播放器 -->

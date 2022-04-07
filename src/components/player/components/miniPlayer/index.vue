@@ -2,30 +2,48 @@
 	<transition name="mini">
 		<!-- mini播放器 -->
 		<div class="mini-player" v-show="!playerStyle" @click="showFull">
-			<!-- CD转盘 歌曲图片 -->
-			<div class="cd-wrapper">
-				<div class="cd" :style="cdStyle">
-					<img :src="currentSong.al.picUrl" />
+			<!-- 右边歌曲信息 -->
+			<div
+				class="mini-player-l"
+				@touchstart="touchStart"
+				@touchmove="touchMove"
+				@touchend="touchEnd"
+			>
+				<div
+					class="item"
+					v-for="i in 3"
+					:key="i"
+					:class="{ left: i === 1, right: i === 3 }"
+				>
+					<!-- CD转盘 歌曲图片 -->
+					<div class="cd-wrapper">
+						<div class="cd" :style="cdStyle">
+							<img :src="currentSong.al.picUrl" />
+						</div>
+					</div>
+					<!-- 歌曲信息 -->
+					<div class="slider-wrapper">
+						<h2 class="name">{{ currentSong.name }}</h2>
+						<p class="desc">{{ handleName(currentSong) }}</p>
+					</div>
 				</div>
 			</div>
-			<!-- 歌曲信息 -->
-			<div class="slider-wrapper">
-				<h2 class="name">{{ currentSong.name }}</h2>
-				<p class="desc">{{ handleName(currentSong) }}</p>
-			</div>
-			<!-- 播放按钮 进度条 -->
-			<div class="control">
-				<ProgressCircle :radius="32" :progress="progress">
-					<i
-						class="icon-mini"
-						:class="playIconMini"
-						@click.stop="togglePlay"
-					></i>
-				</ProgressCircle>
-			</div>
-			<!-- 歌曲播放列表 -->
-			<div class="control" @click.stop="showMiniList">
-				<i class="icon-playlist"></i>
+			<!-- 右边控制器 -->
+			<div class="mini-player-r">
+				<!-- 播放按钮 进度条 -->
+				<div class="control">
+					<ProgressCircle :radius="32" :progress="progress">
+						<i
+							class="icon-mini"
+							:class="playIconMini"
+							@click.stop="togglePlay"
+						></i>
+					</ProgressCircle>
+				</div>
+				<!-- 歌曲播放列表 -->
+				<div class="control" @click.stop="showMiniList">
+					<i class="icon-playlist"></i>
+				</div>
 			</div>
 			<MiniList ref="miniListRef"></MiniList>
 		</div>
@@ -55,8 +73,15 @@
 		},
 		togglePlay: Function,
 	});
+	const emit = defineEmits(['slidePrev', 'slideNext']);
 
 	const miniListRef = ref(null);
+	const touch = {
+		x1: 0,
+		x2: 0,
+		delta: 0,
+	};
+
 	const currentSong = computed(() => store.getters.currentSong);
 	const playState = computed(() => store.state.playState);
 
@@ -74,12 +99,33 @@
 	function showMiniList() {
 		miniListRef.value.show();
 	}
+
+	/* 滑动开始 */
+	function touchStart(e) {
+		touch.x1 = e.touches[0].pageX;
+	}
+
+	/* 滑动中 */
+	function touchMove(e) {
+		touch.x2 = e.touches[0].pageX;
+		touch.delta = touch.x2 - touch.x1;
+	}
+
+	/* 滑动结束 */
+	function touchEnd() {
+		if (touch.delta > 0 && touch.delta > 40) {
+			/* 向右滑 切换上一首 */
+			emit('slidePrev');
+		} else if (touch.delta < 0 && touch.delta < -40) {
+			/* 向左滑 切换下一首 */
+			emit('slideNext');
+		}
+	}
 </script>
 
 <style lang="scss" scoped>
 	.mini-player {
 		display: flex;
-		align-items: center;
 		position: fixed;
 		left: 0;
 		bottom: 0;
@@ -88,70 +134,97 @@
 		height: 60px;
 		background: $color-highlight-background;
 
-		.cd-wrapper {
-			flex: 0 0 40px;
-			width: 40px;
-			height: 40px;
-			padding: 0 10px 0 20px;
+		.mini-player-l {
+			flex: 1;
+			position: relative;
 
-			.cd {
-				position: relative;
-				height: 100%;
+			.item {
+				display: flex;
+				align-items: center;
+				position: absolute;
+				top: 0;
+				left: 0;
 				width: 100%;
-				animation: rotate 40s linear infinite;
-				overflow: hidden;
-				border-radius: 50%;
+				height: 100%;
 
-				img {
-					position: absolute;
-					width: 130%;
-					left: 50%;
-					top: 50%;
-					transform: translate(-50%, -50%);
+				.cd-wrapper {
+					width: 40px;
+					height: 40px;
+					padding: 0 16px 0 20px;
+
+					.cd {
+						position: relative;
+						height: 100%;
+						width: 100%;
+						animation: rotate 40s linear infinite;
+						overflow: hidden;
+						border-radius: 50%;
+
+						img {
+							position: absolute;
+							width: 130%;
+							left: 50%;
+							top: 50%;
+							transform: translate(-50%, -50%);
+						}
+					}
+				}
+
+				.slider-wrapper {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					flex: 1;
+					line-height: 20px;
+					overflow: hidden;
+
+					.name {
+						margin-bottom: 2px;
+						@include no-wrap();
+						font-size: $font-size-medium;
+						color: $color-text;
+					}
+
+					.desc {
+						@include no-wrap();
+						font-size: $font-size-small;
+						color: $color-text-d;
+					}
+				}
+
+				&.left {
+					transform: translateX(-100%);
+				}
+
+				&.right {
+					transform: translateX(100%);
 				}
 			}
 		}
 
-		.slider-wrapper {
+		.mini-player-r {
+			z-index: 99;
 			display: flex;
-			flex-direction: column;
 			justify-content: center;
-			flex: 1;
-			line-height: 20px;
-			overflow: hidden;
+			align-items: center;
+			background: $color-highlight-background;
 
-			.name {
-				margin-bottom: 2px;
-				@include no-wrap();
-				font-size: $font-size-medium;
-				color: $color-text;
-			}
+			.control {
+				width: 30px;
+				padding: 0 10px;
 
-			.desc {
-				@include no-wrap();
-				font-size: $font-size-small;
-				color: $color-text-d;
-			}
-		}
+				.icon-playlist {
+					font-size: 28px;
+					color: $color-theme-d;
+				}
 
-		.control {
-			flex: 0 0 30px;
-			width: 30px;
-			padding: 0 10px;
-
-			.icon-playlist {
-				position: relative;
-				top: -2px;
-				font-size: 28px;
-				color: $color-theme-d;
-			}
-
-			.icon-mini {
-				position: absolute;
-				left: 0;
-				top: 0;
-				color: $color-theme-d;
-				font-size: 32px;
+				.icon-mini {
+					position: absolute;
+					left: 0;
+					top: 0;
+					color: $color-theme-d;
+					font-size: 32px;
+				}
 			}
 		}
 
