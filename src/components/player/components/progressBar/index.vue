@@ -33,9 +33,6 @@
 	const progressRef = ref(null);
 	const totaProgressRef = ref(null);
 	const progressBtnRef = ref(null);
-	/* 进度条按钮宽度 */
-
-	/* 进度条按钮宽度 */
 
 	/* 进度条真实走动偏移量 */
 	const offset = ref(0);
@@ -73,7 +70,9 @@
 
 	/* 手指点击进度条 */
 	function changeProgress(e) {
-		offset.value = Math.max(0, Math.min(e.offsetX, maxWidth.value));
+		const delta = progressBtnRef.value.firstChild.offsetWidth / 2;
+		/* layerX 是相对于定位父级进行计算 | offsetX 是相对于自身内容区进行计算 */
+		offset.value = Math.max(0, Math.min(e.layerX - delta, maxWidth.value));
 		emitProgress('progressChanged');
 	}
 
@@ -106,10 +105,6 @@
 		const progress = offset.value / maxWidth.value;
 		emit(event, progress);
 	}
-
-	/*  */
-
-	/*  */
 
 	onMounted(() => {
 		maxWidth.value =
