@@ -47,6 +47,16 @@ const actions = {
 		commit('setCurPlayList', list);
 	},
 
+	/* 获取当前点击歌曲的索引 */
+	getCurPlayIndex({ commit, state }, index) {
+		const playList = state.playList.slice();
+		const curPlayList = state.curPlayList.slice();
+		const song = playList[index];
+		const curIndex = findInd(curPlayList, song);
+		/* 设置播放歌曲的索引 */
+		commit('setCurPlayIndex', curIndex);
+	},
+
 	/* 顺序播放列表 */
 	playSequenceList({ commit }, list) {
 		/* 设置源歌曲播放列表 */

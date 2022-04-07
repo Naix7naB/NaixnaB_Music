@@ -1,7 +1,7 @@
 <template>
 	<transition name="list-fade">
-		<div class="mini-list" v-show="visible">
-			<div class="list-wrapper">
+		<div class="mini-list" v-show="visible" @click="hide">
+			<div class="list-wrapper" @click.stop>
 				<!-- 列表头部 -->
 				<div class="list-header">
 					<h1 class="title">
@@ -10,6 +10,8 @@
 							<i class="icon" :class="modeIcon"></i>
 							<span class="text">{{ modeText }}</span>
 						</div>
+						<!-- 空白占位 -->
+						<span class="white-space"></span>
 						<!-- 清空列表 -->
 						<span class="clear" @click="clearList">
 							<i class="icon-clear"></i>
@@ -41,7 +43,7 @@
 						</li>
 					</transition-group>
 				</Scroll>
-				<div class="list-footer" @click="hide">
+				<div class="list-footer" @click.stop="hide">
 					<span>关闭</span>
 				</div>
 			</div>
@@ -64,6 +66,7 @@
 	const flag = ref(true);
 
 	const currentSong = computed(() => store.getters.currentSong);
+	const curPlayIndex = computed(() => store.state.curPlayIndex);
 	const curPlayList = computed(() => store.state.curPlayList);
 	const playList = computed(() => store.state.playList);
 
@@ -86,14 +89,14 @@
 	function playSong(e) {
 		const target = e.path.filter((item) => item.className === 'item')[0];
 		const index = target.dataset.index;
-		store.commit('setCurPlayIndex', index);
+		store.dispatch('getCurPlayIndex', index);
 		scrollToCurSong();
 	}
 
 	/* 滚动到当前播放歌曲 */
 	function scrollToCurSong() {
 		const song = currentSong.value;
-		const index = curPlayList.value.findIndex((item) => item.id === song.id);
+		const index = playList.value.findIndex((item) => item.id === song.id);
 		/* 普通节点 listRef.value.children[index] */
 		const target = listRef.value.$el.children[index];
 		listScrollRef.value.scroll.scrollToElement(target, 500);
@@ -102,9 +105,10 @@
 	/* 删除一首歌曲 */
 	function removeSong(song) {
 		if (!flag.value) return;
+		/* 关闭节流阀 */
 		flag.value = false;
 		store.dispatch('removeSong', song);
-		/* 等待 1.5s 开启节流阀 */
+		/* 等待 0.5s 开启节流阀 */
 		setTimeout(() => {
 			flag.value = true;
 		}, 500);
@@ -192,9 +196,11 @@
 						}
 					}
 
-					.clear {
+					.white-space {
 						flex: 1;
-						text-align: right;
+					}
+
+					.clear {
 						@include extend-click();
 
 						.icon-clear {

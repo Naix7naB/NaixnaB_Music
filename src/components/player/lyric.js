@@ -1,6 +1,6 @@
 import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { getSongLyric } from '@/service/songApi';
+import { getSongLyric } from '@/service/song';
 import { formatLyric } from '@/utils';
 
 export default (curTime) => {

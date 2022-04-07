@@ -43,7 +43,7 @@ export default () => {
 	onMounted(() => {
 		const mode = storage.getLocal('__mode__');
 		/* 如果本地有 mode值 则使用本地的值 */
-		if (mode) store.commit('setPlayMode', mode);
+		if (mode) store.dispatch('changeMode', mode);
 	});
 
 	return {

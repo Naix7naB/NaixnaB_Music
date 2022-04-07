@@ -23,18 +23,21 @@
 	const props = defineProps(['songs']);
 
 	const playList = computed(() => store.state.playList);
+	const curPlayList = computed(() => store.state.curPlayList);
+
 	/* 点击歌单中的歌曲 播放歌曲 并把歌单的歌曲添加到播放列表中 */
 	function playSong(e) {
 		let curNode = e.target;
 		while (curNode.className !== 'item') {
 			curNode = curNode.parentElement;
 		}
-		const curIndex = curNode.dataset.index / 1;
+		const index = curNode.dataset.index / 1;
 		if (!playList.value.length || playList.value !== props.songs) {
 			/* 当播放列表没有歌曲时 或 当前播放列表跟当前点击的歌曲所在的歌单不一致时(歌单与歌单之间) */
 			store.dispatch('addWholeList', props.songs);
 		}
-		store.commit('setCurPlayIndex', curIndex);
+		/* 处理是随机播放时的情况 */
+		store.dispatch('getCurPlayIndex', index);
 	}
 </script>
 
