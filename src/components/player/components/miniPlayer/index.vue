@@ -1,26 +1,30 @@
 <template>
 	<transition name="mini">
 		<!-- mini播放器 -->
-		<div class="mini-player" v-show="!playerStyle">
+		<div class="mini-player" v-show="!playerStyle" @click="showFull">
 			<!-- CD转盘 歌曲图片 -->
-			<div class="cd-wrapper" @click="showFull">
+			<div class="cd-wrapper">
 				<div class="cd" :style="cdStyle">
 					<img :src="currentSong.al.picUrl" />
 				</div>
 			</div>
 			<!-- 歌曲信息 -->
-			<div class="slider-wrapper" @click="showFull">
+			<div class="slider-wrapper">
 				<h2 class="name">{{ currentSong.name }}</h2>
 				<p class="desc">{{ handleName(currentSong) }}</p>
 			</div>
 			<!-- 播放按钮 进度条 -->
 			<div class="control">
 				<ProgressCircle :radius="32" :progress="progress">
-					<i class="icon-mini" :class="playIconMini" @click="togglePlay"></i>
+					<i
+						class="icon-mini"
+						:class="playIconMini"
+						@click.stop="togglePlay"
+					></i>
 				</ProgressCircle>
 			</div>
 			<!-- 歌曲播放列表 -->
-			<div class="control" @click="showMiniList">
+			<div class="control" @click.stop="showMiniList">
 				<i class="icon-playlist"></i>
 			</div>
 			<MiniList ref="miniListRef"></MiniList>

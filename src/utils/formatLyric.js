@@ -8,6 +8,7 @@ export default (lyric) => {
 			if (temp.length === 1) {
 				prev[0] = { content: '**** 该歌曲不支持歌词滚动 ****' };
 				obj.content = temp[0].trim();
+				prev.push(obj);
 			} else {
 				/* 歌词不为空 */
 				if (temp[1].trim()) {
@@ -19,9 +20,9 @@ export default (lyric) => {
 					/* 处理返回的格式 */
 					obj.time = timeVal;
 					obj.content = temp[1].trim();
+					prev.push(obj);
 				}
 			}
-			prev.push(obj);
 		}
 		return prev;
 	}, []);

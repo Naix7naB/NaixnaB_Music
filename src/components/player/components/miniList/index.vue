@@ -1,6 +1,6 @@
 <template>
 	<transition name="list-fade">
-		<div class="mini-list" v-show="visible" @click="hide">
+		<div class="mini-list" v-show="visible" @click.stop="hide">
 			<div class="list-wrapper" @click.stop>
 				<!-- 列表头部 -->
 				<div class="list-header">
@@ -13,7 +13,7 @@
 						<!-- 空白占位 -->
 						<span class="white-space"></span>
 						<!-- 清空列表 -->
-						<span class="clear" @click="clearList">
+						<span class="clear" @click="showConfirm">
 							<i class="icon-clear"></i>
 						</span>
 					</h1>
@@ -23,7 +23,7 @@
 					<transition-group
 						tag="ul"
 						ref="listRef"
-						@click="playSong"
+						@click.stop="playSong"
 						name="list"
 					>
 						<li
@@ -33,7 +33,10 @@
 							:data-index="index"
 						>
 							<i class="current" :class="curPlayIcon(song)"></i>
-							<span class="text">{{ song.name }}</span>
+							<div class="text">
+								<span class="title">{{ song.name }}</span> -
+								<span class="name">{{ handleName(song) }}</span>
+							</div>
 							<span class="favorite" @click.stop="toggleFavorite(song)">
 								<i :class="favoriteIcon(song)"></i>
 							</span>
@@ -49,26 +52,33 @@
 			</div>
 		</div>
 	</transition>
+	<Confirm
+		ref="confirmRef"
+		text="是否清空播放列表"
+		@confirm="clearList"
+	></Confirm>
 </template>
 
 <script setup>
 	import { computed, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
+	import { handleName } from '@/utils';
 	import Mode from '@/components/player/mode';
 	import Favorite from '@/components/player/favorite';
 	import Scroll from '@/components/base/scroll';
+	import Confirm from '@/components/base/confirm';
 
 	const store = useStore();
 	const listScrollRef = ref(null);
 	const listRef = ref(null);
+	const confirmRef = ref(null);
 	const visible = ref(false);
 	/* 节流阀 */
 	const flag = ref(true);
 
 	const currentSong = computed(() => store.getters.currentSong);
-	const curPlayIndex = computed(() => store.state.curPlayIndex);
-	const curPlayList = computed(() => store.state.curPlayList);
 	const playList = computed(() => store.state.playList);
+	const curPlayIndex = computed(() => store.state.curPlayIndex);
 
 	const { modeIcon, modeText, toggleMode } = Mode();
 	const { favoriteIcon, toggleFavorite } = Favorite();
@@ -112,6 +122,11 @@
 		setTimeout(() => {
 			flag.value = true;
 		}, 500);
+	}
+
+	/* 弹窗提醒 */
+	function showConfirm() {
+		confirmRef.value.show();
 	}
 
 	/* 清空播放列表 */
@@ -231,9 +246,17 @@
 
 					.text {
 						flex: 1;
+						padding-right: 40px;
 						@include no-wrap();
-						font-size: $font-size-medium;
 						color: $color-text-l;
+
+						.title {
+							font-size: $font-size-medium;
+						}
+
+						.name {
+							font-size: $font-size-small-s;
+						}
 					}
 
 					.favorite {

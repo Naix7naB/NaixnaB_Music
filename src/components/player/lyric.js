@@ -11,6 +11,7 @@ export default (curTime) => {
 	const lyricScrollRef = ref(null);
 	const lyricRef = ref(null);
 	const lyric = ref(null);
+	const curLyric = ref(null);
 	const curLyricIndex = ref(0);
 
 	const currentSong = computed(() => store.getters.currentSong);
@@ -58,10 +59,9 @@ export default (curTime) => {
 	function currentIndex() {
 		const lyricVal = lyric.value;
 		const nowTime = curTime.value;
-
 		let index = 0;
 		/* 如果没有歌词 或 歌词不支持滚动 */
-		if (!lyricVal.length || !lyricVal[index].time) return;
+		if (!lyricVal.length || lyricVal[index].time === '') return;
 		for (let i = 0; i < lyricVal.length; i++) {
 			if (nowTime >= lyricVal[lyricVal.length - 1].time) {
 				/* 处理歌词到达最后一句时 */
@@ -75,6 +75,7 @@ export default (curTime) => {
 		}
 
 		curLyricIndex.value = index;
+		curLyric.value = lyricVal[index].content;
 	}
 
 	/* 开启定时器 */
@@ -83,13 +84,14 @@ export default (curTime) => {
 		const nowTime = curTime.value;
 		let index = curLyricIndex.value;
 		/* 如果没有歌词 或 歌词不支持滚动 */
-		if (!lyricVal.length || !lyricVal[index].time) return;
+		if (!lyricVal.length || lyricVal[index].time === '') return;
 		/* 如果是最后一句歌词 就不再开启定时器 */
 		if (index === lyricVal.length - 1) return;
 		/* 定时器延时时间为 = 下一句歌词时间 - 当前播放时间 (单位: ms) */
 		let delay = (lyricVal[index + 1].time - nowTime) * 1000;
 		timer = setTimeout(() => {
 			curLyricIndex.value = ++index;
+			curLyric.value = lyricVal[index].content;
 			start();
 		}, delay);
 	}
@@ -100,11 +102,12 @@ export default (curTime) => {
 	}
 
 	return {
+		lyricScrollRef,
+		lyricRef,
 		lyric,
+		curLyric,
 		curLyricIndex,
 		play,
 		stop,
-		lyricScrollRef,
-		lyricRef,
 	};
 };

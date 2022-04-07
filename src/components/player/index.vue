@@ -27,7 +27,7 @@
 						</div>
 						<!-- 歌词 -->
 						<div class="playing-lyric-wrapper">
-							<div class="playing-lyric">歌词占位</div>
+							<div class="playing-lyric">{{ curLyric }}</div>
 						</div>
 					</div>
 					<Scroll class="middle-r" :style="middleRStyle" ref="lyricScrollRef">
@@ -142,8 +142,15 @@
 	const { modeIcon, toggleMode } = Mode();
 	const { favoriteIcon, toggleFavorite } = Favorite();
 	const { toggleMiddle, middleLStyle, middleRStyle } = Middle();
-	const { lyric, curLyricIndex, play, stop, lyricScrollRef, lyricRef } =
-		Lyric(curTime);
+	const {
+		lyric,
+		curLyric,
+		curLyricIndex,
+		play,
+		stop,
+		lyricScrollRef,
+		lyricRef,
+	} = Lyric(curTime);
 	/******************************************************************/
 
 	/* CD转盘动画 */
@@ -336,13 +343,13 @@
 			// 顶部
 			.top {
 				position: relative;
-				margin: 25px 0;
+				margin-bottom: 50px;
 
 				// 返回按钮
 				.back {
 					position: absolute;
 					top: 0;
-					left: 16px;
+					left: 6px;
 					z-index: 50;
 
 					.icon-back {
@@ -377,7 +384,7 @@
 				position: fixed;
 				width: 100%;
 				top: 120px;
-				bottom: 155px;
+				bottom: 170px;
 				white-space: nowrap;
 				font-size: 0;
 
