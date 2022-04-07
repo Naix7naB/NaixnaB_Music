@@ -13,7 +13,7 @@
 <script setup>
 	import { onMounted, ref } from 'vue';
 	import { useRouter } from 'vue-router';
-	import { getAllSinger } from '@/service/singerApi.js';
+	import { getAllSinger } from '@/service/singer.js';
 	import { storage } from '@/utils';
 	import SingerList from '@/components/singerList';
 

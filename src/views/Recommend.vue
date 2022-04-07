@@ -35,7 +35,7 @@
 
 <script setup>
 	import { computed, onMounted, reactive } from 'vue';
-	import { getBanner, getRecommendList } from '@/service/recommendApi';
+	import { getBanner, getRecommendList } from '@/service/recommend';
 	import Slider from '@/components/base/slider';
 	import Scroll from '@/components/base/scroll';
 

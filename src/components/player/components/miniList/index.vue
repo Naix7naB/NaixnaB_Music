@@ -18,7 +18,12 @@
 				</div>
 				<!-- 列表歌曲 -->
 				<Scroll class="list-content" ref="listScrollRef" :probeType="2">
-					<ul ref="listRef" @click="playSong">
+					<transition-group
+						tag="ul"
+						ref="listRef"
+						@click="playSong"
+						name="list"
+					>
 						<li
 							class="item"
 							v-for="(song, index) in playList"
@@ -34,7 +39,7 @@
 								<i class="icon-delete"></i>
 							</span>
 						</li>
-					</ul>
+					</transition-group>
 				</Scroll>
 				<div class="list-footer" @click="hide">
 					<span>关闭</span>
@@ -89,7 +94,8 @@
 	function scrollToCurSong() {
 		const song = currentSong.value;
 		const index = curPlayList.value.findIndex((item) => item.id === song.id);
-		const target = listRef.value.children[index];
+		/* 普通节点 listRef.value.children[index] */
+		const target = listRef.value.$el.children[index];
 		listScrollRef.value.scroll.scrollToElement(target, 500);
 	}
 
@@ -101,7 +107,7 @@
 		/* 等待 1.5s 开启节流阀 */
 		setTimeout(() => {
 			flag.value = true;
-		}, 1500);
+		}, 500);
 	}
 
 	/* 清空播放列表 */
