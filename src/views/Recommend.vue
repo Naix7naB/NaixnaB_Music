@@ -35,7 +35,7 @@
 	<!-- vue3 路由组件添加 transition/keep-alive -->
 	<router-view v-slot="{ Component }">
 		<transition name="slide" appear>
-			<component :is="Component" :albumDetail="albumDetail" />
+			<component :is="Component" :detailObj="albumDetail" />
 		</transition>
 	</router-view>
 </template>
@@ -54,7 +54,7 @@
 		banners: [],
 		playLists: [],
 	});
-	const albumDetail = ref(null);
+	const albumDetail = ref({});
 
 	const isLoading = computed(
 		() => !recommend.banners.length || !recommend.playLists.length

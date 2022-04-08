@@ -5,7 +5,7 @@
 	<!-- vue3 路由组件添加 transition/keep-alive -->
 	<router-view v-slot="{ Component }">
 		<transition name="slide" appear>
-			<component :is="Component" :singerDetail="singerDetail" />
+			<component :is="Component" :detailObj="singerDetail" />
 		</transition>
 	</router-view>
 </template>
