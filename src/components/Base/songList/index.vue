@@ -6,6 +6,9 @@
 			:key="item"
 			:data-index="index"
 		>
+			<div class="num" :style="{ fontSize: index < 99 ? '16px' : '14px' }">
+				{{ index + 1 }}
+			</div>
 			<div class="content">
 				<h2 class="name">{{ item.name }}</h2>
 				<p class="desc">{{ handleName(item) }}</p>
@@ -27,11 +30,8 @@
 
 	/* 点击歌单中的歌曲 播放歌曲 并把歌单的歌曲添加到播放列表中 */
 	function playSong(e) {
-		let curNode = e.target;
-		while (curNode.className !== 'item') {
-			curNode = curNode.parentElement;
-		}
-		const index = curNode.dataset.index / 1;
+		const target = e.path.filter((item) => item.className === 'item')[0];
+		const index = target.dataset.index / 1;
 		if (!playList.value.length || playList.value !== props.songs) {
 			/* 当播放列表没有歌曲时 或 当前播放列表跟当前点击的歌曲所在的歌单不一致时(歌单与歌单之间) */
 			store.dispatch('addWholeList', props.songs);
@@ -48,12 +48,19 @@
 			align-items: center;
 			box-sizing: border-box;
 			height: 64px;
-			font-size: $font-size-medium;
+
+			.num {
+				flex: 0 0 30px;
+				text-align: center;
+				color: $color-text-l;
+			}
 
 			.content {
 				flex: 1;
+				padding-left: 8px;
 				line-height: 20px;
 				overflow: hidden;
+				font-size: $font-size-medium;
 
 				.name {
 					@include no-wrap();

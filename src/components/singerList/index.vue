@@ -8,7 +8,7 @@
 				:key="group.tag"
 				:data-gindex="index"
 			>
-				<h2 class="title">{{ group.tag }}</h2>
+				<h2 class="title" @click.stop>{{ group.tag }}</h2>
 				<ul>
 					<li
 						class="item"
@@ -58,6 +58,7 @@
 	const props = defineProps({
 		singerList: {
 			type: [Array, Object],
+			default: [],
 		},
 	});
 	const { groupRef, onScroll, curTag, curIndex, fixedStyle } =
@@ -67,19 +68,13 @@
 
 	/* 点击歌手 获取当前歌手的详细信息 */
 	function getSingerDetail(e) {
-		let curNode = e.target;
-		const I = {};
-		while (1) {
-			if (curNode.className === 'item') {
-				I.sindex = curNode.dataset.sindex;
-			} else if (curNode.className === 'group') {
-				I.gindex = curNode.dataset.gindex;
-				break;
-			}
-			curNode = curNode.parentNode;
-		}
+		const target = e.path.filter((item) => {
+			return item.className === 'item' || item.className === 'group';
+		});
+		const sindex = target[0].dataset.sindex;
+		const gindex = target[1].dataset.gindex;
 		// 获取当前点击的歌手id
-		const item = props.singerList[I.gindex].singers[I.sindex];
+		const item = props.singerList[gindex].singers[sindex];
 		emit('toDetail', item);
 	}
 </script>

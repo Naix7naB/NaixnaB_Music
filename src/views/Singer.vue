@@ -20,6 +20,7 @@
 	const router = useRouter();
 	const singerList = ref([]);
 	const singerDetail = ref({});
+
 	/* 跳转相应歌手的详细页 */
 	function toDetail(item) {
 		singerDetail.value = {

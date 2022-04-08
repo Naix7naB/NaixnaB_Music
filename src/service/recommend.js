@@ -13,3 +13,22 @@ export function getRecommendList() {
 		limit: 30,
 	});
 }
+
+/* 获取歌单详细 */
+export async function getAlbumMusic(item) {
+	const { playlist } = await get('/playlist/detail', {
+		id: item.id,
+	});
+	const trackIds = playlist.trackIds.map((item) => Number(item.id));
+	let musicIds = [];
+	if (trackIds.length > 50) musicIds = trackIds.slice(0, 50);
+	const params = musicIds.join(',');
+	return getSongDetail(params);
+}
+
+/* 获取歌曲详细 */
+function getSongDetail(params) {
+	return get('/song/detail', {
+		ids: params,
+	});
+}

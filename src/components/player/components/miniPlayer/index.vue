@@ -4,27 +4,29 @@
 		<div class="mini-player" v-show="!playerStyle" @click="showFull">
 			<!-- 右边歌曲信息 -->
 			<div
+				ref="itemRef"
 				class="mini-player-l"
-				@touchstart="touchStart"
-				@touchmove="touchMove"
-				@touchend="touchEnd"
+				:style="miniSlideStyle"
+				@touchstart="touchSlideStart"
+				@touchmove="touchSlideMove"
+				@touchend="touchSlideEnd"
 			>
 				<div
 					class="item"
-					v-for="i in 3"
-					:key="i"
-					:class="{ left: i === 1, right: i === 3 }"
+					v-for="(song, idx) in songList"
+					:key="idx"
+					:class="{ left: idx === 0, middle: idx === 1, right: idx === 2 }"
 				>
 					<!-- CD转盘 歌曲图片 -->
 					<div class="cd-wrapper">
 						<div class="cd" :style="cdStyle">
-							<img :src="currentSong.al.picUrl" />
+							<img :src="song.al.picUrl" />
 						</div>
 					</div>
 					<!-- 歌曲信息 -->
 					<div class="slider-wrapper">
-						<h2 class="name">{{ currentSong.name }}</h2>
-						<p class="desc">{{ handleName(currentSong) }}</p>
+						<h2 class="name">{{ song.name }}</h2>
+						<p class="desc">{{ handleName(song) }}</p>
 					</div>
 				</div>
 			</div>
@@ -54,6 +56,7 @@
 	import { computed, ref } from 'vue';
 	import { useStore } from 'vuex';
 	import { handleName } from '@/utils';
+	import MiniSlide from './miniSlide';
 	import ProgressCircle from '../progressCircle';
 	import MiniList from '../miniList';
 
@@ -76,14 +79,17 @@
 	const emit = defineEmits(['slidePrev', 'slideNext']);
 
 	const miniListRef = ref(null);
-	const touch = {
-		x1: 0,
-		x2: 0,
-		delta: 0,
-	};
 
-	const currentSong = computed(() => store.getters.currentSong);
 	const playState = computed(() => store.state.playState);
+
+	const {
+		itemRef,
+		miniSlideStyle,
+		songList,
+		touchSlideStart,
+		touchSlideMove,
+		touchSlideEnd,
+	} = MiniSlide(emit);
 
 	/* mini 播放/暂停 图标 */
 	const playIconMini = computed(() => {
@@ -98,28 +104,6 @@
 	/* 展示 mini播放列表 */
 	function showMiniList() {
 		miniListRef.value.show();
-	}
-
-	/* 滑动开始 */
-	function touchStart(e) {
-		touch.x1 = e.touches[0].pageX;
-	}
-
-	/* 滑动中 */
-	function touchMove(e) {
-		touch.x2 = e.touches[0].pageX;
-		touch.delta = touch.x2 - touch.x1;
-	}
-
-	/* 滑动结束 */
-	function touchEnd() {
-		if (touch.delta > 0 && touch.delta > 40) {
-			/* 向右滑 切换上一首 */
-			emit('slidePrev');
-		} else if (touch.delta < 0 && touch.delta < -40) {
-			/* 向左滑 切换下一首 */
-			emit('slideNext');
-		}
 	}
 </script>
 
@@ -194,6 +178,10 @@
 
 				&.left {
 					transform: translateX(-100%);
+				}
+
+				&.middle {
+					transform: translateX(0);
 				}
 
 				&.right {

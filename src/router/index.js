@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const Recommend = () => import('@/views/Recommend.vue');
+const AlbumDetail = () => import('@/views/AlbumDetail.vue');
 const Singer = () => import('@/views/Singer.vue');
 const SingerDetail = () => import('@/views/SingerDetail.vue');
 const TopList = () => import('@/views/TopList.vue');
@@ -14,6 +15,12 @@ const routes = [
 	{
 		path: '/recommend',
 		component: Recommend,
+		children: [
+			{
+				path: ':id',
+				component: AlbumDetail,
+			},
+		],
 	},
 	{
 		path: '/singer',

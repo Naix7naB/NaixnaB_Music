@@ -1,5 +1,5 @@
 <template>
-	<div class="singer-detail">
+	<div class="album-detail">
 		<MusicList
 			:listTitle="listTitle"
 			:picUrl="picUrl"
@@ -12,26 +12,26 @@
 <script setup>
 	import { computed, onMounted, ref } from 'vue';
 	import { useRoute, useRouter } from 'vue-router';
-	import { getSingerMusic } from '@/service/singer';
+	import { getAlbumMusic } from '@/service/recommend';
 	import { storage } from '@/utils';
 	import MusicList from '@/components/musicList';
 
 	const router = useRouter();
 	const route = useRoute();
-	const props = defineProps(['singerDetail']);
+	const props = defineProps(['albumDetail']);
 	const isLoading = ref(true);
 	const songs = ref([]);
 
-	/* 重新处理歌手详细的数据 */
+	/* 重新处理歌单详细的数据 */
 	const computedData = computed(() => {
 		let result = null;
-		let data = props.singerDetail;
-		if (data.id) {
+		let data = props.albumDetail;
+		if (data) {
 			/* props的值存在时 */
 			result = data;
 		} else {
 			/* props的值不存在时 */
-			const cached = storage.getLocal('__singerDetail__');
+			const cached = storage.getLocal('__albumDetail__');
 			if (cached && cached.id === route.params.id / 1) {
 				result = cached;
 			}
@@ -55,9 +55,9 @@
 			});
 			return;
 		} else {
-			/* 获取歌手歌曲 */
-			getSingerMusic(data).then((res) => {
-				songs.value = res.hotSongs;
+			/* 获取歌单歌曲 */
+			getAlbumMusic(data).then((res) => {
+				songs.value = res.songs;
 				isLoading.value = false;
 			});
 		}
@@ -65,7 +65,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.singer-detail {
+	.album-detail {
 		position: fixed;
 		top: 0;
 		left: 0;

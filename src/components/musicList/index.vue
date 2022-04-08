@@ -214,7 +214,7 @@
 			z-index: 0;
 
 			.song-list-wrapper {
-				padding: 20px 30px;
+				padding: 20px;
 				min-height: 350px;
 				background: $color-background;
 			}
