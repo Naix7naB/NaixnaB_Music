@@ -27,8 +27,11 @@ export async function getAlbumMusic(item) {
 }
 
 /* 获取歌曲详细 */
-function getSongDetail(params) {
-	return get('/song/detail', {
+async function getSongDetail(params) {
+	const res = await get('/song/detail', {
 		ids: params,
 	});
+	return {
+		hotSongs: res.songs,
+	};
 }

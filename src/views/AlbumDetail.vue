@@ -57,7 +57,7 @@
 		} else {
 			/* 获取歌单歌曲 */
 			getAlbumMusic(data).then((res) => {
-				songs.value = res.songs;
+				songs.value = res.hotSongs;
 				isLoading.value = false;
 			});
 		}
