@@ -26,7 +26,7 @@
 		singerDetail.value = {
 			id: item.id,
 			name: item.name,
-			picUrl: item.picUrl,
+			picUrl: item.picUrl || item.coverImgUrl,
 		};
 		/* 缓存 singerDetail数据 */
 		storage.setLocal('__singerDetail__', singerDetail.value);

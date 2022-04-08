@@ -55,6 +55,7 @@ const actions = {
 		const curIndex = findInd(curPlayList, song);
 		/* 设置播放歌曲的索引 */
 		commit('setCurPlayIndex', curIndex);
+		commit('setPlayerStyle', 1);
 	},
 
 	/* 顺序播放列表 */

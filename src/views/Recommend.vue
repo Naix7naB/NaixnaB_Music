@@ -73,7 +73,7 @@
 		albumDetail.value = {
 			id: item.id,
 			name: item.name,
-			picUrl: item.coverImgUrl,
+			picUrl: item.picUrl || item.coverImgUrl,
 		};
 		/* 缓存 albumDetail数据 */
 		storage.setLocal('__albumDetail__', albumDetail.value);

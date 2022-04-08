@@ -364,7 +364,7 @@
 				}
 
 				.title {
-					width: 70%;
+					width: 60%;
 					margin: 0 auto;
 					line-height: 40px;
 					text-align: center;
@@ -374,8 +374,11 @@
 				}
 
 				.subtitle {
+					width: 70%;
+					margin: 0 auto;
 					line-height: 20px;
 					text-align: center;
+					@include no-wrap();
 					font-size: $font-size-medium;
 					color: $color-text;
 				}
@@ -439,6 +442,7 @@
 						.playing-lyric {
 							height: 20px;
 							line-height: 20px;
+							@include no-wrap();
 							font-size: $font-size-medium;
 							color: $color-text-l;
 						}
