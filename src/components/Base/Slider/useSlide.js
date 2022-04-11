@@ -8,7 +8,7 @@ export function useSlide() {
 	const slide = ref(null);
 	const currentPageIndex = ref(0);
 
-	function init() {
+	onMounted(() => {
 		// 需要操作的 DOM
 		slide.value = new BScroll(slideRef.value, {
 			// 配置项
@@ -24,10 +24,6 @@ export function useSlide() {
 		slide.value.on('slideWillChange', (page) => {
 			currentPageIndex.value = page.pageX;
 		});
-	}
-
-	onMounted(() => {
-		init();
 	});
 
 	onUnmounted(() => {

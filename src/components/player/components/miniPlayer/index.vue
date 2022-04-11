@@ -15,7 +15,7 @@
 					class="item"
 					v-for="(song, idx) in songList"
 					:key="idx"
-					:class="{ left: idx === 0, middle: idx === 1, right: idx === 2 }"
+					:class="handleClassName(idx)"
 				>
 					<!-- CD转盘 歌曲图片 -->
 					<div class="cd-wrapper">
@@ -104,6 +104,21 @@
 	/* 展示 mini播放列表 */
 	function showMiniList() {
 		miniListRef.value.show();
+	}
+
+	/*  */
+	function handleClassName(idx) {
+		if (songList.value.length < 3) {
+			return {
+				middle: true,
+			};
+		} else {
+			return {
+				left: idx === 0,
+				middle: idx === 1,
+				right: idx === 2,
+			};
+		}
 	}
 </script>
 

@@ -23,7 +23,7 @@
 
 	const props = defineProps({
 		banners: {
-			type: [Array, Object],
+			type: Array,
 			require: true,
 		},
 	});
@@ -61,6 +61,7 @@
 			bottom: 12px;
 			line-height: 12px;
 			transform: translateX(-50%);
+			white-space: nowrap;
 
 			.dot {
 				display: inline-block;

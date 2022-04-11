@@ -31,13 +31,13 @@
 				</div>
 			</div>
 		</Scroll>
+		<!-- vue3 路由组件添加 transition/keep-alive -->
+		<router-view v-slot="{ Component }">
+			<transition name="slide" appear>
+				<component :is="Component" :detailObj="albumDetail" />
+			</transition>
+		</router-view>
 	</div>
-	<!-- vue3 路由组件添加 transition/keep-alive -->
-	<router-view v-slot="{ Component }">
-		<transition name="slide" appear>
-			<component :is="Component" :detailObj="albumDetail" />
-		</transition>
-	</router-view>
 </template>
 
 <script setup>
@@ -45,13 +45,14 @@
 	import { useRouter } from 'vue-router';
 	import { storage } from '@/utils';
 	import { getBanner, getRecommendList } from '@/service/recommend';
+	import pic from '@/assets/images/lazy.jpg';
 	import Slider from '@/components/base/slider';
 	import Scroll from '@/components/base/scroll';
 
 	const router = useRouter();
 
 	const recommend = reactive({
-		banners: [],
+		banners: [{ bannerId: 0, pic: pic }],
 		playLists: [],
 	});
 	const albumDetail = ref({});

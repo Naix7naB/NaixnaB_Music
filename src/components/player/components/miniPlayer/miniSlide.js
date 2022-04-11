@@ -24,20 +24,24 @@ export default (emit) => {
 		const song = currentSong.value;
 		const index = list.findIndex((item) => item.id === song.id);
 		const songlist = [];
-		if (index === 0) {
-			/* 如果当前歌曲是第一首 */
-			songlist[0] = list[list.length - 1];
-			songlist[1] = list[index];
-			songlist[2] = list[index + 1];
-		} else if (index === list.length - 1) {
-			/* 如果当前歌曲是最后一首 */
-			songlist[0] = list[index - 1];
-			songlist[1] = list[index];
-			songlist[2] = list[0];
+		if (list.length < 3) {
+			songlist.push(song);
 		} else {
-			songlist[0] = list[index - 1];
-			songlist[1] = list[index];
-			songlist[2] = list[index + 1];
+			if (index === 0) {
+				/* 如果当前歌曲是第一首 */
+				songlist[0] = list[list.length - 1];
+				songlist[1] = list[index];
+				songlist[2] = list[index + 1];
+			} else if (index === list.length - 1) {
+				/* 如果当前歌曲是最后一首 */
+				songlist[0] = list[index - 1];
+				songlist[1] = list[index];
+				songlist[2] = list[0];
+			} else {
+				songlist[0] = list[index - 1];
+				songlist[1] = list[index];
+				songlist[2] = list[index + 1];
+			}
 		}
 		return songlist;
 	}

@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import { useIntersectionObserver } from '@vueuse/core';
 import loading from '@/components/base/loading';
+import noResult from '@/components/base/noResult';
 import defaultImg from '@/assets/images/lazy.jpg';
 
 /* 创建插件 */
@@ -25,6 +26,7 @@ export const plugins = {
 				}
 			},
 		});
+
 		/* 图片懒加载指令 v-img-lazy */
 		app.directive('img-lazy', {
 			/* npm install @vueuse/core --save 安装 VueUse */
@@ -43,6 +45,24 @@ export const plugins = {
 						stop(); /* 拿到真实src后 停止监听 */
 					}
 				});
+			},
+		});
+
+		/* 无结果指令 */
+		app.directive('no-result', {
+			mounted(el, binding) {
+				const instance = createApp(noResult).mount(
+					document.createElement('div')
+				);
+				el.instance = instance;
+				if (binding.value) {
+					appendEl(el);
+				}
+			},
+			updated(el, binding) {
+				if (binding.value !== binding.oldValue) {
+					binding.value ? appendEl(el) : removeEl(el);
+				}
 			},
 		});
 	},

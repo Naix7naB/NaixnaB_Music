@@ -55,6 +55,9 @@
 	const maxTranslateY = ref(0);
 	const scrollY = ref(0);
 
+	const playList = computed(() => store.state.playList);
+
+	/* 背景图片样式 */
 	const bgImageStyle = computed(() => {
 		let zIndex = 0;
 		let scale = 1;
@@ -84,6 +87,7 @@
 		return flag;
 	});
 
+	/* 模糊层样式 */
 	const filterStyle = computed(() => {
 		let blur = 0;
 		if (scrollY.value > 0) {
@@ -94,9 +98,11 @@
 		};
 	});
 
+	/* 滚动样式 */
 	const scrollStyle = computed(() => {
 		return {
 			top: `${imageHeight.value}px`,
+			bottom: playList.value.length ? '60px' : 0,
 		};
 	});
 
@@ -105,12 +111,13 @@
 		router.back();
 	}
 
+	/* 正在滚动 */
 	function onScroll(pos) {
 		scrollY.value = -pos.y;
 	}
 
+	/* 顺序播放歌单歌曲 */
 	function sequencePlayAll() {
-		/* 顺序播放歌单歌曲 */
 		store.dispatch('playSequenceList', props.songs);
 	}
 

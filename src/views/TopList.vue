@@ -27,13 +27,13 @@
 				</li>
 			</ul>
 		</Scroll>
+		<!-- vue3 路由组件添加 transition/keep-alive -->
+		<router-view v-slot="{ Component }">
+			<transition name="slide" appear>
+				<component :is="Component" :detailObj="topListDetail" />
+			</transition>
+		</router-view>
 	</div>
-	<!-- vue3 路由组件添加 transition/keep-alive -->
-	<router-view v-slot="{ Component }">
-		<transition name="slide" appear>
-			<component :is="Component" :detailObj="topListDetail" />
-		</transition>
-	</router-view>
 </template>
 
 <script setup>
@@ -126,8 +126,8 @@
 
 						.icon {
 							width: 100px;
-							height: 110px;
-							border-radius: 8px;
+							height: 105px;
+							border-radius: 12px;
 							overflow: hidden;
 							vertical-align: middle;
 						}
@@ -139,9 +139,9 @@
 						flex-direction: column;
 						justify-content: center;
 						padding: 0 20px 0 10px;
-						height: 110px;
+						height: 100px;
 						overflow: hidden;
-						line-height: 26px;
+						line-height: 24px;
 						font-size: $font-size-medium;
 						color: $color-text-l;
 

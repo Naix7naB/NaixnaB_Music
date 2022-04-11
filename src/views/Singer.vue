@@ -1,13 +1,13 @@
 <template>
 	<div class="singer" v-load="!singerList.length">
 		<SingerList :singerList="singerList" @toDetail="toDetail"></SingerList>
+		<!-- vue3 路由组件添加 transition/keep-alive -->
+		<router-view v-slot="{ Component }">
+			<transition name="slide" appear>
+				<component :is="Component" :detailObj="singerDetail" />
+			</transition>
+		</router-view>
 	</div>
-	<!-- vue3 路由组件添加 transition/keep-alive -->
-	<router-view v-slot="{ Component }">
-		<transition name="slide" appear>
-			<component :is="Component" :detailObj="singerDetail" />
-		</transition>
-	</router-view>
 </template>
 
 <script setup>
