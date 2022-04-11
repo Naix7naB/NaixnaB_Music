@@ -7,6 +7,7 @@ const SingerDetail = () => import('@/views/SingerDetail.vue');
 const TopList = () => import('@/views/TopList.vue');
 const TopListDetail = () => import('@/views/TopListDetail.vue');
 const Search = () => import('@/views/Search.vue');
+const UserCenter = () => import('@/views/UserCenter.vue');
 
 const routes = [
 	{
@@ -46,6 +47,10 @@ const routes = [
 	{
 		path: '/search',
 		component: Search,
+	},
+	{
+		path: '/user',
+		component: UserCenter,
 	},
 ];
 
