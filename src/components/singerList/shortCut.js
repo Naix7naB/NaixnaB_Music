@@ -15,8 +15,12 @@ export function useShortCut(groupRef) {
 	/* 通过计算 触摸移动的距离 去获取当前的 index值 */
 	function onShortCutTouchMove(e) {
 		touch.y2 = e.touches[0].pageY;
+		const index = touch.index;
+		/* 每个字母的高度时 18px */
 		const deltaIndex = Math.floor((touch.y2 - touch.y1) / 18);
-		scrollTo(deltaIndex);
+		/* 在原来点击的索引值上进行偏移 */
+		const curIndex = index + deltaIndex;
+		scrollTo(curIndex);
 	}
 
 	/* 跳转至相应的元素 */

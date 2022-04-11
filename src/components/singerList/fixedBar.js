@@ -9,16 +9,7 @@ export function handleFixed(props) {
 
 	function onScroll(pos) {
 		posY.value = -pos.y;
-		for (let i = 0; i < heightRange.length - 1; i++) {
-			/* 判断当前位置处于哪个区间 */
-			if (posY.value >= heightRange[i] && posY.value < heightRange[i + 1]) {
-				curIndex.value = i;
-				diffHeight.value = heightRange[i + 1] - posY.value;
-			} else if (posY.value >= heightRange[heightRange.length - 1]) {
-				curIndex.value = heightRange.length - 1;
-				diffHeight.value = heightRange[heightRange.length - 1] - posY.value;
-			}
-		}
+		calcRange(posY.value);
 	}
 
 	/* 计算每个歌手组别的高度 如 'A'组的高度 */
@@ -32,6 +23,19 @@ export function handleFixed(props) {
 			heightRange[index] = _top;
 			_bottom += item.clientHeight;
 			index++;
+		}
+	}
+
+	/* 判断当前位置处于哪个区间 */
+	function calcRange(pos) {
+		for (let i = 0; i < heightRange.length - 1; i++) {
+			if (pos >= heightRange[i] && pos < heightRange[i + 1]) {
+				curIndex.value = i;
+				diffHeight.value = heightRange[i + 1] - pos;
+			} else if (pos >= heightRange[heightRange.length - 1]) {
+				curIndex.value = heightRange.length - 1;
+				diffHeight.value = heightRange[heightRange.length - 1] - pos;
+			}
 		}
 	}
 

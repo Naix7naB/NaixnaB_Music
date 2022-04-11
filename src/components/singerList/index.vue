@@ -50,9 +50,9 @@
 </template>
 
 <script setup>
-	import Scroll from '@/components/base/scroll';
 	import { handleFixed } from './fixedBar';
 	import { useShortCut } from './shortCut';
+	import Scroll from '@/components/base/scroll';
 
 	const emit = defineEmits(['toDetail']);
 	const props = defineProps({
@@ -61,6 +61,7 @@
 			default: [],
 		},
 	});
+
 	const { groupRef, onScroll, curTag, curIndex, fixedStyle } =
 		handleFixed(props);
 	const { rootRef, onShortCutTouchStart, onShortCutTouchMove } =

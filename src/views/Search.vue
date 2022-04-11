@@ -322,7 +322,7 @@
 									width: 20px;
 									min-height: 10px;
 									margin-left: 10px;
-									vertical-align: middle;
+									vertical-align: 0px;
 								}
 							}
 
