@@ -3,13 +3,11 @@ import axios from 'axios';
 // const baseURL = 'https://autumnfish.cn';
 
 /* 封装 axios发送请求 */
-export function get(url, params) {
+export function request(params) {
 	return new Promise((resolve, reject) => {
-		axios
-			// .get(`${baseURL}${url}`, {
-			.get(url, {
-				params,
-			})
+		axios({
+			...params,
+		})
 			.then((res) => {
 				resolve(res.data);
 			})

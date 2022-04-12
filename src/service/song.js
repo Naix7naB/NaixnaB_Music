@@ -1,25 +1,23 @@
-import { get } from './base.js';
+import { request } from './base.js';
 
 /* 获取歌曲的url */
 export function getSongUrl(song) {
-	checkMusic(song).then((res) => {
-		if (!res.success) return res.message;
-	});
-	return get('/song/url', {
-		id: song.id,
+	return request({
+		method: 'get',
+		url: '/song/url',
+		params: {
+			id: song.id,
+		},
 	});
 }
 
 /* 获取歌词 */
 export function getSongLyric(song) {
-	return get('/lyric', {
-		id: song.id,
-	});
-}
-
-/* 音乐是否可用 */
-function checkMusic(song) {
-	return get('/check/music', {
-		id: song.id,
+	return request({
+		method: 'get',
+		url: '/lyric',
+		params: {
+			id: song.id,
+		},
 	});
 }

@@ -10,7 +10,7 @@
 					v-model.trim="query"
 					:placeholder="_default.showKeyword"
 				/>
-				<i class="icon-dismiss" @click="clearQuery"></i>
+				<i class="icon-dismiss" @click="clearQuery" v-show="query"></i>
 			</div>
 		</div>
 		<!-- 历史记录 热搜榜 -->

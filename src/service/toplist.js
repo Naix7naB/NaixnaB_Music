@@ -1,6 +1,9 @@
-import { get } from './base.js';
+import { request } from './base.js';
 
 /* 获取所有榜单 */
 export function getTopList() {
-	return get('/toplist/detail');
+	return request({
+		method: 'get',
+		url: '/toplist/detail',
+	});
 }

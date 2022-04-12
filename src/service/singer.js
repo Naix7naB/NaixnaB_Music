@@ -1,4 +1,4 @@
-import { get } from './base.js';
+import { request } from './base.js';
 
 /* 获取全部歌手 (按字母排序) */
 export function getAllSinger() {
@@ -34,16 +34,24 @@ export function getAllSinger() {
 function getSinger(letter) {
 	// 返回的结果是一个 Promise对象
 	if (letter === '热') letter = -1;
-	return get('/artist/list', {
-		type: -1,
-		area: -1,
-		initial: letter,
+	return request({
+		method: 'get',
+		url: '/artist/list',
+		params: {
+			type: -1,
+			area: -1,
+			initial: letter,
+		},
 	});
 }
 
 /* 获取歌手单曲	 接口地址: /artists  必传 id */
 export function getSingerMusic(item) {
-	return get('/artists', {
-		id: item.id,
+	return request({
+		method: 'get',
+		url: '/artists',
+		params: {
+			id: item.id,
+		},
 	});
 }
