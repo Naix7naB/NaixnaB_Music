@@ -2,7 +2,7 @@
 	<transition name="mini">
 		<!-- mini播放器 -->
 		<div class="mini-player" v-show="!playerStyle" @click="showFull">
-			<!-- 右边歌曲信息 -->
+			<!-- 左边歌曲信息 -->
 			<div
 				ref="itemRef"
 				class="mini-player-l"
@@ -47,6 +47,7 @@
 					<i class="icon-playlist"></i>
 				</div>
 			</div>
+			<!-- mini 播放列表 -->
 			<MiniList ref="miniListRef"></MiniList>
 		</div>
 	</transition>

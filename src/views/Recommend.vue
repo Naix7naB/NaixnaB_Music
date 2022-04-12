@@ -52,7 +52,7 @@
 	const router = useRouter();
 
 	const recommend = reactive({
-		banners: [{ bannerId: 0, pic: pic }],
+		banners: [],
 		playLists: [],
 	});
 	const albumDetail = ref({});

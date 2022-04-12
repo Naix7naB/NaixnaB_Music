@@ -111,7 +111,7 @@
 	/* 监视搜索关键词 */
 	watch(query, async (newQuery) => {
 		/* 每次更新搜索词后自动滚动到最顶上 */
-		searchResultRef.value.scroll.scrollTo(0, 0);
+		// searchResultRef.value.scroll.scrollTo(0, 0);
 		if (!newQuery.trim()) return;
 		const { result } = await getSearchResult(newQuery);
 		searchResult.value = result.songs;
@@ -254,8 +254,7 @@
 			overflow: hidden;
 
 			.content-wrapper {
-				&::before,
-				&::after {
+				&::before {
 					content: '';
 					display: block;
 					width: 100%;
@@ -294,6 +293,7 @@
 					margin-top: 50px;
 
 					.title {
+						margin-bottom: 10px;
 						font-size: $font-size-medium-x;
 						color: $color-text-ll;
 					}
@@ -301,7 +301,7 @@
 					.item {
 						display: flex;
 						align-items: center;
-						margin-top: 20px;
+						padding: 10px 0;
 						line-height: 24px;
 
 						.num {

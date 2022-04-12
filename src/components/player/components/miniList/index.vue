@@ -103,12 +103,13 @@
 		scrollToCurSong();
 	}
 
-	/* 滚动到当前播放歌曲 */
+	/* 将当前播放歌曲滚动到列表中间 */
 	function scrollToCurSong() {
 		const song = currentSong.value;
 		const index = playList.value.findIndex((item) => item.id === song.id);
+		const currentIdx = index < 3 ? 0 : index - 3;
 		/* 普通节点 listRef.value.children[index] */
-		const target = listRef.value.$el.children[index];
+		const target = listRef.value.$el.children[currentIdx];
 		listScrollRef.value.scroll.scrollToElement(target, 500);
 	}
 

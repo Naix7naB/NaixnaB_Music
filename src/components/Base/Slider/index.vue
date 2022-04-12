@@ -1,5 +1,5 @@
 <template>
-	<div class="slider" ref="slideRef">
+	<div class="slider" ref="slideRef" v-if="banners.length">
 		<!-- 轮播图片 -->
 		<div class="slider-banner">
 			<div class="slider-page" v-for="item in banners" :key="item.bannerId">
@@ -27,6 +27,7 @@
 			require: true,
 		},
 	});
+
 	const { slideRef, currentPageIndex } = useSlide();
 </script>
 

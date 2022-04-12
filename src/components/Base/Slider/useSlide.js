@@ -8,7 +8,8 @@ export function useSlide() {
 	const slide = ref(null);
 	const currentPageIndex = ref(0);
 
-	onMounted(() => {
+	/* 初始化 slide */
+	function initSlider() {
 		// 需要操作的 DOM
 		slide.value = new BScroll(slideRef.value, {
 			// 配置项
@@ -24,6 +25,13 @@ export function useSlide() {
 		slide.value.on('slideWillChange', (page) => {
 			currentPageIndex.value = page.pageX;
 		});
+	}
+
+	onMounted(() => {
+		/* 等待dom加载完毕后 进行slide的初始化 */
+		setTimeout(() => {
+			initSlider();
+		}, 300);
 	});
 
 	onUnmounted(() => {
