@@ -7,7 +7,7 @@
 				<i class="icon-search"></i>
 				<input
 					class="input-inner"
-					v-model="query"
+					v-model.trim="query"
 					:placeholder="_default.showKeyword"
 				/>
 				<i class="icon-dismiss" @click="clearQuery"></i>
@@ -32,7 +32,7 @@
 					</ul>
 				</div>
 				<!-- 热搜榜 -->
-				<div class="search-hot" @click.stop="inputQuery">
+				<div class="search-hot" @click.stop="searchHot">
 					<h1 class="title">热搜榜</h1>
 					<ul>
 						<li
@@ -65,9 +65,9 @@
 			</div>
 		</Scroll>
 		<!-- 搜索列表 -->
-		<div class="search-result" v-if="query.trim()">
-			<Scroll class="result-wrapper" ref="searchResultRef">
-				<ul @click="pickItem">
+		<div class="search-result" v-show="query">
+			<Scroll class="result-wrapper" ref="searchResultRef" @click="searchSong">
+				<ul>
 					<li
 						class="item"
 						v-for="(item, idx) in searchResult"
@@ -107,37 +107,41 @@
 	const query = ref('');
 	const searchResult = ref([]);
 	const searchResultRef = ref(null);
+	let timer = null;
 
 	/* 监视搜索关键词 */
-	watch(query, async (newQuery) => {
+	watch(query, (newQuery) => {
 		/* 每次更新搜索词后自动滚动到最顶上 */
-		// searchResultRef.value.scroll.scrollTo(0, 0);
-		if (!newQuery.trim()) return;
-		const { result } = await getSearchResult(newQuery);
-		searchResult.value = result.songs;
+		searchResultRef.value.scroll.scrollTo(0, 0);
+		if (!newQuery) return;
+		/* 函数防抖 */
+		clearTimeout(timer);
+		timer = setTimeout(async () => {
+			const { result } = await getSearchResult(newQuery);
+			searchResult.value = result.songs;
+		}, 200);
 	});
 
-	/* 搜索当前点击内容 */
-	function inputQuery(e) {
-		const target = e.path.filter((item) => item.className === 'item')[0];
-		const index = target.dataset.idx;
+	/* 获取当前点击的目标元素 */
+	function getTarget(event) {
+		const target = event.path.filter((item) => item.className === 'item')[0];
+		return target.dataset.idx;
+	}
+
+	/* 点击搜索热搜词 */
+	function searchHot(e) {
+		const index = getTarget(e);
 		const { searchWord } = hots.value[index];
 		query.value = searchWord;
 	}
 
 	/* 搜索当前点击的歌曲 */
-	async function pickItem(e) {
-		const target = e.path.filter((item) => item.className === 'item')[0];
-		const index = target.dataset.idx;
+	async function searchSong(e) {
+		const index = getTarget(e);
 		const song = searchResult.value[index];
-		search(song);
-		setHistory(song.name);
-	}
-
-	/* 搜索歌曲 */
-	async function search(song) {
 		const { songs } = await getSearchSongDetail(song);
 		store.dispatch('addOneSong', songs[0]);
+		setHistory(song.name);
 	}
 
 	/* 设置历史记录 */

@@ -6,7 +6,7 @@ export function getDefaultSearch() {
 }
 
 /* 获取热门搜索列表 */
-export function getHotSearch() {
+export async function getHotSearch() {
 	return get('/search/hot/detail');
 }
 
