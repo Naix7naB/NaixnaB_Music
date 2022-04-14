@@ -3,20 +3,28 @@
 		<div class="back" @click="back">
 			<i class="icon-back"></i>
 		</div>
-		<Login></Login>
 	</div>
 </template>
 
 <script setup>
+	import { onMounted } from 'vue';
 	import { useRouter } from 'vue-router';
-	import Login from '@/components/login';
+	import { storage } from '@/utils';
 
 	const router = useRouter();
 
 	/* 返回上一级 */
 	function back() {
-		router.back();
+		router.push('/');
 	}
+
+	onMounted(() => {
+		const token = storage.getLocal('__token__', '');
+		if (!token) {
+			/* token为空就重定向到login页面 */
+			router.push('/login');
+		}
+	});
 </script>
 
 <style lang="scss" scoped>

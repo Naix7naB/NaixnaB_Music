@@ -12,7 +12,7 @@ module.exports = {
 	},
 	lintOnSave: false,
 	devServer: {
-		proxy: 'https://netease-cloud-music-api-naix7nab.vercel.app/', // api请求地址
+		proxy: 'http://localhost:3000', // api请求地址
 	},
 };
 // 'https://autumnfish.cn/'

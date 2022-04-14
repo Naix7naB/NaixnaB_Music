@@ -11,6 +11,7 @@
 					<!-- 榜单图片 -->
 					<div class="image">
 						<img class="icon" v-img-lazy="item.coverImgUrl" />
+						<span class="frequency">{{ item.updateFrequency }}</span>
 					</div>
 					<!-- 榜单详情 -->
 					<div class="txt">
@@ -122,6 +123,7 @@
 
 					.image {
 						flex: 0 0 120px;
+						position: relative;
 						text-align: center;
 
 						.icon {
@@ -130,6 +132,14 @@
 							border-radius: 12px;
 							overflow: hidden;
 							vertical-align: middle;
+						}
+
+						.frequency {
+							position: absolute;
+							bottom: 6px;
+							left: 16px;
+							color: $color-text;
+							font-size: $font-size-small-s;
 						}
 					}
 

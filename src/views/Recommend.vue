@@ -52,7 +52,7 @@
 	const router = useRouter();
 
 	const recommend = reactive({
-		banners: [],
+		banners: [{ bannerId: 0, pic: '' }],
 		playLists: [],
 	});
 	const albumDetail = ref({});
@@ -163,6 +163,7 @@
 						font-size: $font-size-medium;
 
 						.name {
+							@include no-wrap();
 							margin-bottom: 10px;
 							color: $color-text-ll;
 						}

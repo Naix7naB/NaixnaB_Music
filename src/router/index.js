@@ -8,6 +8,7 @@ const TopList = () => import('@/views/TopList.vue');
 const TopListDetail = () => import('@/views/TopListDetail.vue');
 const Search = () => import('@/views/Search.vue');
 const UserCenter = () => import('@/views/UserCenter.vue');
+const Login = () => import('@/views/Login.vue');
 
 const routes = [
 	{
@@ -51,6 +52,10 @@ const routes = [
 	{
 		path: '/user',
 		component: UserCenter,
+	},
+	{
+		path: '/login',
+		component: Login,
 	},
 ];
 
