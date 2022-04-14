@@ -10,6 +10,12 @@
 	import { onMounted } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { storage } from '@/utils';
+	import {
+		getUserAccount,
+		getUserSubcount,
+		getUserLevel,
+	} from '@/service/user';
+	import Cookies from 'vue-cookie';
 
 	const router = useRouter();
 
@@ -18,11 +24,19 @@
 		router.push('/');
 	}
 
-	onMounted(() => {
-		const token = storage.getLocal('__token__', '');
-		if (!token) {
-			/* token为空就重定向到login页面 */
+	onMounted(async () => {
+		const cookie = Cookies.get('MUSIC_U') || storage.getLocal('__token__', '');
+		if (!cookie) {
+			/* token 或 cookie 为空就重定向到login页面 */
 			router.push('/login');
+		} else {
+			/* 有值的话 不需要登录 携带cookie发送请求即可获取用户信息 */
+			/* 账号信息 */
+			const { profile } = await getUserAccount(cookie);
+			/* 账号等级 */
+			const { data } = await getUserLevel(cookie);
+			/* 用户信息、MV数量、创建歌单数量、收藏歌单数量 */
+			const subcount = await getUserSubcount(cookie);
 		}
 	});
 </script>
