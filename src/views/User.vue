@@ -1,6 +1,14 @@
 <template>
-	<div class="user" v-load="userInfo === {}">
-		<UserCenter :profile="userInfo.profile"></UserCenter>
+	<div class="user">
+		<Confirm
+			ref="confirmRef"
+			text="请先登录后操作"
+			confirmText="登录"
+			@confirm="confirm"
+			@cancel="cancel"
+		></Confirm>
+		<!-- vue3 路由组件添加 transition/keep-alive -->
+		<router-view :userInfo="userInfo" :vipInfo="vipInfo"> </router-view>
 	</div>
 </template>
 
@@ -8,34 +16,55 @@
 	import { onMounted, ref } from 'vue';
 	import { useStore } from 'vuex';
 	import { useRouter } from 'vue-router';
-	import { getUserInfo } from '@/service/user';
+	import { getUserAccount, getUserInfo } from '@/service/user';
 	import storage from '@/plugins/storage';
 	import Cookies from 'vue-cookie';
-	import UserCenter from '@/components/userCenter';
+	import Confirm from '@/components/base/confirm';
 
 	const store = useStore();
 	const router = useRouter();
 
+	const userDetail = ref({});
 	const userInfo = ref({});
+	const vipInfo = ref({});
+	const confirmRef = ref(null);
+
+	function toUserDetail(info) {
+		userInfo.value = info.userInfo.profile;
+		userInfo.value.level = info.userInfo.level;
+		vipInfo.value = info.vipInfo;
+		const uid = info.userInfo.profile.userId;
+		router.push(`/user/${uid}`);
+	}
+
+	function confirm() {
+		router.push('/login');
+	}
+	function cancel() {
+		router.push('/');
+	}
 
 	onMounted(() => {
-		const isLogin = storage.getLocal('__isLogin__', '') || store.state.isLogin;
-		const token = storage.getLocal('__token__', '') || Cookies.get('MUSIC_U');
-		if (!isLogin || !token) {
+		const token =
+			storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
+		if (!token) {
 			/* 没有登录 或 登录过期 */
-			router.push('/login');
+			confirmRef.value.show();
 		} else {
-			const info = storage.getLocal('__userInfo__', null);
+			const info = storage.getLocal('__userDetail__', null);
 			if (info) {
-				userInfo.value = info;
+				userDetail.value = info;
 			} else {
-				/* 是登录状态就携带token发送请求即可获取用户信息 */
-				getUserInfo(token).then((res) => {
-					userInfo.value = res;
-					storage.setLocal('__userInfo__', res);
+				/* 登录状态 */
+				getUserAccount().then(async (res) => {
+					const { result } = await getUserInfo(res.account.id);
+					userDetail.value = result;
+					storage.setLocal('__userDetail__', result);
 				});
 			}
 			store.commit('setLoginState', true);
+			storage.setLocal('__token__', token);
+			toUserDetail(userDetail.value);
 		}
 	});
 </script>
@@ -48,5 +77,6 @@
 		left: 0;
 		bottom: 0;
 		right: 0;
+		background: $color-background;
 	}
 </style>

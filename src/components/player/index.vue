@@ -407,12 +407,11 @@
 						left: 10%;
 						top: 0;
 						width: 80%;
-						box-sizing: border-box;
 						height: 100%;
 						overflow: hidden;
-						height: 100%;
 						border-radius: 50%;
 						border: 10px solid rgba(255, 255, 255, 0.1);
+						box-sizing: border-box;
 
 						&.playing {
 							animation: rotate 30s linear infinite;

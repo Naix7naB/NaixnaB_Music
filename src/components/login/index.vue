@@ -38,6 +38,7 @@
 		sendCaptcha,
 		verifyCaptcha,
 	} from '@/service/login';
+	import { getUserInfo } from '@/service/user';
 	import storage from '@/plugins/storage';
 	import md5 from 'md5';
 	import Switch from '@/components/base/switch';
@@ -64,9 +65,8 @@
 	});
 
 	watch(loginStatus, (newStatus) => {
-		storage.setLocal('__isLogin__', newStatus);
 		if (!newStatus) return;
-		router.push('/user');
+		router.back();
 	});
 
 	/* 输入框内容修改时 */
@@ -110,8 +110,10 @@
 	/* 手机登录 或 邮箱登录 */
 	function login(type, data) {
 		const loginMode = type === 'phone' ? login_phone : login_email;
-		loginMode(data).then((res) => {
+		loginMode(data).then(async (res) => {
 			if (res.code === 200) {
+				const { result } = await getUserInfo(res.account.id);
+				storage.setLocal('__userDetail__', result);
 				storage.setLocal('__token__', res.token);
 				store.commit('setLoginState', true);
 			} else {

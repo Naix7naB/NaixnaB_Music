@@ -6,7 +6,7 @@
 					<div class="confirm-content">
 						<p class="text">{{ text }}</p>
 						<div class="operate">
-							<div class="operate-btn">{{ cancelText }}</div>
+							<div class="operate-btn" @click="cancel">{{ cancelText }}</div>
 							<div class="operate-btn right" @click="confirm">
 								{{ confirmText }}
 							</div>
@@ -63,7 +63,6 @@
 
 	defineExpose({
 		show,
-		hide,
 	});
 </script>
 

@@ -7,8 +7,9 @@ const SingerDetail = () => import('@/views/SingerDetail.vue');
 const TopList = () => import('@/views/TopList.vue');
 const TopListDetail = () => import('@/views/TopListDetail.vue');
 const Search = () => import('@/views/Search.vue');
-const User = () => import('@/views/User.vue');
 const Login = () => import('@/views/Login.vue');
+const User = () => import('@/views/User.vue');
+const UserDetail = () => import('@/views/UserDetail.vue');
 
 const routes = [
 	{
@@ -52,6 +53,12 @@ const routes = [
 	{
 		path: '/user',
 		component: User,
+		children: [
+			{
+				path: ':uid',
+				component: UserDetail,
+			},
+		],
 	},
 	{
 		path: '/login',
