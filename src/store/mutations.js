@@ -1,4 +1,14 @@
 const mutations = {
+	/* 设置登录标识 */
+	setLoginState(state, isLogin) {
+		state.isLogin = isLogin;
+	},
+
+	/* 设置用户信息 */
+	setUserInfo(state, info) {
+		state.userInfo = info;
+	},
+
 	/* 设置当前播放列表 */
 	setCurPlayList(state, list) {
 		state.curPlayList = list;

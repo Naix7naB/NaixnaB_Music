@@ -56,7 +56,7 @@
 <script setup>
 	import { computed, ref } from 'vue';
 	import { useStore } from 'vuex';
-	import { handleName } from '@/utils';
+	import { handleName } from '@/plugins/utils';
 	import MiniSlide from './miniSlide';
 	import ProgressCircle from '../progressCircle';
 	import MiniList from '../miniList';

@@ -31,6 +31,11 @@ export async function getAlbumMusic(item) {
 			id: item.id,
 		},
 	});
+	if (playlist.tracks.length === playlist.trackIds.length) {
+		return {
+			hotSongs: playlist.tracks,
+		};
+	}
 	const trackIds = playlist.trackIds.map((item) => Number(item.id));
 	let musicIds = [];
 	if (trackIds.length > 50) musicIds = trackIds.slice(0, 50);

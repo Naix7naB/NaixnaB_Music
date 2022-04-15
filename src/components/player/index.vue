@@ -112,7 +112,7 @@
 	import { computed, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
 	import { getSongUrl } from '@/service/song';
-	import { handleName, formatTime } from '@/utils';
+	import { handleName, formatTime } from '@/plugins/utils';
 	import Mode from './mode';
 	import Favorite from './favorite';
 	import Middle from './middle';

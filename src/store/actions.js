@@ -1,6 +1,8 @@
-import { storage } from '@/utils';
+import storage from '@/plugins/storage';
 
 const actions = {
+	/*  */
+
 	/* 添加一首歌到播放列表 */
 	addOneSong({ commit, state }, song) {
 		const playList = state.playList.slice();

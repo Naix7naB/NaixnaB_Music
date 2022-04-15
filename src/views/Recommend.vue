@@ -43,8 +43,8 @@
 <script setup>
 	import { computed, onMounted, reactive, ref } from 'vue';
 	import { useRouter } from 'vue-router';
-	import { storage } from '@/utils';
 	import { getBanner, getRecommendList } from '@/service/recommend';
+	import storage from '@/plugins/storage';
 	import pic from '@/assets/images/lazy.jpg';
 	import Slider from '@/components/base/slider';
 	import Scroll from '@/components/base/scroll';

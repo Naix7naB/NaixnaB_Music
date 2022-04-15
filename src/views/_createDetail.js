@@ -1,6 +1,6 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { storage } from '@/utils';
+import storage from '@/plugins/storage';
 
 export default (params) => {
 	const { props, localKey, api } = params;

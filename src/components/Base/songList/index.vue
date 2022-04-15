@@ -20,7 +20,7 @@
 <script setup>
 	import { computed } from 'vue';
 	import { useStore } from 'vuex';
-	import { handleName } from '@/utils';
+	import { handleName } from '@/plugins/utils';
 
 	const store = useStore();
 	const props = defineProps(['songs']);

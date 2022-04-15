@@ -1,7 +1,7 @@
 import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { getSongLyric } from '@/service/song';
-import { formatLyric } from '@/utils';
+import { formatLyric } from '@/plugins/utils';
 
 export default (curTime) => {
 	const store = useStore();

@@ -62,7 +62,7 @@
 <script setup>
 	import { computed, nextTick, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
-	import { handleName } from '@/utils';
+	import { handleName } from '@/plugins/utils';
 	import Mode from '@/components/player/mode';
 	import Favorite from '@/components/player/favorite';
 	import Scroll from '@/components/base/scroll';

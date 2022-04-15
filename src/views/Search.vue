@@ -87,13 +87,13 @@
 <script setup>
 	import { onMounted, reactive, ref, watch } from 'vue';
 	import { useStore } from 'vuex';
-	import { storage } from '@/utils';
 	import {
 		getDefaultSearch,
 		getHotSearch,
 		getSearchResult,
 		getSearchSongDetail,
 	} from '@/service/search';
+	import storage from '@/plugins/storage';
 	import Scroll from '@/components/base/scroll';
 
 	const store = useStore();

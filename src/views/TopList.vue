@@ -41,7 +41,7 @@
 	import { onMounted, ref } from 'vue';
 	import { getTopList } from '@/service/toplist';
 	import { useRouter } from 'vue-router';
-	import { storage } from '@/utils';
+	import storage from '@/plugins/storage';
 	import Scroll from '@/components/base/scroll';
 
 	const router = useRouter();

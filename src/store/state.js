@@ -1,4 +1,10 @@
 const state = {
+	/* 登录标识 */
+	isLogin: false,
+
+	/* 用户信息 */
+	userInfo: {},
+
 	/* 源播放列表 */
 	playList: [],
 

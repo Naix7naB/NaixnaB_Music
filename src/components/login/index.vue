@@ -29,33 +29,33 @@
 </template>
 
 <script setup>
-	import { computed, onMounted, ref, watch } from 'vue';
+	import { computed, ref, watch } from 'vue';
 	import { useRouter } from 'vue-router';
-	import { storage } from '@/utils';
+	import { useStore } from 'vuex';
 	import {
 		login_phone,
 		login_email,
 		sendCaptcha,
 		verifyCaptcha,
 	} from '@/service/login';
+	import storage from '@/plugins/storage';
 	import md5 from 'md5';
 	import Switch from '@/components/base/switch';
 	import LoginInput from './components/loginInput';
 
+	const store = useStore();
 	const router = useRouter();
 
 	const userName = ref('');
 	const password = ref('');
-	const matchRes = ref(null);
-	const userInfo = ref({});
 	const errMsg = ref('');
+	const matchRes = ref(null);
 	const accountType = ref('phone');
-	const loginSuccess = ref(false);
 
 	/* uiType 0: 短信登录(注册)  1: 密码登录 */
 	const uType = ref(1);
 	const inputRef = ref(null);
-
+	const loginStatus = computed(() => store.state.isLogin);
 	const uTitle = computed(() => (uType.value ? '密码登录' : '短信登录'));
 	const btnText = computed(() => (uType.value ? '登录' : '注册 / 登录'));
 
@@ -63,7 +63,8 @@
 		inputRef.value.claerContent();
 	});
 
-	watch(loginSuccess, (newStatus) => {
+	watch(loginStatus, (newStatus) => {
+		storage.setLocal('__isLogin__', newStatus);
 		if (!newStatus) return;
 		router.push('/user');
 	});
@@ -95,11 +96,11 @@
 			[passwordType]: passwordVal,
 		};
 		if (!uType.value) {
-			/* 短信登录 */
+			/* 短信登录 验证验证码是否正确 */
 			const res = await verifyCaptcha(data);
 			if (res.code !== 200) {
 				errMsg.value = res.msg;
-				loginSuccess.value = false;
+				store.commit('setLoginState', false);
 				return;
 			}
 		}
@@ -111,19 +112,11 @@
 		const loginMode = type === 'phone' ? login_phone : login_email;
 		loginMode(data).then((res) => {
 			if (res.code === 200) {
-				userInfo.value = {
-					account: res.account,
-					bindings: res.bindings,
-					profile: res.profile,
-					loginType: res.loginType,
-				};
-				storage.setLocal('__userInfo__', userInfo.value);
-				storage.setLocal('__cookie__', res.cookie);
 				storage.setLocal('__token__', res.token);
-				loginSuccess.value = true;
+				store.commit('setLoginState', true);
 			} else {
 				errMsg.value = res.msg;
-				loginSuccess.value = false;
+				store.commit('setLoginState', false);
 			}
 		});
 	}
@@ -132,17 +125,6 @@
 	function reqCaptcha() {
 		sendCaptcha(userName.value);
 	}
-
-	onMounted(() => {
-		const token = storage.getLocal('__token__', '');
-		if (token) {
-			// console.log(token);
-		}
-
-		// if (uiType.value) {
-		// 	title = '';
-		// }
-	});
 </script>
 
 <style lang="scss" scoped>

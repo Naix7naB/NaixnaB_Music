@@ -1,4 +1,4 @@
-export default {
+const storage = {
 	/* 会话存储 (临时存储) */
 	getSession(key, type) {
 		let val = JSON.parse(sessionStorage.getItem(key));
@@ -25,3 +25,5 @@ export default {
 		localStorage.removeItem(key);
 	},
 };
+
+export default storage;

@@ -7,7 +7,7 @@ const SingerDetail = () => import('@/views/SingerDetail.vue');
 const TopList = () => import('@/views/TopList.vue');
 const TopListDetail = () => import('@/views/TopListDetail.vue');
 const Search = () => import('@/views/Search.vue');
-const UserCenter = () => import('@/views/UserCenter.vue');
+const User = () => import('@/views/User.vue');
 const Login = () => import('@/views/Login.vue');
 
 const routes = [
@@ -51,7 +51,7 @@ const routes = [
 	},
 	{
 		path: '/user',
-		component: UserCenter,
+		component: User,
 	},
 	{
 		path: '/login',

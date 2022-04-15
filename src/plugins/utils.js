@@ -1,4 +1,22 @@
-export default (lyric) => {
+/* 处理歌曲作者名 */
+export function handleName(song) {
+	const ar = song.ar;
+	const artists = ar.map((artist) => artist.name);
+	return artists.join(' / ');
+}
+
+/* 格式化歌曲时间 */
+export function formatTime(interval) {
+	interval = interval | 0;
+	/* 不足两位数往前补零 */
+	const min = (((interval / 60) | 0) + '').padStart(2, '0');
+	const sec = ((interval % 60) + '').padStart(2, '0');
+	const result = min + ':' + sec;
+	return result;
+}
+
+/* 格式化歌词 */
+export function formatLyric(lyric) {
 	const arr = lyric.split('\n');
 
 	const result = arr.reduce((prev, cur) => {
@@ -28,4 +46,4 @@ export default (lyric) => {
 	}, []);
 
 	return result;
-};
+}

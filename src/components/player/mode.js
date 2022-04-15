@@ -1,6 +1,6 @@
 import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
-import { storage } from '@/utils';
+import storage from '@/plugins/storage';
 
 export default () => {
 	const store = useStore();
