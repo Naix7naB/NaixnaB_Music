@@ -12,12 +12,13 @@ function getUserPlaylist(params) {
 /* 统一获取用户信息 统一处理结果 */
 async function getUserInfo(userId) {
 	const vipInfo = await getVipInfo();
-	const userDetail = await getUserDetail(userId);
+	const { level, profile } = await getUserDetail(userId);
+	profile.level = level;
 	return {
 		code: vipInfo.code,
 		message: vipInfo.message,
-		result: {
-			userInfo: userDetail,
+		userInfo: {
+			profile,
 			vipInfo: vipInfo.data,
 		},
 	};

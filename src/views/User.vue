@@ -7,8 +7,8 @@
 			@confirm="confirm"
 			@cancel="cancel"
 		></Confirm>
-		<!-- vue3 路由组件添加 transition/keep-alive -->
-		<router-view :userInfo="userInfo" :vipInfo="vipInfo"> </router-view>
+		<router-view :userInfo="userDetail.profile" :vipInfo="userDetail.vipInfo">
+		</router-view>
 	</div>
 </template>
 
@@ -25,26 +25,19 @@
 	const router = useRouter();
 
 	const userDetail = ref({});
-	const userInfo = ref({});
-	const vipInfo = ref({});
 	const confirmRef = ref(null);
 
-	function toUserDetail(info) {
-		userInfo.value = info.userInfo.profile;
-		userInfo.value.level = info.userInfo.level;
-		vipInfo.value = info.vipInfo;
-		const uid = info.userInfo.profile.userId;
-		router.push(`/user/${uid}`);
-	}
-
+	/* 点击确认按钮 */
 	function confirm() {
 		router.push('/login');
 	}
+
+	/* 点击取消按钮 */
 	function cancel() {
 		router.push('/');
 	}
 
-	onMounted(() => {
+	onMounted(async () => {
 		const token =
 			storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
 		if (!token) {
@@ -56,15 +49,16 @@
 				userDetail.value = info;
 			} else {
 				/* 登录状态 */
-				getUserAccount().then(async (res) => {
-					const { result } = await getUserInfo(res.account.id);
-					userDetail.value = result;
-					storage.setLocal('__userDetail__', result);
-				});
+				const res = await getUserAccount();
+				const { userInfo } = await getUserInfo(res.account.id);
+				userDetail.value = userInfo;
+				storage.setLocal('__userDetail__', userInfo);
 			}
 			store.commit('setLoginState', true);
 			storage.setLocal('__token__', token);
-			toUserDetail(userDetail.value);
+			/* 跳转 */
+			const uid = userDetail.value.profile.userId;
+			router.push(`/user/${uid}`);
 		}
 	});
 </script>

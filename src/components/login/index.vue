@@ -108,19 +108,18 @@
 	}
 
 	/* 手机登录 或 邮箱登录 */
-	function login(type, data) {
+	async function login(type, data) {
 		const loginMode = type === 'phone' ? login_phone : login_email;
-		loginMode(data).then(async (res) => {
-			if (res.code === 200) {
-				const { result } = await getUserInfo(res.account.id);
-				storage.setLocal('__userDetail__', result);
-				storage.setLocal('__token__', res.token);
-				store.commit('setLoginState', true);
-			} else {
-				errMsg.value = res.msg;
-				store.commit('setLoginState', false);
-			}
-		});
+		const res = await loginMode(data);
+		if (res.code === 200) {
+			const { userInfo } = await getUserInfo(res.account.id);
+			storage.setLocal('__userDetail__', userInfo);
+			storage.setLocal('__token__', res.token);
+			store.commit('setLoginState', true);
+		} else {
+			errMsg.value = res.msg;
+			store.commit('setLoginState', false);
+		}
 	}
 
 	/* 发送验证码 */

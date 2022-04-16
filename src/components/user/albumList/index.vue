@@ -1,17 +1,25 @@
 <template>
 	<div class="list-wrapper">
-		<h1 class="list-title">创建歌单(11个)</h1>
+		<h1 class="list-title">创建歌单({{ list.length }}个)</h1>
 		<!-- @click.stop="getAlbumDetail" -->
 		<ul>
-			<li class="list-item">
-				<!-- v-for="(item, index) in recommend.playLists" :key="item.id"
-					:data-index="index" -->
+			<li
+				class="list-item"
+				v-for="(item, index) in list"
+				:key="item.id"
+				:data-index="index"
+			>
 				<div class="image">
-					<img v-img-lazy="pic" />
+					<img v-img-lazy="item.coverImgUrl" />
 				</div>
 				<div class="text">
-					<p class="name">namenamenamenamenamenamenamenamenamenamename</p>
-					<p class="desc">descriptiondescriptiondescriptiondescription</p>
+					<h1 class="name">{{ item.name }}</h1>
+					<p class="desc">
+						<span>{{ item.trackCount }}首</span>
+						<span v-if="false"
+							>，descriptiondescriptiondescriptiondescription</span
+						>
+					</p>
 				</div>
 			</li>
 		</ul>
@@ -19,24 +27,41 @@
 </template>
 
 <script setup>
-	import pic from '@/assets/images/lazy.jpg';
+	import { onMounted } from 'vue';
+
+	const props = defineProps({
+		list: {
+			type: Array,
+			default: [],
+		},
+	});
+
+	onMounted(() => {
+		console.log(props.list);
+	});
 </script>
 
 <style lang="scss" scoped>
 	.list-wrapper {
-		width: 80%;
-		margin: 0 auto;
+		padding: 14px;
+		border-radius: 14px;
+		background: rgba(178, 164, 164, 0.3);
 
 		.list-title {
-			font-size: 16px;
+			line-height: 20px;
+			font-size: $font-size-small;
 		}
 
 		.list-item {
 			display: flex;
 			align-items: center;
+			margin-top: 8px;
 
 			.image {
-				flex: 0 0 80px;
+				flex: 0 0 54px;
+				height: 54px;
+				border-radius: 8px;
+				overflow: hidden;
 
 				img {
 					width: 100%;
@@ -46,14 +71,19 @@
 
 			.text {
 				flex: 1;
-				@include no-wrap();
+				line-height: 20px;
+				padding-left: 10px;
+				overflow: hidden;
 
 				.name {
-					font-size: 14px;
+					@include no-wrap();
+					font-size: $font-size-medium-x;
 				}
 
 				.desc {
-					font-size: 12px;
+					@include no-wrap();
+					color: $color-text-l;
+					font-size: $font-size-small;
 				}
 			}
 		}
