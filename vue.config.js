@@ -12,6 +12,7 @@ module.exports = {
 	},
 	lintOnSave: false,
 	devServer: {
+		port: 7777,
 		proxy: 'http://localhost:3000', // api请求地址
 	},
 };

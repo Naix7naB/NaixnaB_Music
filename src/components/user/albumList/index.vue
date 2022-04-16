@@ -16,9 +16,7 @@
 					<h1 class="name">{{ item.name }}</h1>
 					<p class="desc">
 						<span>{{ item.trackCount }}首</span>
-						<span v-if="false"
-							>，descriptiondescriptiondescriptiondescription</span
-						>
+						<span v-if="sub">，{{ item.description }}</span>
 					</p>
 				</div>
 			</li>
@@ -27,22 +25,21 @@
 </template>
 
 <script setup>
-	import { onMounted } from 'vue';
-
 	const props = defineProps({
 		list: {
 			type: Array,
 			default: [],
 		},
-	});
-
-	onMounted(() => {
-		console.log(props.list);
+		sub: {
+			type: Boolean,
+			default: true,
+		},
 	});
 </script>
 
 <style lang="scss" scoped>
 	.list-wrapper {
+		margin-bottom: 20px;
 		padding: 14px;
 		border-radius: 14px;
 		background: rgba(178, 164, 164, 0.3);

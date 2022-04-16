@@ -7,24 +7,21 @@
 			@confirm="confirm"
 			@cancel="cancel"
 		></Confirm>
-		<router-view :userInfo="userDetail.profile" :vipInfo="userDetail.vipInfo">
-		</router-view>
+		<router-view :userId="userId"> </router-view>
 	</div>
 </template>
 
 <script setup>
 	import { onMounted, ref } from 'vue';
-	import { useStore } from 'vuex';
 	import { useRouter } from 'vue-router';
-	import { getUserAccount, getUserInfo } from '@/service/user';
+	import { getUserAccount } from '@/service/user';
 	import storage from '@/plugins/storage';
 	import Cookies from 'vue-cookie';
 	import Confirm from '@/components/base/confirm';
 
-	const store = useStore();
 	const router = useRouter();
 
-	const userDetail = ref({});
+	const userId = ref('');
 	const confirmRef = ref(null);
 
 	/* 点击确认按钮 */
@@ -44,21 +41,17 @@
 			/* 没有登录 或 登录过期 */
 			confirmRef.value.show();
 		} else {
-			const info = storage.getLocal('__userDetail__', null);
-			if (info) {
-				userDetail.value = info;
+			const uid = storage.getLocal('__uid__', '');
+			if (uid) {
+				userId.value = uid;
 			} else {
-				/* 登录状态 */
-				const res = await getUserAccount();
-				const { userInfo } = await getUserInfo(res.account.id);
-				userDetail.value = userInfo;
-				storage.setLocal('__userDetail__', userInfo);
+				const { account } = await getUserAccount();
+				userId.value = account.id;
+				storage.setLocal('__uid__', account.id);
 			}
-			store.commit('setLoginState', true);
-			storage.setLocal('__token__', token);
-			/* 跳转 */
-			const uid = userDetail.value.profile.userId;
-			router.push(`/user/${uid}`);
+			if (!userId.value) return;
+			/* 用户id有值的话跳转个人中心页 */
+			router.push(`/user/center`);
 		}
 	});
 </script>

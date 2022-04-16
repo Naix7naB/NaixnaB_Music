@@ -1,12 +1,30 @@
 import { request } from './base.js';
 
 /* 获取用户歌单 */
-function getUserPlaylist(params) {
-	return request({
+async function getUserPlaylist(params) {
+	const { playlist } = await request({
 		method: 'post',
 		url: '/user/playlist',
 		data: { ...params },
 	});
+	/* 处理数据 筛选出 自建歌单 和 收藏歌单 */
+	const temp = playlist.slice();
+	const favorite = temp.splice(0, 1)[0];
+	const self = [];
+	const sub = temp.filter((item, index, arr) => {
+		if (!item.subscribed) {
+			self.push(...arr.slice(index, index + 1));
+		} else {
+			return item;
+		}
+	});
+	return {
+		playlist: {
+			favorite,
+			self,
+			sub,
+		},
+	};
 }
 
 /* 统一获取用户信息 统一处理结果 */
@@ -17,7 +35,7 @@ async function getUserInfo(userId) {
 	return {
 		code: vipInfo.code,
 		message: vipInfo.message,
-		userInfo: {
+		result: {
 			profile,
 			vipInfo: vipInfo.data,
 		},

@@ -1,7 +1,8 @@
 <template>
 	<div
 		class="user-center"
-		:style="{ backgroundImage: `url(${userInfo.backgroundUrl})` }"
+		:style="{ backgroundImage: `url(${profile.backgroundUrl})` }"
+		v-load="isLoading"
 	>
 		<!-- 模糊层 -->
 		<div class="filter"></div>
@@ -12,8 +13,8 @@
 		<!-- 标题 -->
 		<div class="user-title" :style="titleStyle">
 			<div class="title">
-				<img class="image" :src="userInfo.avatarUrl" />
-				<span class="name">{{ userInfo.nickname }}</span>
+				<img class="image" :src="profile.avatarUrl" />
+				<span class="name">{{ profile.nickname }}</span>
 			</div>
 		</div>
 		<!-- 内容滚动区 -->
@@ -28,24 +29,37 @@
 				<div class="user-info-top">
 					<div class="content">
 						<div class="icon">
-							<img :src="userInfo.avatarUrl" />
+							<img :src="profile.avatarUrl" />
 						</div>
 						<div class="text">
 							<div class="head">
-								<span class="name">{{ userInfo.nickname }}</span>
+								<span class="name">{{ profile.nickname }}</span>
 								<img :src="vipInfo.redVipDynamicIconUrl2" />
 							</div>
 							<div class="desc">
-								<span class="txt follows">{{ userInfo.follows }}关注</span>
-								<span class="txt followed">{{ userInfo.followeds }}粉丝</span>
-								<span class="txt level">Lv.{{ userInfo.level }}</span>
+								<span class="txt follows">{{ profile.follows }}关注</span>
+								<span class="txt followed">{{ profile.followeds }}粉丝</span>
+								<span class="txt level">Lv.{{ profile.level }}</span>
 							</div>
 						</div>
 					</div>
 				</div>
 				<!-- 用户歌单 -->
 				<div class="user-album">
-					<AlbumList :list="selfList"></AlbumList>
+					<div class="favorite-album">
+						<div class="image">
+							<img
+								:src="favoriteAlbum.coverImgUrl"
+								v-if="favoriteAlbum.coverImgUrl"
+							/>
+						</div>
+						<div class="text">
+							<h1 class="name">{{ favoriteAlbum.name }}</h1>
+							<p class="desc">{{ favoriteAlbum.trackCount }}首</p>
+						</div>
+					</div>
+					<AlbumList :list="selfList" :sub="false"></AlbumList>
+					<AlbumList :list="subList"></AlbumList>
 				</div>
 			</div>
 		</Scroll>
@@ -54,34 +68,41 @@
 
 <script setup>
 	import { computed, onMounted, ref } from 'vue';
-	import { useRouter, useRoute } from 'vue-router';
-	import { getUserPlaylist } from '@/service/user';
+	import { useRouter } from 'vue-router';
+	import { getUserInfo, getUserPlaylist } from '@/service/user';
+	import storage from '@/plugins/storage';
 	import AlbumList from '@/components/user/albumList';
 	import Scroll from '@/components/base/scroll';
 
 	const router = useRouter();
-	const route = useRoute();
 	const props = defineProps({
-		userInfo: {
-			type: Object,
-			default: {},
-		},
-		vipInfo: {
-			type: Object,
-			default: {},
+		userId: {
+			type: Number,
+			default: 0,
 		},
 	});
 
-	const subList = ref([]);
+	const profile = ref({});
+	const vipInfo = ref({});
+	const favoriteAlbum = ref({});
 	const selfList = ref([]);
+	const subList = ref([]);
 	const scrollY = ref(0);
 	const scrollConRef = ref(null);
 
+	const isLoading = computed(() => {
+		return (
+			favoriteAlbum.value === {} ||
+			!selfList.value.length ||
+			!subList.value.length
+		);
+	});
+
 	const titleStyle = computed(() => {
 		let opacity = 0;
-		if (scrollY.value > 0 && scrollY.value < 50) {
-			opacity = scrollY.value / 50;
-		} else if (scrollY.value > 50) {
+		if (scrollY.value > 0 && scrollY.value < 160) {
+			opacity = scrollY.value / 160;
+		} else if (scrollY.value >= 160) {
 			opacity = 1;
 		}
 		return {
@@ -93,31 +114,40 @@
 	/* 滚动事件 */
 	function onScroll(pos) {
 		scrollY.value = -pos.y;
-		console.log(scrollY.value);
 	}
 
 	/* 返回上一级 */
 	function back() {
+		console.log(router);
 		router.push('/');
 	}
 
 	onMounted(async () => {
-		const uid = route.params.uid;
-		const { playlist } = await getUserPlaylist({ uid });
-		/* 筛选出 自建歌单 和 收藏歌单 */
-		playlist.reduce(
-			(prev, cur) => {
-				if (cur.subscribed) {
-					subList.value[prev.i] = cur;
-					prev.i++;
-				} else {
-					selfList.value[prev.j] = cur;
-					prev.j++;
-				}
-				return prev;
-			},
-			{ i: 0, j: 0 }
-		);
+		const uid = props.userId || storage.getLocal('__uid__', 0);
+		if (uid) {
+			const info = storage.getLocal('__userInfo__', '');
+			const list = storage.getLocal('__userPlayList__', null);
+			if (info) {
+				profile.value = info.profile;
+				vipInfo.value = info.vipInfo;
+			} else {
+				const { result } = await getUserInfo(uid);
+				profile.value = result.profile;
+				vipInfo.value = result.vipInfo;
+				storage.setLocal('__userInfo__', result);
+			}
+			if (list) {
+				favoriteAlbum.value = list.favorite;
+				selfList.value = list.self;
+				subList.value = list.sub;
+			} else {
+				const { playlist } = await getUserPlaylist({ uid });
+				favoriteAlbum.value = playlist.favorite;
+				selfList.value = playlist.self;
+				subList.value = playlist.sub;
+				storage.setLocal('__userPlayList__', playlist);
+			}
+		} else return;
 	});
 </script>
 
@@ -202,7 +232,7 @@
 					width: 90%;
 					height: 50%;
 					border-radius: 14px;
-					background: rgba(82, 77, 77, 0.7);
+					background: rgba(72, 65, 65, 0.3);
 					backdrop-filter: blur(10px);
 
 					.icon {
@@ -252,6 +282,45 @@
 			.user-album {
 				overflow: hidden;
 				padding: 5%;
+
+				.favorite-album {
+					display: flex;
+					align-items: center;
+					padding: 14px;
+					margin-bottom: 20px;
+					border-radius: 14px;
+					background: rgba(178, 164, 164, 0.3);
+
+					.image {
+						flex: 0 0 54px;
+						height: 54px;
+						border-radius: 8px;
+						overflow: hidden;
+
+						img {
+							width: 100%;
+							height: 100%;
+						}
+					}
+
+					.text {
+						flex: 1;
+						line-height: 20px;
+						padding-left: 10px;
+						overflow: hidden;
+
+						.name {
+							@include no-wrap();
+							font-size: $font-size-medium-x;
+						}
+
+						.desc {
+							@include no-wrap();
+							color: $color-text-l;
+							font-size: $font-size-small;
+						}
+					}
+				}
 			}
 		}
 	}

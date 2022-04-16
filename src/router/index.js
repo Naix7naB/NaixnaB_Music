@@ -9,7 +9,7 @@ const TopListDetail = () => import('@/views/TopListDetail.vue');
 const Search = () => import('@/views/Search.vue');
 const Login = () => import('@/views/Login.vue');
 const User = () => import('@/views/User.vue');
-const UserDetail = () => import('@/views/UserDetail.vue');
+const UserCenter = () => import('@/views/UserCenter.vue');
 
 const routes = [
 	{
@@ -55,8 +55,8 @@ const routes = [
 		component: User,
 		children: [
 			{
-				path: ':uid',
-				component: UserDetail,
+				path: '/user/center',
+				component: UserCenter,
 			},
 		],
 	},
