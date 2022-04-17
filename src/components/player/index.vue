@@ -218,9 +218,13 @@
 		}
 	});
 
+	/* 监视播放器类型 */
+	watch(playerStyle, (newStyle) => {
+		newStyle ? play() : stop();
+	});
+
 	/* 隐藏全屏播放器 */
 	function hide() {
-		stop();
 		store.commit('setPlayerStyle', 0);
 	}
 

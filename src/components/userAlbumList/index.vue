@@ -1,10 +1,11 @@
 <template>
 	<div class="list-wrapper">
-		<h1 class="list-title">创建歌单({{ list.length }}个)</h1>
-		<!-- @click.stop="getAlbumDetail" -->
-		<ul>
+		<h1 class="list-title">
+			{{ sub ? '收藏歌单' : '创建歌单' }}({{ list.length }}个)
+		</h1>
+		<ul @click.stop="getAlbumDetail">
 			<li
-				class="list-item"
+				class="item"
 				v-for="(item, index) in list"
 				:key="item.id"
 				:data-index="index"
@@ -35,6 +36,15 @@
 			default: true,
 		},
 	});
+	const emit = defineEmits(['pickItem']);
+
+	/* 获取歌单 */
+	function getAlbumDetail(e) {
+		const target = e.path.filter((item) => item.className === 'item')[0];
+		const index = target.dataset.index;
+		const item = props.list[index];
+		emit('pickItem', item);
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -49,7 +59,7 @@
 			font-size: $font-size-small;
 		}
 
-		.list-item {
+		.item {
 			display: flex;
 			align-items: center;
 			margin-top: 8px;

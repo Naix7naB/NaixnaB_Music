@@ -113,10 +113,9 @@
 		const res = await loginMode(data);
 		if (res.code === 200) {
 			const { result } = await getUserInfo(res.account.id);
-			storage.setLocal('__userDetail__', result);
+			storage.setLocal('__userInfo__', result);
 			storage.setLocal('__token__', res.token);
 			store.commit('setLoginState', true);
-			store.commit('setUserId', res.account.id);
 		} else {
 			errMsg.value = res.msg;
 			store.commit('setLoginState', false);

@@ -31,6 +31,7 @@ export default (params) => {
 	const listTitle = computed(() => {
 		return computedData.value ? computedData.value.name : '';
 	});
+
 	/* 歌单图片 */
 	const picUrl = computed(() => {
 		return computedData.value ? computedData.value.picUrl : '';

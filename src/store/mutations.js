@@ -4,11 +4,6 @@ const mutations = {
 		state.isLogin = isLogin;
 	},
 
-	/* 设置用户 id */
-	setUserId(state, uid) {
-		state.uid = uid;
-	},
-
 	/* 设置当前播放列表 */
 	setCurPlayList(state, list) {
 		state.curPlayList = list;

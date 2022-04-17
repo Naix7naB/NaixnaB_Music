@@ -2,9 +2,6 @@ const state = {
 	/* 登录标识 */
 	isLogin: false,
 
-	/* 用户 id */
-	uid: '',
-
 	/* 源播放列表 */
 	playList: [],
 
