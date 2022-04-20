@@ -48,6 +48,10 @@
 							</div>
 						</div>
 					</div>
+					<!-- 用户展示区 -->
+					<div class="user-public">
+						<Exhibit></Exhibit>
+					</div>
 					<!-- 用户歌单 -->
 					<div class="user-album">
 						<div class="favorite-album">
@@ -55,8 +59,12 @@
 								<img :src="favoriteAlbum.coverImgUrl" />
 							</div>
 							<div class="text">
-								<h1 class="name">{{ favoriteAlbum.name }}</h1>
+								<h1 class="name">我喜欢的音乐</h1>
 								<p class="desc">{{ favoriteAlbum.trackCount }}首</p>
+							</div>
+							<div class="icon">
+								<i class="icon-heartbeat"></i>
+								<span>心动模式</span>
 							</div>
 						</div>
 						<AlbumList
@@ -83,13 +91,14 @@
 </template>
 
 <script setup>
-	import { computed, onMounted, ref } from 'vue';
+	import { computed, onMounted, ref, watch } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { getUserAccount, getUserInfo, getUserPlaylist } from '@/service/user';
 	import storage from '@/plugins/storage';
 	import Cookies from 'vue-cookie';
 	import Scroll from '@/components/base/scroll';
-	import AlbumList from '@/components/userAlbumList';
+	import Exhibit from '@/components/user/userExhibition';
+	import AlbumList from '@/components/user/userAlbumList';
 	import Confirm from '@/components/base/confirm';
 
 	const router = useRouter();
@@ -102,6 +111,7 @@
 	const selfList = ref([]);
 	const subList = ref([]);
 	const userAlbumDetail = ref({});
+
 	const bgImage = ref('');
 	const scrollY = ref(0);
 	const isLoading = ref(true);
@@ -118,6 +128,12 @@
 			opacity,
 			transition: 'all .1s',
 		};
+	});
+
+	const visible = ref(null);
+
+	watch(visible, (newVal) => {
+		console.log(newVal);
 	});
 
 	/* 滚动事件 */
@@ -142,7 +158,7 @@
 
 	/* 返回上一级 */
 	function back() {
-		router.push('/');
+		router.back();
 	}
 
 	/* 点击确认按钮 */
@@ -156,8 +172,8 @@
 	}
 
 	onMounted(async () => {
-		const token =
-			storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
+		const token = storage.getLocal('__token__', '');
+		// storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
 		if (!token) {
 			/* 没有登录 或 登录过期 */
 			isLoading.value = false;
@@ -272,6 +288,11 @@
 				height: 100%;
 				overflow: hidden;
 
+				.user-public {
+					width: 90%;
+					margin: 20px auto 10px;
+				}
+
 				.user-info-top {
 					position: relative;
 					width: 100%;
@@ -374,6 +395,25 @@
 							.desc {
 								@include no-wrap();
 								color: $color-text-l;
+								font-size: $font-size-small;
+							}
+						}
+
+						.icon {
+							flex: 0 0 80px;
+							padding: 0 4px;
+							line-height: 22px;
+							border: 1px solid $color-text-d;
+							border-radius: 12px;
+							text-align: center;
+
+							.icon-heartbeat {
+								margin-right: 2px;
+								vertical-align: -2px;
+								font-size: $font-size-large;
+							}
+
+							span {
 								font-size: $font-size-small;
 							}
 						}

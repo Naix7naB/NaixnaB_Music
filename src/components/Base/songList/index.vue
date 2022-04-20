@@ -13,6 +13,7 @@
 				<h2 class="name">{{ item.name }}</h2>
 				<p class="desc">{{ handleName(item) }}</p>
 			</div>
+			<div class="icon"><i class="icon-bofang"></i></div>
 		</li>
 	</ul>
 </template>
@@ -57,7 +58,7 @@
 
 			.content {
 				flex: 1;
-				padding-left: 8px;
+				padding: 0 10px;
 				line-height: 20px;
 				overflow: hidden;
 				font-size: $font-size-medium;
@@ -72,6 +73,13 @@
 					margin-top: 4px;
 					color: $color-text-d;
 				}
+			}
+
+			.icon {
+				flex: 0 0 40px;
+				color: $color-text-d;
+				font-size: 24px;
+				text-align: center;
 			}
 		}
 	}

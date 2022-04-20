@@ -94,7 +94,7 @@
 
 	/* mini 播放/暂停 图标 */
 	const playIconMini = computed(() => {
-		return playState.value ? 'icon-pause-mini' : 'icon-play-mini';
+		return playState.value ? 'icon-zanting' : 'icon-bofang';
 	});
 
 	/* 展示全屏播放器 */

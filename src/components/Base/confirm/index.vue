@@ -1,7 +1,7 @@
 <template>
 	<teleport to="body">
 		<transition name="confirm-fade">
-			<div class="confirm" v-if="visible" @click="hide">
+			<div class="confirm" v-if="visible" @click="cancel">
 				<div class="confirm-wrapper" @click.stop>
 					<div class="confirm-content">
 						<p class="text">{{ text }}</p>

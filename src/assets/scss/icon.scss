@@ -1,115 +1,269 @@
 // 定义需要引入的iconfont 类名
 @font-face {
-  font-family: "music-icon";
-  src: url("../fonts/music-icon.eot?2qevqt");
-  src: url("../fonts/music-icon.eot?2qevqt#iefix") format("embedded-opentype"),
-    url("../fonts/music-icon.ttf?2qevqt") format("truetype"),
-    url("../fonts/music-icon.woff?2qevqt") format("woff"),
-    url("../fonts/music-icon.svg?2qevqt#music-icon") format("svg");
-  font-weight: normal;
-  font-style: normal;
+	font-family: 'music-icon';
+	src: url('../fonts/music-icon.eot?2qevqt');
+	src: url('../fonts/music-icon.eot?2qevqt#iefix') format('embedded-opentype'),
+		url('../fonts/music-icon.ttf?2qevqt') format('truetype'),
+		url('../fonts/music-icon.woff?2qevqt') format('woff'),
+		url('../fonts/music-icon.svg?2qevqt#music-icon') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 
-[class^="icon-"],
-[class*=" icon-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: "music-icon" !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
+@font-face {
+	/* message项目图标 */
+	font-family: 'music-icon';
+	src: url('//at.alicdn.com/t/font_3336606_li3t6qfcid.woff2?t=1650467283673')
+			format('woff2'),
+		url('//at.alicdn.com/t/font_3336606_li3t6qfcid.woff?t=1650467283673')
+			format('woff'),
+		url('//at.alicdn.com/t/font_3336606_li3t6qfcid.ttf?t=1650467283673')
+			format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+[class^='icon-'],
+[class*=' icon-'] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'music-icon' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .icon-ok:before {
-  content: "\e900";
+	content: '\e900';
 }
 
 .icon-close:before {
-  content: "\e901";
+	content: '\e901';
 }
 
 .icon-add:before {
-  content: "\e902";
+	content: '\e902';
 }
 
 .icon-play-mini:before {
-  content: "\e903";
+	content: '\e903';
 }
 
 .icon-playlist:before {
-  content: "\e904";
+	content: '\e904';
 }
 
 .icon-music:before {
-  content: "\e905";
+	content: '\e905';
 }
 
 .icon-search:before {
-  content: "\e906";
+	content: '\e906';
 }
 
 .icon-clear:before {
-  content: "\e907";
+	content: '\e907';
 }
 
 .icon-delete:before {
-  content: "\e908";
+	content: '\e908';
 }
 
 .icon-favorite:before {
-  content: "\e909";
+	content: '\e909';
 }
 
 .icon-not-favorite:before {
-  content: "\e90a";
+	content: '\e90a';
 }
 
 .icon-pause:before {
-  content: "\e90b";
+	content: '\e90b';
 }
 
 .icon-play:before {
-  content: "\e90c";
+	content: '\e90c';
 }
 
 .icon-prev:before {
-  content: "\e90d";
+	content: '\e90d';
 }
 
 .icon-loop:before {
-  content: "\e90e";
+	content: '\e90e';
 }
 
 .icon-sequence:before {
-  content: "\e90f";
+	content: '\e90f';
 }
 
 .icon-random:before {
-  content: "\e910";
+	content: '\e910';
 }
 
 .icon-back:before {
-  content: "\e911";
+	content: '\e911';
 }
 
 .icon-mine:before {
-  content: "\e912";
+	content: '\e912';
 }
 
 .icon-next:before {
-  content: "\e913";
+	content: '\e913';
 }
 
 .icon-dismiss:before {
-  content: "\e914";
+	content: '\e914';
 }
 
 .icon-pause-mini:before {
-  content: "\e915";
+	content: '\e915';
+}
+
+/* my-icon */
+.icon-play-plain:before {
+	content: '\ea6d';
+}
+
+.icon-bofang:before {
+	content: '\e625';
+}
+
+.icon-zanting:before {
+	content: '\e629';
+}
+
+.icon-group-fill:before {
+	content: '\e7f4';
+}
+
+.icon-check:before {
+	content: '\e645';
+}
+
+.icon-check-close:before {
+	content: '\e646';
+}
+
+.icon-collect-fill:before {
+	content: '\e64b';
+}
+
+.icon-round-check-fill:before {
+	content: '\e656';
+}
+
+.icon-round-check:before {
+	content: '\e657';
+}
+
+.icon-round-close-fill:before {
+	content: '\e658';
+}
+
+.icon-round-close:before {
+	content: '\e659';
+}
+
+.icon-time-fill:before {
+	content: '\e65f';
+}
+
+.icon-volume-fill:before {
+	content: '\e66a';
+}
+
+.icon-lock:before {
+	content: '\e6c0';
+}
+
+.icon-unlock:before {
+	content: '\e6c2';
+}
+
+.icon-mute-fill:before {
+	content: '\e6db';
+}
+
+.icon-mobile-fill:before {
+	content: '\e705';
+}
+
+.icon-rank-fill:before {
+	content: '\e721';
+}
+
+.icon-play-fill:before {
+	content: '\e74f';
+}
+
+.icon-account:before {
+	content: '\e78b';
+}
+
+.icon-round-add:before {
+	content: '\e7a7';
+}
+
+.icon-add:before {
+	content: '\e7dd';
+}
+
+.icon-like:before {
+	content: '\e7e1';
+}
+
+.icon-like-fill:before {
+	content: '\e7e2';
+}
+
+.icon-more:before {
+	content: '\e7e3';
+}
+
+.icon-video-play:before {
+	content: '\e7e9';
+}
+
+.icon-at:before {
+	content: '\e81e';
+}
+
+.icon-like-copy:before {
+	content: '\e624';
+}
+
+.icon-comments:before {
+	content: '\e677';
+}
+
+.icon-heartbeat:before {
+	content: '\e752';
+}
+
+.icon-info-close:before {
+	content: '\e60c';
+}
+
+.icon-warn:before {
+	content: '\e60d';
+}
+
+.icon-info:before {
+	content: '\e60e';
+}
+
+.icon-success:before {
+	content: '\e60f';
+}
+
+.icon-error:before {
+	content: '\e610';
 }

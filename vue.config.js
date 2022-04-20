@@ -16,5 +16,6 @@ module.exports = {
 		proxy: 'http://localhost:3000', // api请求地址
 	},
 };
+// 'http://localhost:3000'
 // 'https://autumnfish.cn/'
 // 'https://netease-cloud-music-api-naix7nab.vercel.app/'

@@ -5,6 +5,19 @@ export function handleName(song) {
 	return artists.join(' / ');
 }
 
+/* 处理数量 */
+export function handleCount(number) {
+	const yi = 100000000;
+	const shiwan = 100000;
+	if (number >= yi) {
+		return (number / yi).toFixed(1) + '亿';
+	} else if (number >= shiwan && number < yi) {
+		return (number / shiwan).toFixed(1) + '万';
+	} else {
+		return number;
+	}
+}
+
 /* 格式化歌曲时间 */
 export function formatTime(interval) {
 	interval = interval | 0;

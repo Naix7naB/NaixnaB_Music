@@ -12,6 +12,10 @@
 					<div class="image">
 						<img class="icon" v-img-lazy="item.coverImgUrl" />
 						<span class="frequency">{{ item.updateFrequency }}</span>
+						<div class="count">
+							<i class="icon-play-plain"></i>
+							<span class="num">{{ handleCount(item.playCount) }}</span>
+						</div>
 					</div>
 					<!-- 榜单详情 -->
 					<div class="txt">
@@ -41,6 +45,7 @@
 	import { onMounted, ref } from 'vue';
 	import { getTopList } from '@/service/toplist';
 	import { useRouter } from 'vue-router';
+	import { handleCount } from '@/plugins/utils';
 	import storage from '@/plugins/storage';
 	import Scroll from '@/components/base/scroll';
 
@@ -140,6 +145,23 @@
 							left: 16px;
 							color: $color-text;
 							font-size: $font-size-small-s;
+						}
+
+						.count {
+							position: absolute;
+							top: 0;
+							right: 14px;
+							line-height: 20px;
+
+							.icon-play-plain {
+								vertical-align: 1px;
+								font-size: $font-size-small-s;
+							}
+
+							.num {
+								margin-left: 2px;
+								font-size: $font-size-small;
+							}
 						}
 					}
 

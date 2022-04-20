@@ -28,6 +28,7 @@
 						<!-- 歌词 -->
 						<div class="playing-lyric-wrapper">
 							<div class="playing-lyric">{{ curLyric }}</div>
+							<div class="check-more">点击查看全部歌词</div>
 						</div>
 					</div>
 					<Scroll class="middle-r" :style="middleRStyle" ref="lyricScrollRef">
@@ -438,16 +439,20 @@
 					// 歌词
 					.playing-lyric-wrapper {
 						width: 80%;
-						margin: 30px auto 0 auto;
+						line-height: 20px;
+						margin: 20px auto 0;
 						overflow: hidden;
 						text-align: center;
+						color: $color-text-l;
+						font-size: $font-size-medium;
 
 						.playing-lyric {
-							height: 20px;
-							line-height: 20px;
 							@include no-wrap();
-							font-size: $font-size-medium;
-							color: $color-text-l;
+						}
+
+						.check-more {
+							margin-top: 10px;
+							text-decoration: underline;
 						}
 					}
 				}

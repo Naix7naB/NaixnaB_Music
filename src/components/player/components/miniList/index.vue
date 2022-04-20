@@ -244,13 +244,14 @@
 
 					.current {
 						flex: 0 0 20px;
-						width: 20px;
-						font-size: $font-size-small;
+						line-height: 20px;
 						color: $color-theme-d;
+						font-size: $font-size-small;
 					}
 
 					.text {
 						flex: 1;
+						line-height: 20px;
 						padding-right: 40px;
 						@include no-wrap();
 						color: $color-text-l;

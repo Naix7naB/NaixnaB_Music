@@ -13,11 +13,7 @@
 	<!-- 密码 / 验证码 -->
 	<div class="input-wrapper">
 		<span class="name">{{ title.pwd }}</span>
-		<input
-			:type="_type_"
-			:placeholder="placeholder.pwd"
-			v-model.lazy="password"
-		/>
+		<input :type="_type_" :placeholder="placeholder.pwd" v-model="password" />
 		<button
 			class="captcha"
 			v-if="inputType === 'captcha'"
@@ -96,10 +92,12 @@
 			};
 			errMsg.value = '';
 		} else {
+			/* 限制账号长度 */
+			if (newVal.length > 20) userName.value = newVal.substring(0, 20);
 			if (!res) {
 				errStyle.value = {
-					color: '#CDAA7D',
-					borderColor: '#CDAA7D',
+					color: '#e98649',
+					borderColor: '#e98649',
 				};
 				errMsg.value = '格式错误';
 			} else {
@@ -115,6 +113,11 @@
 	});
 
 	watch(password, (newVal) => {
+		if (inputType.value === 'captcha') {
+			/* 限制验证码长度 */
+			if (newVal.length > 6) password.value = newVal.substring(0, 6);
+			/* 限制密码长度 */
+		} else if (newVal.length > 50) password.value = newVal.substring(0, 50);
 		emit('onChange', { password: newVal });
 	});
 
