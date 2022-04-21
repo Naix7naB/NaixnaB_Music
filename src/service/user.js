@@ -62,11 +62,6 @@ async function getMyAlbumMusic(params) {
  * 接口地址: /likelist
  */
 
-/**获取云盘数据
- * 可选参数: limit offset
- * 接口地址: /user/cloud
- */
-
 /* 统一获取用户信息 统一处理结果 */
 async function getUserInfo(params) {
 	const vipInfo = await getVipInfo();

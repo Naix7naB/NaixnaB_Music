@@ -1,5 +1,6 @@
 <template>
 	<div class="exhibit" :style="{ backgroundImage: `url(${bgImage})` }">
+		<!-- 模糊层 -->
 		<div class="filter"></div>
 		<!-- 返回按钮 -->
 		<div class="back" @click="back">
