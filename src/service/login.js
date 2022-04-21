@@ -1,18 +1,18 @@
 import { request } from './base.js';
 
 /* 检测手机号是否被注册 */
-function checkExist(phone) {
+function checkExist(data) {
 	return request({
 		method: 'post',
 		url: '/cellphone/existence/check',
-		data: { phone },
+		data,
 	});
 }
 
 /* 手机登录 */
-export async function login_phone(params) {
+async function login_phone(params) {
 	const { phone } = params;
-	const res = await checkExist(phone);
+	const res = await checkExist({ phone });
 	if (res.exist === -1) {
 		return {
 			code: 501,
@@ -29,7 +29,7 @@ export async function login_phone(params) {
 }
 
 /* 邮箱登录 */
-export function login_email(params) {
+function login_email(params) {
 	return request({
 		method: 'post',
 		url: '/login',
@@ -38,7 +38,7 @@ export function login_email(params) {
 }
 
 /* 发送验证码 */
-export function sendCaptcha(phone) {
+function sendCaptcha(phone) {
 	return request({
 		method: 'post',
 		url: '/captcha/sent',
@@ -47,10 +47,12 @@ export function sendCaptcha(phone) {
 }
 
 /* 验证验证码 */
-export function verifyCaptcha(params) {
+function verifyCaptcha(params) {
 	return request({
 		method: 'post',
 		url: '/captcha/verify',
 		data: { ...params },
 	});
 }
+
+export { login_phone, login_email, sendCaptcha, verifyCaptcha };

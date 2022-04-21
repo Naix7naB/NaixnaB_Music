@@ -11,15 +11,15 @@
 
 <script setup>
 	import MusicList from '@/components/musicList';
-	import { getAlbumMusic } from '@/service/recommend';
+	import { getMyAlbumMusic } from '@/service/user';
 	import createDetail from './_createDetail';
 
 	const props = defineProps(['detailObj']);
 
 	const { listTitle, picUrl, songs, isLoading } = createDetail({
 		props: props,
-		localKey: '__userAlbumDetail__',
-		api: getAlbumMusic,
+		localKey: '__albumDetail__',
+		api: getMyAlbumMusic,
 	});
 </script>
 

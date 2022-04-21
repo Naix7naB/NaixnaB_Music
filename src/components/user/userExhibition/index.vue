@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-	import exhibit from './exhibit';
+	import { ref } from 'vue';
 
 	const list = [
 		{
@@ -24,7 +24,7 @@
 			icon: 'icon-group-fill',
 		},
 		{
-			title: '收藏和赞',
+			title: '我的收藏',
 			icon: 'icon-collect-fill',
 		},
 		{
@@ -37,7 +37,16 @@
 		},
 	];
 
-	const { itemRef, onClick } = exhibit();
+	const emit = defineEmits(['getCurItem']);
+
+	const itemRef = ref(null);
+
+	function onClick(e) {
+		const target = e.path.filter((item) => item.className === 'item')[0];
+		const index = target.dataset.index / 1;
+		const { title } = list[index];
+		emit('getCurItem', { index, title });
+	}
 </script>
 
 <style lang="scss" scoped>

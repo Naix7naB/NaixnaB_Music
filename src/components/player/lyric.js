@@ -19,7 +19,7 @@ export default (curTime) => {
 
 	watch(currentSong, async (newSong) => {
 		if (!newSong.id) return;
-		const { lrc } = await getSongLyric(newSong);
+		const { lrc } = await getSongLyric({ id: newSong.id });
 		lyric.value = formatLyric(lrc.lyric);
 		/* 首先清空时间 */
 		curTime.value = 0;

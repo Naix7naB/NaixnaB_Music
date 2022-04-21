@@ -9,6 +9,7 @@ const TopListDetail = () => import('@/views/TopListDetail.vue');
 const Search = () => import('@/views/Search.vue');
 const Login = () => import('@/views/Login.vue');
 const UserCenter = () => import('@/views/UserCenter.vue');
+const UserExhibitDetail = () => import('@/views/UserExhibitDetail.vue');
 const UserAlbumDetail = () => import('@/views/UserAlbumDetail.vue');
 
 const Test = () => import('@/views/Test.vue');
@@ -58,7 +59,17 @@ const routes = [
 		children: [
 			{
 				path: ':id',
-				component: UserAlbumDetail,
+				component: AlbumDetail,
+			},
+			{
+				path: '/user/exhibit',
+				component: UserExhibitDetail,
+				children: [
+					{
+						path: ':id',
+						component: UserAlbumDetail,
+					},
+				],
 			},
 		],
 	},

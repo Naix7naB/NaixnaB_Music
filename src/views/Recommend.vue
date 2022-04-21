@@ -86,11 +86,11 @@
 
 	onMounted(() => {
 		/* 轮播图数据 */
-		getBanner().then((res) => {
+		getBanner({ type: 2 }).then((res) => {
 			if (res.code === 200) recommend.banners = res.banners;
 		});
 		/* 推荐歌单列表数据 */
-		getRecommendList().then((res) => {
+		getRecommendList({ limit: 30 }).then((res) => {
 			if (res.code === 200) recommend.playLists = res.playlists;
 		});
 	});

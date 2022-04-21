@@ -1,7 +1,7 @@
 import { request } from './base.js';
 
 /* 获取全部歌手 (按字母排序) */
-export function getAllSinger() {
+function getAllSinger() {
 	const letterArr = ['热'],
 		singerList = [],
 		promiseArr = [];
@@ -46,12 +46,12 @@ function getSinger(letter) {
 }
 
 /* 获取歌手单曲	 接口地址: /artists  必传 id */
-export function getSingerMusic(item) {
+function getSingerMusic(params) {
 	return request({
 		method: 'get',
 		url: '/artists',
-		params: {
-			id: item.id,
-		},
+		params,
 	});
 }
+
+export { getAllSinger, getSingerMusic };

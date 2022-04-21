@@ -1,4 +1,5 @@
 import { request } from './base.js';
+import { getSongDetail } from './recommend';
 
 /* 获取用户歌单 */
 function getUserPlaylist(params) {
@@ -10,7 +11,7 @@ function getUserPlaylist(params) {
 }
 
 /* 获取用户关注 */
-export function getFollows(params) {
+function getFollows(params) {
 	return request({
 		method: 'get',
 		url: '/user/follows',
@@ -19,12 +20,35 @@ export function getFollows(params) {
 }
 
 /* 获取用户粉丝 */
-export function getFolloweds(params) {
+function getFolloweds(params) {
 	return request({
 		method: 'get',
 		url: '/user/followeds',
 		params,
 	});
+}
+
+/* 获取收藏的专辑 */
+function getCollectAlbum() {
+	return request({
+		method: 'get',
+		url: '/album/sublist',
+	});
+}
+
+/* 获取收藏专辑的歌曲 */
+async function getMyAlbumMusic(params) {
+	const { songs } = await request({
+		method: 'get',
+		url: '/album',
+		params,
+	});
+	const musicIds = [];
+	songs.forEach((item) => {
+		musicIds.push(Number(item.id));
+	});
+	const ids = musicIds.join(',');
+	return getSongDetail({ ids });
 }
 
 /**获取用户播放记录
@@ -83,4 +107,12 @@ function getVipInfo() {
 	});
 }
 
-export { getUserPlaylist, getUserInfo, getUserAccount };
+export {
+	getUserPlaylist,
+	getUserInfo,
+	getUserAccount,
+	getFollows,
+	getFolloweds,
+	getCollectAlbum,
+	getMyAlbumMusic,
+};

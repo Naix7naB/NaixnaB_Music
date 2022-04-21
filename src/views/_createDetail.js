@@ -47,7 +47,7 @@ export default (params) => {
 			return;
 		} else {
 			/* 获取歌单歌曲 */
-			api(data).then((res) => {
+			api({ id: data.id }).then((res) => {
 				songs.value = res.hotSongs;
 				isLoading.value = false;
 			});

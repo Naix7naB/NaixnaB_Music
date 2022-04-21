@@ -179,7 +179,7 @@
 		if (!newSong.id) return;
 		/* 先让上一首歌暂停 */
 		store.commit('setPlayState', 0);
-		const { data } = await getSongUrl(newSong);
+		const { data } = await getSongUrl({ id: newSong.id });
 		const url = data[0].url;
 		let playListVal = playList.value.slice();
 		let curPlayListVal = curPlayList.value.slice();

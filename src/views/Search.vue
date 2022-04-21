@@ -117,7 +117,7 @@
 		/* 函数防抖 */
 		clearTimeout(timer);
 		timer = setTimeout(async () => {
-			const { result } = await getSearchResult(newQuery);
+			const { result } = await getSearchResult({ keywords: newQuery });
 			searchResult.value = result.songs;
 		}, 200);
 	});
@@ -139,7 +139,7 @@
 	async function searchSong(e) {
 		const index = getTarget(e);
 		const song = searchResult.value[index];
-		const { songs } = await getSearchSongDetail(song);
+		const { songs } = await getSearchSongDetail({ ids: song.id });
 		store.dispatch('addOneSong', songs[0]);
 		setHistory(song.name);
 	}

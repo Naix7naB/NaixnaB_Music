@@ -50,7 +50,7 @@
 					</div>
 					<!-- 用户展示区 -->
 					<div class="user-public">
-						<Exhibit></Exhibit>
+						<Exhibit @getCurItem="getCurItem"></Exhibit>
 					</div>
 					<!-- 用户歌单 -->
 					<div class="user-album">
@@ -84,22 +84,25 @@
 		<!-- vue3 路由组件添加 transition/keep-alive -->
 		<router-view v-slot="{ Component }">
 			<transition name="slide" appear>
-				<component :is="Component" :detailObj="userAlbumDetail" />
+				<component
+					:is="Component"
+					:detailObj="albumDetail.id ? albumDetail : userExhibitDetail"
+				/>
 			</transition>
 		</router-view>
 	</div>
 </template>
 
 <script setup>
-	import { computed, onMounted, ref, watch } from 'vue';
+	import { computed, onMounted, ref } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { getUserAccount, getUserInfo, getUserPlaylist } from '@/service/user';
 	import storage from '@/plugins/storage';
 	import Cookies from 'vue-cookie';
+	import Confirm from '@/components/base/confirm';
 	import Scroll from '@/components/base/scroll';
 	import Exhibit from '@/components/user/userExhibition';
 	import AlbumList from '@/components/user/userAlbumList';
-	import Confirm from '@/components/base/confirm';
 
 	const router = useRouter();
 
@@ -110,7 +113,8 @@
 	const favoriteAlbum = ref({});
 	const selfList = ref([]);
 	const subList = ref([]);
-	const userAlbumDetail = ref({});
+	const albumDetail = ref({});
+	const userExhibitDetail = ref({});
 
 	const bgImage = ref('');
 	const scrollY = ref(0);
@@ -130,26 +134,27 @@
 		};
 	});
 
-	const visible = ref(null);
-
-	watch(visible, (newVal) => {
-		console.log(newVal);
-	});
-
 	/* 滚动事件 */
 	function onScroll(pos) {
 		scrollY.value = -pos.y;
 	}
 
+	/* 跳转展示区页面 */
+	function getCurItem(item) {
+		userExhibitDetail.value = item;
+		storage.setLocal('__exhibitDetail__', userExhibitDetail.value);
+		router.push('/user/exhibit');
+	}
+
 	/* 跳转用户歌单详细页 */
 	function toDetail(item) {
-		userAlbumDetail.value = {
+		albumDetail.value = {
 			id: item.id,
 			name: item.name,
 			picUrl: item.picUrl || item.coverImgUrl,
 		};
-		/* 缓存 userPlayListDetail数据 */
-		storage.setLocal('__userAlbumDetail__', userAlbumDetail.value);
+		/* 缓存 albumDetail数据 */
+		storage.setLocal('__albumDetail__', albumDetail.value);
 		/* 跳转 */
 		router.push({
 			path: `/user/${item.id}`,
@@ -158,7 +163,7 @@
 
 	/* 返回上一级 */
 	function back() {
-		router.back();
+		router.push('/');
 	}
 
 	/* 点击确认按钮 */
@@ -172,8 +177,8 @@
 	}
 
 	onMounted(async () => {
-		const token = storage.getLocal('__token__', '');
-		// storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
+		const token =
+			storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
 		if (!token) {
 			/* 没有登录 或 登录过期 */
 			isLoading.value = false;
@@ -243,7 +248,7 @@
 			}
 
 			.back {
-				z-index: 50;
+				z-index: 2;
 				position: absolute;
 				top: 4px;
 				left: 6px;
@@ -257,12 +262,11 @@
 			}
 
 			.user-title {
-				z-index: 49;
+				z-index: 1;
 				position: absolute;
-				top: 0;
 				left: 0;
-				width: 100%;
-				height: 50px;
+				right: 0;
+				line-height: 50px;
 				background-color: #625243;
 
 				.title {
