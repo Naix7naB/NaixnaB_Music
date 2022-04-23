@@ -74,7 +74,7 @@
 		width: 100%;
 
 		.title {
-			width: 86%;
+			width: 90%;
 			line-height: 30px;
 			margin: 10px auto 0;
 			font-size: $font-size-medium;
@@ -82,15 +82,22 @@
 		}
 
 		.list {
-			width: 90%;
+			box-sizing: border-box;
+			width: 96%;
 			margin: 0 auto;
+			padding: 20px;
+			border-radius: 10px;
 			background: rgba(86, 79, 79, 0.3);
 			backdrop-filter: blur(2px);
 
 			.item {
 				display: flex;
 				align-items: center;
-				padding: 10px;
+				margin-bottom: 16px;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
 
 				.icon {
 					width: 50px;

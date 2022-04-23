@@ -10,14 +10,14 @@
 	font-style: normal;
 }
 
+/* my-icon 图标 */
 @font-face {
-	/* message项目图标 */
 	font-family: 'music-icon';
-	src: url('//at.alicdn.com/t/font_3336606_li3t6qfcid.woff2?t=1650467283673')
+	src: url('//at.alicdn.com/t/font_3336606_osilol1lcpi.woff2?t=1650628400362')
 			format('woff2'),
-		url('//at.alicdn.com/t/font_3336606_li3t6qfcid.woff?t=1650467283673')
+		url('//at.alicdn.com/t/font_3336606_osilol1lcpi.woff?t=1650628400362')
 			format('woff'),
-		url('//at.alicdn.com/t/font_3336606_li3t6qfcid.ttf?t=1650467283673')
+		url('//at.alicdn.com/t/font_3336606_osilol1lcpi.ttf?t=1650628400362')
 			format('truetype');
 	font-weight: normal;
 	font-style: normal;
@@ -128,6 +128,14 @@
 }
 
 /* my-icon */
+.icon-bofang-fill:before {
+	content: '\e72f';
+}
+
+.icon-calendar:before {
+	content: '\e74a';
+}
+
 .icon-play-plain:before {
 	content: '\ea6d';
 }

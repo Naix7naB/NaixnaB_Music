@@ -3,9 +3,8 @@ import axios from 'axios';
 // const baseURL = 'https://autumnfish.cn';
 
 // const ax = axios.create({
-// 	baseURL: 'https://netease-cloud-music-api-naix7nab.vercel.app/',
+// 	baseURL: 'https://autumnfish.cn',
 // 	withCredentials: true,
-// 	timeout: 5000,
 // });
 
 /* 封装 axios发送请求 */

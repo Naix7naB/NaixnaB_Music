@@ -48,9 +48,10 @@ async function getDailySongs() {
 		musicIds.push(Number(item.id));
 	});
 	const ids = musicIds.join(',');
+	const { hotSongs } = await getSongDetail({ ids });
 	return {
+		dailySongs: hotSongs,
 		reasons: data.recommendReasons,
-		...getSongDetail({ ids }),
 	};
 }
 

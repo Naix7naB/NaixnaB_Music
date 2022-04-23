@@ -112,7 +112,7 @@
 		const loginMode = type === 'phone' ? login_phone : login_email;
 		const res = await loginMode(data);
 		if (res.code === 200) {
-			const { result } = await getUserInfo(res.account.id);
+			const { result } = await getUserInfo({ uid: res.account.id });
 			storage.setLocal('__userInfo__', result);
 			storage.setLocal('__token__', res.token);
 			store.commit('setLoginState', true);

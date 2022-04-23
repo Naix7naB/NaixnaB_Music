@@ -20,16 +20,16 @@
 
 	const list = [
 		{
+			title: '每日推荐',
+			icon: 'icon-calendar',
+		},
+		{
 			title: '我的好友',
 			icon: 'icon-group-fill',
 		},
 		{
 			title: '我的收藏',
 			icon: 'icon-collect-fill',
-		},
-		{
-			title: '听歌排行',
-			icon: 'icon-rank-fill',
 		},
 		{
 			title: '历史播放',

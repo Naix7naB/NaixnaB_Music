@@ -54,7 +54,7 @@
 					</div>
 					<!-- 用户歌单 -->
 					<div class="user-album">
-						<div class="favorite-album">
+						<div class="favorite-album" @click="getCurItem">
 							<div class="image">
 								<img :src="favoriteAlbum.coverImgUrl" />
 							</div>
@@ -141,7 +141,20 @@
 
 	/* 跳转展示区页面 */
 	function getCurItem(item) {
-		userExhibitDetail.value = item;
+		let data = null;
+		if (item instanceof MouseEvent || item.index === 3) {
+			data = {
+				title: '歌单',
+				index: 3,
+				type: item.index === 3 ? 1 : 0,
+			};
+		} else {
+			data = item;
+		}
+		userExhibitDetail.value = {
+			...data,
+			bgImage: bgImage.value,
+		};
 		storage.setLocal('__exhibitDetail__', userExhibitDetail.value);
 		router.push('/user/exhibit');
 	}

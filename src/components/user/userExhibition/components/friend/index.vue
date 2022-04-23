@@ -1,5 +1,5 @@
 <template>
-	<div class="friend">
+	<div class="friend" v-load="isLoading">
 		<div class="friend-top">
 			<Switch
 				:text="['关注', '粉丝']"
@@ -14,7 +14,7 @@
 			:probeType="3"
 		>
 			<ul class="list">
-				<li class="item" v-for="(item, index) in list" :key="item.userId">
+				<li class="item" v-for="item in list" :key="item.userId">
 					<div class="icon">
 						<img class="pic" v-img-lazy="item.avatarUrl" />
 						<img
@@ -30,11 +30,13 @@
 					<div
 						class="follow-btn"
 						v-if="switchNum"
-						:class="{ followed: item.followed }"
-						@click="followUser(item, index)"
+						:class="handleClass(item)"
+						@click="followOrUnfollow(item)"
 					>
-						<i class="icon-add" v-if="!item.followed"></i>
-						<span class="txt">{{ item.followed ? '互相关注' : '回关' }}</span>
+						<i class="icon-add" v-if="!checkFollowed(item)"></i>
+						<span class="txt">
+							{{ checkFollowed(item) ? '互相关注' : '回关' }}
+						</span>
 					</div>
 				</li>
 			</ul>
@@ -53,12 +55,16 @@
 	const store = useStore();
 
 	const listScrollRef = ref(null);
-	const followList = ref({});
-	const followedList = ref({});
+	const friends = ref({});
+	const isFollowed = ref([]);
 	const switchNum = ref(0);
 
+	const isLoading = computed(() => {
+		return !friends.value.follows || !friends.value.followeds;
+	});
+
 	const list = computed(() => {
-		return !switchNum.value ? followList.value : followedList.value;
+		return !switchNum.value ? friends.value.follows : friends.value.followeds;
 	});
 
 	const playList = computed(() => store.state.playList);
@@ -77,31 +83,49 @@
 		switchNum.value = index;
 	}
 
+	/* 检查是否已关注 */
+	function checkFollowed(item) {
+		const index = isFollowed.value.findIndex((i) => i.uid === item.userId);
+		return isFollowed.value[index].followed;
+	}
+
+	/* 处理 是否已关注 的类名 */
+	function handleClass(item) {
+		const flag = checkFollowed(item);
+		return { followed: flag };
+	}
+
 	/* 关注/取消关注 */
-	async function followUser(item, index) {
+	function followOrUnfollow(item) {
 		/* 操作频繁的话需要手机验证 */
 		// const t = followed ? 0 : 1;
 		// follow({ id: userId, t });
-		list.value[index].followed = !item.followed;
-		storage.setLocal('__followedList__', list.value);
+		/* 首先判断该用户是否已关注 */
+		const flag = checkFollowed(item);
+		const index = isFollowed.value.findIndex((i) => i.uid === item.userId);
+		isFollowed.value[index].followed = !flag;
+		storage.setLocal('__followedList__', isFollowed.value);
 	}
 
 	onMounted(async () => {
-		const list1 = storage.getLocal('__followList__', null);
-		const list2 = storage.getLocal('__followedList__', null);
-		if (list1 && list2) {
-			/* 本地存储有值的话 */
-			followList.value = list1;
-			followedList.value = list2;
+		const uid = storage.getLocal('__uid__', '');
+		const { follow } = await getFollows({ uid });
+		const { followeds } = await getFolloweds({ uid });
+		friends.value = {
+			follows: follow,
+			followeds,
+		};
+		const followedList = storage.getLocal('__followedList__', []);
+		if (followedList.length) {
+			isFollowed.value = followedList;
 		} else {
-			/* 本地存储没有值的话 */
-			const uid = storage.getLocal('__uid__', '');
-			const { follow } = await getFollows({ uid });
-			const { followeds } = await getFolloweds({ uid });
-			followList.value = follow;
-			followedList.value = followeds;
-			storage.setLocal('__followList__', followList.value);
-			storage.setLocal('__followedList__', followedList.value);
+			isFollowed.value = followeds.map((item) => {
+				return {
+					uid: item.userId,
+					followed: item.followed,
+				};
+			});
+			storage.setLocal('__followedList__', isFollowed.value);
 		}
 	});
 </script>
@@ -121,7 +145,7 @@
 			backdrop-filter: blur(2px);
 
 			/* scss样式穿透 */
-			&::v-deep .switch {
+			&::v-deep(.switch) {
 				.switch-wrapper {
 					border: 1px solid rgb(146, 129, 108);
 				}
@@ -186,6 +210,7 @@
 
 						.desc {
 							@include no-wrap();
+							color: $color-text-l;
 							font-size: $font-size-small;
 						}
 					}

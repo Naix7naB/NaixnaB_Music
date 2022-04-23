@@ -28,6 +28,15 @@ function getFolloweds(params) {
 	});
 }
 
+/* 获取已喜欢音乐 */
+function getLikeList(params) {
+	return request({
+		method: 'get',
+		url: '/likelist',
+		params,
+	});
+}
+
 /* 获取收藏的专辑 */
 function getCollectAlbum() {
 	return request({
@@ -55,11 +64,6 @@ async function getMyAlbumMusic(params) {
  * 必选参数: uid
  * 可选参数: type: type=1 weekData, type=0 allData
  * 接口地址: /user/record
- */
-
-/**获取已喜欢音乐
- * 必选参数: uid
- * 接口地址: /likelist
  */
 
 /* 统一获取用户信息 统一处理结果 */
@@ -108,6 +112,7 @@ export {
 	getUserAccount,
 	getFollows,
 	getFolloweds,
+	getLikeList,
 	getCollectAlbum,
 	getMyAlbumMusic,
 };

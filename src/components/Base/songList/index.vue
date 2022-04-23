@@ -9,7 +9,7 @@
 			<div class="num" :style="{ fontSize: index < 99 ? '16px' : '14px' }">
 				{{ index + 1 }}
 			</div>
-			<div class="content">
+			<div class="detail">
 				<h2 class="name">{{ item.name }}</h2>
 				<p class="desc">{{ handleName(item) }}</p>
 			</div>
@@ -27,7 +27,6 @@
 	const props = defineProps(['songs']);
 
 	const playList = computed(() => store.state.playList);
-	const curPlayList = computed(() => store.state.curPlayList);
 
 	/* 点击歌单中的歌曲 播放歌曲 并把歌单的歌曲添加到播放列表中 */
 	function playSong(e) {
@@ -48,7 +47,7 @@
 			display: flex;
 			align-items: center;
 			box-sizing: border-box;
-			height: 64px;
+			height: 56px;
 
 			.num {
 				flex: 0 0 30px;
@@ -56,22 +55,22 @@
 				color: $color-text-l;
 			}
 
-			.content {
+			.detail {
 				flex: 1;
 				padding: 0 10px;
-				line-height: 20px;
 				overflow: hidden;
-				font-size: $font-size-medium;
 
 				.name {
 					@include no-wrap();
-					color: $color-text-ll;
+					color: $color-text;
+					font-size: $font-size-medium;
 				}
 
 				.desc {
+					line-height: 24px;
 					@include no-wrap();
-					margin-top: 4px;
 					color: $color-text-d;
+					font-size: $font-size-small;
 				}
 			}
 

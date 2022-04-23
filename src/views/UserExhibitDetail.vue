@@ -3,28 +3,28 @@
 		<!-- 模糊层 -->
 		<div class="filter"></div>
 		<!-- 返回按钮 -->
-		<div class="back" @click="back">
+		<div class="back" @click="back" :style="{ zIndex: Style ? 1 : 0 }">
 			<i class="icon-back"></i>
 		</div>
-		<!-- 标题 -->
-		<div class="title">
+		<!-- 标题  -->
+		<div class="title" :style="Style">
 			<p class="name">{{ title }}</p>
 		</div>
 		<!-- 内容区 不同组件渲染 -->
 		<div class="content">
-			<component :is="curComponent" />
+			<component ref="cmpRef" :type="type" :is="curComponent" />
 		</div>
 	</div>
 </template>
 
 <script setup>
-	import { computed, onMounted } from 'vue';
+	import { computed, onMounted, ref } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import storage from '@/plugins/storage';
+	import Daily from '@/components/user/userExhibition/components/daily';
 	import Friend from '@/components/user/userExhibition/components/friend';
 	import Collection from '@/components/user/userExhibition/components/collection';
 	import History from '@/components/user/userExhibition/components/history';
-	import Rank from '@/components/user/userExhibition/components/rank';
 
 	const router = useRouter();
 	const route = useRoute();
@@ -36,8 +36,12 @@
 		},
 	});
 
+	const cmpRef = ref(null);
+
 	/* 背景图片 */
-	const bgImage = computed(() => storage.getLocal('__bgImage__', ''));
+	const bgImage = computed(() => {
+		return props.detailObj.bgImage || storage.getLocal('__bgImage__', '');
+	});
 
 	/* 重新处理的数据 */
 	const computedData = computed(() => {
@@ -60,6 +64,16 @@
 		return computedData.value ? computedData.value.title : '';
 	});
 
+	/* 标题样式 */
+	const Style = computed(() => {
+		return cmpRef.value ? cmpRef.value._style : {};
+	});
+
+	/* 我喜欢的 和 历史播放 */
+	const type = computed(() => {
+		return computedData.value.type ? computedData.value.type : 0;
+	});
+
 	/* 当前索引值 */
 	const curIndex = computed(() => {
 		return computedData.value ? computedData.value.index : -1;
@@ -69,13 +83,13 @@
 	const curComponent = computed(() => {
 		switch (curIndex.value) {
 			case 0:
-				return Friend;
+				return Daily;
 			case 1:
-				return Collection;
+				return Friend;
 			case 2:
-				return History;
+				return Collection;
 			case 3:
-				return Rank;
+				return History;
 		}
 	});
 
@@ -135,7 +149,7 @@
 			left: 0;
 			right: 0;
 			line-height: 50px;
-			background-color: rgba(110, 91, 66, 0.8);
+			background: rgba(110, 91, 66, 0.8);
 			backdrop-filter: blur(10px);
 
 			.name {

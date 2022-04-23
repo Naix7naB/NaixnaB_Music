@@ -148,7 +148,7 @@
 
 	/* 发送验证码 */
 	function reqCaptcha() {
-		let sec = 60;
+		let sec = 6;
 		captchaText.value = `${sec}s后重试`;
 		locked.value = true;
 		timer = setInterval(() => {
@@ -160,6 +160,7 @@
 				captchaText.value = `${sec}s后重试`;
 			}
 		}, 1000);
+		console.log('SendCaptcha...');
 		emit('onClick');
 	}
 

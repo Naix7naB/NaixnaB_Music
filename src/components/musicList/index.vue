@@ -153,8 +153,8 @@
 		.title {
 			position: absolute;
 			top: 0;
-			left: 10%;
-			width: 80%;
+			left: 20%;
+			width: 60%;
 			z-index: 20;
 			transform: translateZ(2px);
 			@include no-wrap();
