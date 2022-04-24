@@ -28,7 +28,11 @@
 		},
 	});
 
-	const { slideRef, currentPageIndex } = useSlide();
+	const { initSlider, slideRef, currentPageIndex } = useSlide();
+
+	defineExpose({
+		initSlider,
+	});
 </script>
 
 <style lang="scss" scoped>

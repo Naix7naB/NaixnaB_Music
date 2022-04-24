@@ -106,35 +106,28 @@
 			overflow: hidden;
 
 			ul {
-				&::before,
-				&::after {
-					content: '';
-					display: block;
-					width: 100%;
-					height: 20px;
-				}
+				overflow: hidden;
 
 				.item {
 					display: flex;
 					align-items: center;
-					height: 130px;
-					margin: 0 14px 20px 14px;
-					border-radius: 4%;
+					width: 90%;
+					height: 120px;
+					margin: 16px auto;
+					padding: 0 16px;
+					border-radius: 10px;
 					background: rgba($color: $color-highlight-background, $alpha: 0.25);
-
-					&:last-child {
-						margin-bottom: 0;
-					}
+					box-sizing: border-box;
 
 					.image {
-						flex: 0 0 120px;
+						flex: 0 0 82px;
 						position: relative;
 						text-align: center;
 
 						.icon {
-							width: 100px;
-							height: 105px;
-							border-radius: 12px;
+							width: 82px;
+							height: 86px;
+							border-radius: 10px;
 							overflow: hidden;
 							vertical-align: middle;
 						}
@@ -142,7 +135,7 @@
 						.frequency {
 							position: absolute;
 							bottom: 6px;
-							left: 16px;
+							left: 6px;
 							color: $color-text;
 							font-size: $font-size-small-s;
 						}
@@ -150,7 +143,7 @@
 						.count {
 							position: absolute;
 							top: 0;
-							right: 14px;
+							right: 4px;
 							line-height: 20px;
 
 							.icon-play-plain {
@@ -160,26 +153,22 @@
 
 							.num {
 								margin-left: 2px;
-								font-size: $font-size-small;
+								font-size: $font-size-small-s;
 							}
 						}
 					}
 
 					.txt {
 						flex: 1;
-						display: flex;
-						flex-direction: column;
-						justify-content: center;
-						padding: 0 20px 0 10px;
-						height: 100px;
+						padding: 0 16px;
+						line-height: 20px;
 						overflow: hidden;
-						line-height: 24px;
-						font-size: $font-size-medium;
+						font-size: $font-size-small;
 						color: $color-text-l;
 
 						.title {
-							line-height: 30px;
-							font-size: $font-size-medium-x;
+							line-height: 26px;
+							font-size: $font-size-medium;
 							color: $color-text;
 						}
 

@@ -78,7 +78,6 @@
 
 	const currentSong = computed(() => store.getters.currentSong);
 	const playList = computed(() => store.state.playList);
-	const curPlayIndex = computed(() => store.state.curPlayIndex);
 
 	const { modeIcon, modeText, toggleMode } = Mode();
 	const { favoriteIcon, toggleFavorite } = Favorite();
@@ -99,7 +98,7 @@
 	function playSong(e) {
 		const target = e.path.filter((item) => item.className === 'item')[0];
 		const index = target.dataset.index;
-		store.dispatch('getCurPlayIndex', index);
+		store.dispatch('getCurPlayIndex', { index, type: 0 });
 		scrollToCurSong();
 	}
 
@@ -151,7 +150,6 @@
 
 	defineExpose({
 		show,
-		hide,
 	});
 </script>
 

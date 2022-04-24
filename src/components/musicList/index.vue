@@ -6,14 +6,15 @@
 		</div>
 		<!-- 标题 -->
 		<h1 class="title">{{ listTitle }}</h1>
+		<!-- 固定播放栏 -->
+		<ListTop
+			class="list-fixed"
+			:style="fixedStyle"
+			:count="songs.length"
+			@play="sequencePlayAll"
+		></ListTop>
 		<!-- 背景图片 -->
 		<div class="bg-image" :style="bgImageStyle" ref="imageRef">
-			<div class="play-btn-wrapper" v-if="showBtn">
-				<div class="play-btn">
-					<i class="icon-play"></i>
-					<span class="text" @click="sequencePlayAll">顺序播放全部</span>
-				</div>
-			</div>
 			<div class="filter" :style="filterStyle"></div>
 		</div>
 		<!-- 歌曲列表 -->
@@ -24,6 +25,7 @@
 			@onScroll="onScroll"
 		>
 			<div class="song-list-wrapper" v-load="isLoading">
+				<ListTop :count="songs.length" @play="sequencePlayAll"></ListTop>
 				<SongList :songs="songs"></SongList>
 			</div>
 		</Scroll>
@@ -34,7 +36,9 @@
 	import { computed, onMounted, ref } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { useStore } from 'vuex';
+	import storage from '@/plugins/storage';
 	import Scroll from '@/components/base/scroll';
+	import ListTop from '@/components/base/listTop';
 	import SongList from '@/components/base/songList';
 
 	const router = useRouter();
@@ -57,6 +61,17 @@
 
 	const playList = computed(() => store.state.playList);
 
+	/* 播放全部固定样式 */
+	const fixedStyle = computed(() => {
+		let visibility = 'hidden';
+		if (scrollY.value > maxTranslateY.value) {
+			visibility = 'visible';
+		}
+		return {
+			visibility,
+		};
+	});
+
 	/* 背景图片样式 */
 	const bgImageStyle = computed(() => {
 		let zIndex = 0;
@@ -74,17 +89,6 @@
 			transform: `scale(${scale})`,
 			backgroundImage: `url(${props.picUrl})`,
 		};
-	});
-
-	const showBtn = computed(() => {
-		let flag = true;
-		if (!props.songs.length) {
-			flag = false;
-		}
-		if (scrollY.value > maxTranslateY.value) {
-			flag = false;
-		}
-		return flag;
 	});
 
 	/* 模糊层样式 */
@@ -119,6 +123,8 @@
 	/* 顺序播放歌单歌曲 */
 	function sequencePlayAll() {
 		store.dispatch('playSequenceList', props.songs);
+		/* 把当前模式存储到本地 */
+		storage.setLocal('__mode__', 0);
 	}
 
 	onMounted(() => {
@@ -136,10 +142,10 @@
 		bottom: 0;
 
 		.back {
-			position: absolute;
-			top: 0;
-			left: 6px;
 			z-index: 20;
+			position: absolute;
+			top: 5px;
+			left: 6px;
 			transform: translateZ(2px);
 
 			.icon-back {
@@ -159,9 +165,17 @@
 			transform: translateZ(2px);
 			@include no-wrap();
 			text-align: center;
-			line-height: 40px;
+			line-height: 50px;
 			font-size: $font-size-large;
 			color: $color-text;
+		}
+
+		.list-fixed {
+			z-index: 50;
+			position: fixed;
+			top: 50px;
+			left: 0;
+			visibility: hidden;
 		}
 
 		.bg-image {
@@ -172,9 +186,9 @@
 			background-size: cover;
 
 			.play-btn-wrapper {
+				z-index: 10;
 				position: absolute;
 				bottom: 20px;
-				z-index: 10;
 				width: 100%;
 
 				.play-btn {
@@ -215,13 +229,12 @@
 		}
 
 		.list {
+			z-index: 0;
 			position: absolute;
 			bottom: 0;
 			width: 100%;
-			z-index: 0;
 
 			.song-list-wrapper {
-				padding: 20px;
 				min-height: 350px;
 				background: $color-background;
 			}

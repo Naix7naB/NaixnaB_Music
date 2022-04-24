@@ -1,5 +1,6 @@
 import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { getLikeList } from '@/service/user';
 import storage from '@/plugins/storage';
 
 export default () => {
@@ -32,12 +33,17 @@ export default () => {
 		return favoriteList.value.findIndex((item) => item.id === song.id);
 	}
 
-	onMounted(() => {
+	onMounted(async () => {
 		/* 如果 Vuex没有 我喜欢的歌曲列表 */
 		if (!favoriteList.value.length) {
 			const list = storage.getLocal('__favoriteList__', []);
 			if (list.length) {
 				store.commit('setFavoriteList', list);
+			} else {
+				/* 如果都没有则请求数据 */
+				const { favoriteSongs } = await getLikeList();
+				store.commit('setFavoriteList', favoriteSongs);
+				storage.setLocal('__favoriteList__', favoriteSongs);
 			}
 		}
 	});

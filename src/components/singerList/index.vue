@@ -147,11 +147,11 @@
 
 		.shortcut {
 			position: absolute;
-			right: 4px;
-			top: 50%;
+			right: 8px;
+			top: 51%;
 			transform: translateY(-50%);
 			width: 20px;
-			padding: 20px 0;
+			padding: 14px 0;
 			border-radius: 10px;
 			text-align: center;
 			background: $color-background-d;
@@ -160,8 +160,8 @@
 			.item {
 				padding: 3px;
 				line-height: 1;
-				color: $color-text-l;
-				font-size: $font-size-small;
+				color: $color-text-d;
+				font-size: $font-size-small-s;
 
 				&.current {
 					// 高亮 当前区间的 字母高亮

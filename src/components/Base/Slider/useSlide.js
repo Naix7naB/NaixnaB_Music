@@ -1,6 +1,6 @@
 import BScroll from '@better-scroll/core';
 import Slide from '@better-scroll/slide';
-import { onMounted, onUnmounted, onActivated, onDeactivated, ref } from 'vue';
+import { onUnmounted, onActivated, onDeactivated, ref } from 'vue';
 BScroll.use(Slide);
 
 export function useSlide() {
@@ -27,13 +27,6 @@ export function useSlide() {
 		});
 	}
 
-	onMounted(() => {
-		/* 等待dom加载完毕后 进行slide的初始化 */
-		setTimeout(() => {
-			initSlider();
-		}, 300);
-	});
-
 	onUnmounted(() => {
 		slide.value.destroy(); // 销毁
 	});
@@ -48,6 +41,7 @@ export function useSlide() {
 	});
 
 	return {
+		initSlider,
 		slideRef,
 		currentPageIndex,
 	};

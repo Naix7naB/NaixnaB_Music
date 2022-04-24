@@ -6,7 +6,7 @@
 				<!-- 轮播图 -->
 				<div class="recommend-banner">
 					<div class="banner-content">
-						<Slider :banners="recommend.banners"></Slider>
+						<Slider ref="bannerRef" :banners="recommend.banners"></Slider>
 					</div>
 				</div>
 				<!-- 歌单列表 -->
@@ -41,15 +41,16 @@
 </template>
 
 <script setup>
-	import { computed, onMounted, reactive, ref } from 'vue';
+	import { nextTick, computed, onMounted, reactive, ref } from 'vue';
 	import { useRouter } from 'vue-router';
 	import { getBanner, getRecommendList } from '@/service/recommend';
 	import storage from '@/plugins/storage';
-	import pic from '@/assets/images/lazy.jpg';
 	import Slider from '@/components/base/slider';
 	import Scroll from '@/components/base/scroll';
 
 	const router = useRouter();
+
+	const bannerRef = ref(null);
 
 	const recommend = reactive({
 		banners: [{ bannerId: 0, pic: '' }],
@@ -88,6 +89,10 @@
 		/* 轮播图数据 */
 		getBanner({ type: 2 }).then((res) => {
 			if (res.code === 200) recommend.banners = res.banners;
+			/* 等待数据渲染完毕后初始化 Slider */
+			nextTick(() => {
+				bannerRef.value.initSlider();
+			});
 		});
 		/* 推荐歌单列表数据 */
 		getRecommendList({ limit: 30 }).then((res) => {

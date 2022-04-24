@@ -29,12 +29,17 @@ function getFolloweds(params) {
 }
 
 /* 获取已喜欢音乐 */
-function getLikeList(params) {
-	return request({
+async function getLikeList(params) {
+	const { ids } = await request({
 		method: 'get',
 		url: '/likelist',
 		params,
 	});
+	const musicIds = ids.join(',');
+	const { hotSongs } = await getSongDetail({ ids: musicIds });
+	return {
+		favoriteSongs: hotSongs,
+	};
 }
 
 /* 获取收藏的专辑 */
@@ -60,11 +65,14 @@ async function getMyAlbumMusic(params) {
 	return getSongDetail({ ids });
 }
 
-/**获取用户播放记录
- * 必选参数: uid
- * 可选参数: type: type=1 weekData, type=0 allData
- * 接口地址: /user/record
- */
+/* 获取用户播放记录 (听歌排行) */
+function getUserRecord(params) {
+	return request({
+		method: 'get',
+		url: '/user/record',
+		params,
+	});
+}
 
 /* 统一获取用户信息 统一处理结果 */
 async function getUserInfo(params) {
@@ -115,4 +123,5 @@ export {
 	getLikeList,
 	getCollectAlbum,
 	getMyAlbumMusic,
+	getUserRecord,
 };

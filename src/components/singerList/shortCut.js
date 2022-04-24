@@ -16,8 +16,8 @@ export function useShortCut(groupRef) {
 	function onShortCutTouchMove(e) {
 		touch.y2 = e.touches[0].pageY;
 		const index = touch.index;
-		/* 每个字母的高度时 18px */
-		const deltaIndex = Math.floor((touch.y2 - touch.y1) / 18);
+		/* 每个字母的高度是 16px */
+		const deltaIndex = Math.floor((touch.y2 - touch.y1) / 16);
 		/* 在原来点击的索引值上进行偏移 */
 		const curIndex = index + deltaIndex;
 		scrollTo(curIndex);

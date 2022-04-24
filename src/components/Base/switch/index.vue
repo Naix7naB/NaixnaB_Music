@@ -11,12 +11,12 @@
 				{{ item }}
 			</li>
 		</ul>
-		<div class="active-bar" :style="activeStyle"></div>
+		<div class="active-bar" ref="barRef" :style="activeStyle"></div>
 	</div>
 </template>
 
 <script setup>
-	import { computed } from 'vue';
+	import { computed, onMounted, ref } from 'vue';
 
 	const props = defineProps({
 		text: {
@@ -30,9 +30,12 @@
 	});
 	const emit = defineEmits(['update:modelValue']);
 
+	const barRef = ref(null);
+	const transfer = ref(0);
+
 	const activeStyle = computed(() => {
 		return {
-			transform: `translateX(${props.modelValue * 130}px)`,
+			transform: `translateX(${props.modelValue * transfer.value}px)`,
 		};
 	});
 
@@ -40,6 +43,10 @@
 	function onSwitch(index) {
 		emit('update:modelValue', index);
 	}
+
+	onMounted(() => {
+		transfer.value = barRef.value.clientWidth - 20;
+	});
 </script>
 
 <style scoped lang="scss">

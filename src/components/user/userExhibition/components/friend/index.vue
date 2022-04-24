@@ -140,17 +140,26 @@
 		.friend-top {
 			display: flex;
 			align-items: center;
-			height: 72px;
-			background: rgba(90, 83, 83, 0.3);
+			height: 70px;
+			background: rgba(69, 65, 65, 0.3);
 			backdrop-filter: blur(2px);
 
 			/* scss样式穿透 */
 			&::v-deep(.switch) {
+				width: 200px;
+
 				.switch-wrapper {
 					border: 1px solid rgb(146, 129, 108);
+
+					.switch-item {
+						height: 28px;
+						line-height: 28px;
+						font-size: $font-size-medium;
+					}
 				}
 
 				.active-bar {
+					height: 28px;
 					background: rgb(146, 129, 108);
 				}
 			}
@@ -158,10 +167,12 @@
 
 		.list-wrapper {
 			position: absolute;
-			top: 72px;
+			top: 70px;
 			bottom: 0;
 			width: 100%;
 			overflow: hidden;
+			background: rgba(69, 65, 65, 0.3);
+			backdrop-filter: blur(2px);
 
 			.list {
 				padding: 5%;
@@ -205,7 +216,7 @@
 						overflow: hidden;
 
 						.name {
-							font-size: $font-size-medium-x;
+							font-size: $font-size-medium;
 						}
 
 						.desc {

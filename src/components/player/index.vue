@@ -115,6 +115,7 @@
 	import { getSongUrl } from '@/service/song';
 	import { handleName, formatTime } from '@/plugins/utils';
 	import Mode from './mode';
+	import History from './history';
 	import Favorite from './favorite';
 	import Middle from './middle';
 	import Lyric from './lyric';
@@ -143,16 +144,17 @@
 
 	/***************************   Hooks   ****************************/
 	const { modeIcon, toggleMode } = Mode();
+	const { saveHistoryList } = History();
 	const { favoriteIcon, toggleFavorite } = Favorite();
 	const { toggleMiddle, middleLStyle, middleRStyle } = Middle();
 	const {
+		lyricRef,
+		lyricScrollRef,
 		lyric,
 		curLyric,
 		curLyricIndex,
 		play,
 		stop,
-		lyricScrollRef,
-		lyricRef,
 	} = Lyric(curTime);
 	/******************************************************************/
 
@@ -203,6 +205,7 @@
 			let audio = audioRef.value;
 			audio.src = url;
 			store.commit('setPlayState', 1);
+			saveHistoryList(newSong);
 		}
 	});
 

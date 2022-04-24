@@ -60,7 +60,7 @@
 							</div>
 							<div class="text">
 								<h1 class="name">我喜欢的音乐</h1>
-								<p class="desc">{{ favoriteAlbum.trackCount }}首</p>
+								<p class="desc">{{ favoriteList.length }}首</p>
 							</div>
 							<div class="icon">
 								<i class="icon-heartbeat"></i>
@@ -96,6 +96,7 @@
 <script setup>
 	import { computed, onMounted, ref } from 'vue';
 	import { useRouter } from 'vue-router';
+	import { useStore } from 'vuex';
 	import { getUserAccount, getUserInfo, getUserPlaylist } from '@/service/user';
 	import storage from '@/plugins/storage';
 	import Cookies from 'vue-cookie';
@@ -105,6 +106,7 @@
 	import AlbumList from '@/components/user/userAlbumList';
 
 	const router = useRouter();
+	const store = useStore();
 
 	const confirmRef = ref(null);
 
@@ -119,6 +121,8 @@
 	const bgImage = ref('');
 	const scrollY = ref(0);
 	const isLoading = ref(true);
+
+	const favoriteList = computed(() => store.state.favoriteList);
 
 	/* 头部标题样式 */
 	const titleStyle = computed(() => {

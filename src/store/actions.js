@@ -1,5 +1,3 @@
-import storage from '@/plugins/storage';
-
 const actions = {
 	/*  */
 
@@ -58,14 +56,14 @@ const actions = {
 	},
 
 	/* 获取当前点击歌曲的索引 */
-	getCurPlayIndex({ commit, state }, index) {
+	getCurPlayIndex({ commit, state }, { index, type }) {
 		const playList = state.playList.slice();
 		const curPlayList = state.curPlayList.slice();
 		const song = playList[index];
 		const curIndex = findInd(curPlayList, song);
 		/* 设置播放歌曲的索引 */
 		commit('setCurPlayIndex', curIndex);
-		// commit('setPlayerStyle', 1);
+		type ? commit('setPlayerStyle', 1) : commit('setPlayerStyle', 0);
 	},
 
 	/* 顺序播放列表 */
@@ -76,10 +74,10 @@ const actions = {
 		commit('setCurPlayList', list);
 		/* 设置当前播放索引值 */
 		commit('setCurPlayIndex', 0);
+		/* 设置当前播放状态 */
+		commit('setPlayState', 1);
 		/* 设置播放模式 */
 		commit('setPlayMode', 0);
-		/* 把当前模式存储到本地 */
-		storage.setLocal('__mode__', 0);
 		/* 设置播放器样式 */
 		commit('setPlayerStyle', 1);
 	},
@@ -98,8 +96,6 @@ const actions = {
 		const index = findInd(state.curPlayList, currentSong);
 		commit('setCurPlayIndex', index);
 		commit('setPlayMode', mode);
-		/* 把当前模式存储到本地 */
-		storage.setLocal('__mode__', mode);
 	},
 
 	/* 删除一首歌曲 */

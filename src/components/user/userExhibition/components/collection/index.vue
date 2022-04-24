@@ -114,15 +114,15 @@
 				.content {
 					flex: 1;
 					padding: 0 10px;
-					line-height: 24px;
+					line-height: 20px;
 
 					.name {
-						font-size: $font-size-medium-x;
+						font-size: $font-size-medium;
 					}
 
 					.desc {
 						color: $color-text-l;
-						font-size: $font-size-medium;
+						font-size: $font-size-small;
 					}
 				}
 			}

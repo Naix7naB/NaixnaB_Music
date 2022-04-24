@@ -38,6 +38,8 @@ export default () => {
 		// 0 => 1 => 2 => 0
 		const mode = (playMode.value + 1) % 3;
 		store.dispatch('changeMode', mode);
+		/* 把当前模式存储到本地 */
+		storage.setLocal('__mode__', mode);
 	}
 
 	onMounted(() => {

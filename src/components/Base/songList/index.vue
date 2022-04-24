@@ -1,4 +1,5 @@
 <template>
+	<!-- 歌曲列表 -->
 	<ul class="song-list" @click="playSong">
 		<li
 			class="item"
@@ -6,10 +7,17 @@
 			:key="item"
 			:data-index="index"
 		>
-			<div class="num" :style="{ fontSize: index < 99 ? '16px' : '14px' }">
+			<div class="image" v-if="!isNum">
+				<img v-img-lazy="item.al.picUrl" />
+			</div>
+			<div
+				class="num"
+				v-if="isNum"
+				:style="{ fontSize: index < 99 ? '16px' : '14px' }"
+			>
 				{{ index + 1 }}
 			</div>
-			<div class="detail">
+			<div class="details">
 				<h2 class="name">{{ item.name }}</h2>
 				<p class="desc">{{ handleName(item) }}</p>
 			</div>
@@ -24,7 +32,16 @@
 	import { handleName } from '@/plugins/utils';
 
 	const store = useStore();
-	const props = defineProps(['songs']);
+	const props = defineProps({
+		songs: {
+			type: Array,
+			required: true,
+		},
+		isNum: {
+			type: Boolean,
+			default: true,
+		},
+	});
 
 	const playList = computed(() => store.state.playList);
 
@@ -37,17 +54,32 @@
 			store.dispatch('addWholeList', props.songs);
 		}
 		/* 处理是随机播放时的情况 */
-		store.dispatch('getCurPlayIndex', index);
+		store.dispatch('getCurPlayIndex', { index, type: 1 });
 	}
 </script>
 
 <style lang="scss" scoped>
 	.song-list {
+		padding: 0 20px;
+		overflow: hidden;
+
 		.item {
 			display: flex;
 			align-items: center;
 			box-sizing: border-box;
 			height: 56px;
+
+			.image {
+				flex: 0 0 50px;
+				height: 50px;
+				border-radius: 10px;
+				overflow: hidden;
+
+				img {
+					width: 100%;
+					height: 100%;
+				}
+			}
 
 			.num {
 				flex: 0 0 30px;
@@ -55,8 +87,9 @@
 				color: $color-text-l;
 			}
 
-			.detail {
+			.details {
 				flex: 1;
+				line-height: 20px;
 				padding: 0 10px;
 				overflow: hidden;
 
@@ -67,7 +100,6 @@
 				}
 
 				.desc {
-					line-height: 24px;
 					@include no-wrap();
 					color: $color-text-d;
 					font-size: $font-size-small;
