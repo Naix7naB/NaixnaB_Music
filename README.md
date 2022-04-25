@@ -21,7 +21,7 @@
 ### 安装
 
 开项目之前记得把后端接口打开
-具体参考上面的 **[接口地址]**
+具体参考上面的 **[接口地址](https://github.com/Binaryify/NeteaseCloudMusicApi)**
 
 先把项目克隆到本地
 
