@@ -35,10 +35,16 @@ async function getLikeList(params) {
 		url: '/likelist',
 		params,
 	});
-	const musicIds = ids.join(',');
-	const { hotSongs } = await getSongDetail({ ids: musicIds });
+	let songs = null;
+	if (ids.length) {
+		const musicIds = ids.join(',');
+		const { hotSongs } = await getSongDetail({ ids: musicIds });
+		songs = hotSongs;
+	} else {
+		songs = ids;
+	}
 	return {
-		favoriteSongs: hotSongs,
+		favoriteSongs: songs,
 	};
 }
 

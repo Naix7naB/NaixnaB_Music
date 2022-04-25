@@ -96,9 +96,9 @@
 
 <style lang="scss" scoped>
 	.top-list {
-		position: fixed;
+		position: absolute;
 		width: 100%;
-		top: 88px;
+		top: 44px;
 		bottom: 0;
 
 		.top-list-content {

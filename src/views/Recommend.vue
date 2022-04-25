@@ -103,9 +103,9 @@
 
 <style lang="scss" scoped>
 	.recommend {
-		position: fixed;
+		position: absolute;
 		width: 100%;
-		top: 88px;
+		top: 44px;
 		bottom: 0;
 		overflow: scroll;
 
