@@ -201,9 +201,9 @@
 
 <style lang="scss" scoped>
 	.search {
-		position: absolute;
+		position: fixed;
 		width: 100%;
-		top: 44px;
+		top: 88px;
 		bottom: 0;
 		box-sizing: border-box;
 

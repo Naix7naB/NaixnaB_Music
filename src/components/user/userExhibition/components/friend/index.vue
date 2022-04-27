@@ -1,12 +1,10 @@
 <template>
 	<div class="friend" v-load="isLoading">
-		<div class="friend-top">
-			<Switch
-				:text="['关注', '粉丝']"
-				v-model="switchNum"
-				@update:modelValue="toggle"
-			></Switch>
-		</div>
+		<Switch
+			:text="['关注', '粉丝']"
+			v-model="switchNum"
+			@update:modelValue="toggle"
+		></Switch>
 		<Scroll
 			class="list-wrapper"
 			ref="listScrollRef"
@@ -59,6 +57,8 @@
 	const isFollowed = ref([]);
 	const switchNum = ref(0);
 
+	const playList = computed(() => store.state.playList);
+
 	const isLoading = computed(() => {
 		return !friends.value.follows || !friends.value.followeds;
 	});
@@ -66,8 +66,6 @@
 	const list = computed(() => {
 		return !switchNum.value ? friends.value.follows : friends.value.followeds;
 	});
-
-	const playList = computed(() => store.state.playList);
 
 	/* 滚动样式 */
 	const scrollStyle = computed(() => {
@@ -108,7 +106,7 @@
 	}
 
 	onMounted(async () => {
-		const uid = storage.getLocal('__uid__', '');
+		const { uid } = storage.getLocal('__base__', null);
 		const { follow } = await getFollows({ uid });
 		const { followeds } = await getFolloweds({ uid });
 		friends.value = {
@@ -136,32 +134,27 @@
 		top: 50px;
 		bottom: 0;
 		width: 100%;
+		background: rgba(69, 65, 65, 0.3);
+		backdrop-filter: blur(2px);
 
-		.friend-top {
-			display: flex;
-			align-items: center;
-			height: 70px;
-			background: rgba(69, 65, 65, 0.3);
-			backdrop-filter: blur(2px);
+		/* scss样式穿透 */
+		&::v-deep(.switch) {
+			width: 200px;
+			margin-top: 20px;
 
-			/* scss样式穿透 */
-			&::v-deep(.switch) {
-				width: 200px;
+			.switch-wrapper {
+				border: 1px solid rgb(146, 129, 108);
 
-				.switch-wrapper {
-					border: 1px solid rgb(146, 129, 108);
-
-					.switch-item {
-						height: 28px;
-						line-height: 28px;
-						font-size: $font-size-medium;
-					}
-				}
-
-				.active-bar {
+				.switch-item {
 					height: 28px;
-					background: rgb(146, 129, 108);
+					line-height: 28px;
+					font-size: $font-size-medium;
 				}
+			}
+
+			.active-bar {
+				height: 28px;
+				background: rgb(146, 129, 108);
 			}
 		}
 
@@ -171,8 +164,6 @@
 			bottom: 0;
 			width: 100%;
 			overflow: hidden;
-			background: rgba(69, 65, 65, 0.3);
-			backdrop-filter: blur(2px);
 
 			.list {
 				padding: 5%;

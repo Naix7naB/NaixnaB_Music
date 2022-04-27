@@ -18,7 +18,7 @@
 
 	const { listTitle, picUrl, songs, isLoading } = createDetail({
 		props: props,
-		localKey: '__albumDetail__',
+		sessionKey: '__albumDetail__',
 		api: getAlbumMusic,
 	});
 </script>

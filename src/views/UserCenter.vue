@@ -1,86 +1,52 @@
 <template>
-	<div class="user">
-		<Confirm
-			ref="confirmRef"
-			text="请先登录后操作"
-			confirmText="登录"
-			@confirm="confirm"
-			@cancel="cancel"
-		></Confirm>
-		<div
-			class="user-wrapper"
-			:style="{ backgroundImage: `url(${profile.backgroundUrl})` }"
-			v-if="profile.backgroundUrl"
-			v-load="isLoading"
+	<div
+		class="user-center"
+		:style="{ backgroundImage: `url(${baseInfo.bgImage})` }"
+		v-load="isLoading"
+		v-if="baseInfo.bgImage"
+	>
+		<!-- 模糊层 -->
+		<Filter></Filter>
+		<!-- 顶部标题 -->
+		<UserTitle
+			:text="profile.nickname"
+			:icon="profile.avatarUrl"
+			:style="titleStyle"
+			@back="back"
+		></UserTitle>
+		<!-- 内容滚动区 -->
+		<Scroll
+			class="user-content"
+			:probeType="3"
+			@onScroll="onScroll"
+			v-if="!isLoading"
 		>
-			<!-- 模糊层 -->
-			<div class="filter"></div>
-			<!-- 返回按钮 -->
-			<div class="back" @click="back">
-				<i class="icon-back"></i>
-			</div>
-			<!-- 标题 -->
-			<div class="user-title" :style="titleStyle">
-				<div class="title">
-					<img class="image" :src="profile.avatarUrl" />
-					<span class="name">{{ profile.nickname }}</span>
-				</div>
-			</div>
-			<!-- 内容滚动区 -->
-			<Scroll class="user-content" :probeType="3" @onScroll="onScroll">
-				<div class="content-wrapper">
-					<!-- 用户信息 -->
-					<div class="user-info-top">
-						<div class="content">
-							<div class="icon">
-								<img :src="profile.avatarUrl" />
+			<div class="content-wrapper">
+				<!-- 用户信息 -->
+				<div class="user-info-top">
+					<div class="content">
+						<div class="icon">
+							<img :src="profile.avatarUrl" />
+						</div>
+						<div class="text">
+							<div class="head">
+								<span class="name">{{ profile.nickname }}</span>
+								<img :src="vipInfo.redVipDynamicIconUrl2" />
 							</div>
-							<div class="text">
-								<div class="head">
-									<span class="name">{{ profile.nickname }}</span>
-									<img :src="vipInfo.redVipDynamicIconUrl2" />
-								</div>
-								<div class="desc">
-									<span class="txt follows">{{ profile.follows }}关注</span>
-									<span class="txt followed">{{ profile.followeds }}粉丝</span>
-									<span class="txt level">Lv.{{ profile.level }}</span>
-								</div>
+							<div class="desc">
+								<span class="txt follows">{{ profile.follows }}关注</span>
+								<span class="txt followed">{{ profile.followeds }}粉丝</span>
+								<span class="txt level">Lv.{{ profile.level }}</span>
 							</div>
 						</div>
 					</div>
-					<!-- 用户展示区 -->
-					<div class="user-public">
-						<Exhibit @getCurItem="getCurItem"></Exhibit>
-					</div>
-					<!-- 用户歌单 -->
-					<div class="user-album">
-						<div class="favorite-album" @click="getCurItem">
-							<div class="image">
-								<img :src="favoriteAlbum.coverImgUrl" />
-							</div>
-							<div class="text">
-								<h1 class="name">我喜欢的音乐</h1>
-								<p class="desc">{{ favoriteList.length }}首</p>
-							</div>
-							<div class="icon">
-								<i class="icon-heartbeat"></i>
-								<span>心动模式</span>
-							</div>
-						</div>
-						<AlbumList
-							:list="selfList"
-							:sub="false"
-							@pickItem="toDetail"
-						></AlbumList>
-						<AlbumList
-							:list="subList"
-							@pickItem="toDetail"
-							:style="{ marginBottom: '0' }"
-						></AlbumList>
-					</div>
 				</div>
-			</Scroll>
-		</div>
+				<!-- 用户展示区 -->
+				<Exhibit :imgUrl="favorite.coverImgUrl" @pickItem="toDetail"></Exhibit>
+				<!-- 用户歌单 -->
+				<UserAlbum :playlist="albumList" @pickItem="toDetail"></UserAlbum>
+			</div>
+		</Scroll>
 		<!-- vue3 路由组件添加 transition/keep-alive -->
 		<router-view v-slot="{ Component }">
 			<transition name="slide" appear>
@@ -96,33 +62,29 @@
 <script setup>
 	import { computed, onMounted, ref } from 'vue';
 	import { useRouter } from 'vue-router';
-	import { useStore } from 'vuex';
-	import { getUserAccount, getUserInfo, getUserPlaylist } from '@/service/user';
+	import { getUserInfo, getUserPlaylist, getUserAccount } from '@/service/user';
 	import storage from '@/plugins/storage';
-	import Cookies from 'vue-cookie';
-	import Confirm from '@/components/base/confirm';
+
+	/* 组件 */
 	import Scroll from '@/components/base/scroll';
+	import Filter from '@/components/user/filter';
+	import UserTitle from '@/components/user/userTitle';
 	import Exhibit from '@/components/user/userExhibition';
-	import AlbumList from '@/components/user/userAlbumList';
+	import UserAlbum from '@/components/user/userAlbum/index.vue';
 
 	const router = useRouter();
-	const store = useStore();
 
-	const confirmRef = ref(null);
-
+	const baseInfo = ref({});
 	const profile = ref({});
 	const vipInfo = ref({});
-	const favoriteAlbum = ref({});
-	const selfList = ref([]);
-	const subList = ref([]);
+	const favorite = ref({});
+	const albumList = ref([]);
 	const albumDetail = ref({});
 	const userExhibitDetail = ref({});
 
-	const bgImage = ref('');
 	const scrollY = ref(0);
-	const isLoading = ref(true);
 
-	const favoriteList = computed(() => store.state.favoriteList);
+	const isLoading = computed(() => !albumList.value.length);
 
 	/* 头部标题样式 */
 	const titleStyle = computed(() => {
@@ -143,39 +105,28 @@
 		scrollY.value = -pos.y;
 	}
 
-	/* 跳转展示区页面 */
-	function getCurItem(item) {
-		let data = null;
-		if (item instanceof MouseEvent || item.index === 3) {
-			data = {
-				title: '歌单',
-				index: 3,
-				type: item.index === 3 ? 1 : 0,
-			};
-		} else {
-			data = item;
-		}
-		userExhibitDetail.value = {
-			...data,
-			bgImage: bgImage.value,
-		};
-		storage.setLocal('__exhibitDetail__', userExhibitDetail.value);
-		router.push('/user/exhibit');
-	}
-
-	/* 跳转用户歌单详细页 */
+	/* 跳转用户歌单详细页 或 跳转展示区页面 */
 	function toDetail(item) {
-		albumDetail.value = {
-			id: item.id,
-			name: item.name,
-			picUrl: item.picUrl || item.coverImgUrl,
-		};
-		/* 缓存 albumDetail数据 */
-		storage.setLocal('__albumDetail__', albumDetail.value);
-		/* 跳转 */
-		router.push({
-			path: `/user/${item.id}`,
-		});
+		if (item.id) {
+			albumDetail.value = {
+				id: item.id,
+				name: item.name,
+				picUrl: item.picUrl || item.coverImgUrl,
+			};
+			/* 缓存 albumDetail数据 */
+			storage.setSession('__albumDetail__', albumDetail.value);
+			/* 跳转 */
+			router.push({
+				path: `/user/${item.id}`,
+			});
+		} else {
+			userExhibitDetail.value = {
+				...item,
+				bgImage: baseInfo.value.bgImage,
+			};
+			storage.setSession('__exhibitDetail__', userExhibitDetail.value);
+			router.push('/user/exhibit');
+		}
 	}
 
 	/* 返回上一级 */
@@ -183,259 +134,111 @@
 		router.push('/');
 	}
 
-	/* 点击确认按钮 */
-	function confirm() {
-		router.push('/login');
-	}
-
-	/* 点击取消按钮 */
-	function cancel() {
-		router.push('/');
-	}
-
 	onMounted(async () => {
-		const token =
-			storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
-		if (!token) {
-			/* 没有登录 或 登录过期 */
-			isLoading.value = false;
-			confirmRef.value.show();
+		let base = storage.getSession('__base__', null);
+		if (base) {
+			baseInfo.value = base;
 		} else {
-			let uid = storage.getLocal('__uid__', '');
-			if (!uid) {
-				const { account } = await getUserAccount();
-				uid = account.id;
-				storage.setLocal('__uid__', uid);
-			}
-			if (!uid) return;
-			/* 获取 用户信息 */
-			const info = storage.getLocal('__userInfo__', '');
-			if (info) {
-				profile.value = info.profile;
-				vipInfo.value = info.vipInfo;
-				bgImage.value = info.profile.backgroundUrl;
-			} else {
-				const { result } = await getUserInfo({ uid });
-				profile.value = result.profile;
-				vipInfo.value = result.vipInfo;
-				bgImage.value = result.profile.backgroundUrl;
-				storage.setLocal('__userInfo__', result);
-			}
-			/* 获取 用户歌单 */
-			const res = await getUserPlaylist({ uid });
-			const temp = res.playlist.slice();
-			favoriteAlbum.value = temp.splice(0, 1)[0];
-			/* 筛选出 自建歌单 和 收藏歌单 */
-			temp.forEach((item) => {
-				item.subscribed ? subList.value.push(item) : selfList.value.push(item);
-			});
-			isLoading.value = false;
-			/* 后面通过 bgImage 全部页面更换皮肤 待完成... */
-			storage.setLocal('__bgImage__', bgImage.value);
+			const { profile } = await getUserAccount();
+			baseInfo.value = {
+				uid: profile.userId,
+				bgImage: profile.backgroundUrl,
+			};
+			storage.setSession('__base__', baseInfo.value);
 		}
+		const { uid } = baseInfo.value;
+		const info = storage.getLocal('__userInfo__', '');
+		if (info) {
+			profile.value = info.profile;
+			vipInfo.value = info.vipInfo;
+		} else {
+			const { result } = await getUserInfo({ uid });
+			profile.value = result.profile;
+			vipInfo.value = result.vipInfo;
+			storage.setLocal('__userInfo__', result);
+		}
+		/* 获取 用户歌单 */
+		const { playlist } = await getUserPlaylist({ uid });
+		favorite.value = playlist.splice(0, 1)[0];
+		albumList.value = playlist;
 	});
 </script>
 
 <style lang="scss" scoped>
-	.user {
-		z-index: 1;
+	.user-center {
 		position: fixed;
 		top: 0;
 		left: 0;
 		bottom: 0;
 		right: 0;
-		background: $color-background;
+		background: 0 -160px / contain fixed;
 
-		.user-wrapper {
-			z-index: -2;
+		.user-content {
+			z-index: -1;
 			position: absolute;
 			top: 0;
 			bottom: 0;
 			width: 100%;
-			background: 0 -160px / contain fixed;
+			overflow: hidden;
 
-			.filter {
-				z-index: -1;
-				position: fixed;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				background: rgba(0, 0, 0, 0.4);
-			}
+			.user-info-top {
+				position: relative;
+				width: 100%;
+				height: 0;
+				padding-top: 56%;
 
-			.back {
-				z-index: 2;
-				position: absolute;
-				top: 4px;
-				left: 6px;
-
-				.icon-back {
-					display: block;
-					padding: 10px;
-					font-size: $font-size-large-x;
-					color: $color-theme;
-				}
-			}
-
-			.user-title {
-				z-index: 1;
-				position: absolute;
-				left: 0;
-				right: 0;
-				line-height: 50px;
-				background-color: #625243;
-
-				.title {
-					width: 50%;
-					line-height: 50px;
-					margin: 0 auto;
-					@include no-wrap();
-					text-align: center;
-					font-size: $font-size-medium-x;
-					color: $color-text;
-
-					.image {
-						width: 30px;
-						height: 30px;
-						margin-right: 6px;
-						border-radius: 50%;
-						vertical-align: -9px;
-					}
-				}
-			}
-
-			.user-content {
-				height: 100%;
-				overflow: hidden;
-
-				.user-public {
+				.content {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					position: absolute;
+					bottom: 0;
+					left: 5%;
 					width: 90%;
-					margin: 20px auto 10px;
-				}
+					height: 50%;
+					border-radius: 14px;
+					background: rgba(98, 95, 95, 0.3);
+					backdrop-filter: blur(20px);
 
-				.user-info-top {
-					position: relative;
-					width: 100%;
-					height: 0;
-					padding-top: 56%;
+					.icon {
+						flex: 0 0 80px;
+						margin-top: -15%;
+						border-radius: 50%;
+						overflow: hidden;
+						box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 
-					.content {
-						display: flex;
-						flex-direction: column;
-						justify-content: center;
-						align-items: center;
-						position: absolute;
-						bottom: 0;
-						left: 5%;
-						width: 90%;
-						height: 50%;
-						border-radius: 14px;
-						background: rgba(72, 65, 65, 0.3);
-						backdrop-filter: blur(10px);
-
-						.icon {
-							flex: 0 0 80px;
-							margin-top: -15%;
-							border-radius: 50%;
-							overflow: hidden;
-							box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
-
-							img {
-								width: 100%;
-								height: 100%;
-							}
-						}
-
-						.text {
-							padding-top: 10px;
-							line-height: 24px;
-
-							.head {
-								color: $color-text;
-								font-size: $font-size-large;
-
-								img {
-									width: 38px;
-									height: 14px;
-									vertical-align: -1px;
-									margin-left: 4px;
-								}
-							}
-
-							.desc {
-								display: flex;
-								justify-content: center;
-								align-items: center;
-								font-size: $font-size-medium;
-
-								.txt {
-									flex: 0 0 50px;
-									text-align: center;
-								}
-							}
+						img {
+							width: 100%;
+							height: 100%;
 						}
 					}
-				}
 
-				.user-album {
-					overflow: hidden;
-					padding: 5%;
+					.text {
+						padding-top: 10px;
+						line-height: 24px;
 
-					.favorite-album {
-						display: flex;
-						align-items: center;
-						padding: 14px;
-						margin-bottom: 20px;
-						border-radius: 14px;
-						background: rgba(178, 164, 164, 0.3);
-
-						.image {
-							flex: 0 0 54px;
-							height: 54px;
-							border-radius: 8px;
-							overflow: hidden;
+						.head {
+							color: $color-text;
+							font-size: $font-size-large;
 
 							img {
-								width: 100%;
-								height: 100%;
+								width: 38px;
+								height: 14px;
+								vertical-align: -1px;
+								margin-left: 4px;
 							}
 						}
 
-						.text {
-							flex: 1;
-							line-height: 20px;
-							padding-left: 10px;
-							overflow: hidden;
+						.desc {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							font-size: $font-size-medium;
 
-							.name {
-								@include no-wrap();
-								font-size: $font-size-medium-x;
-							}
-
-							.desc {
-								@include no-wrap();
-								color: $color-text-l;
-								font-size: $font-size-small;
-							}
-						}
-
-						.icon {
-							flex: 0 0 80px;
-							padding: 0 4px;
-							line-height: 22px;
-							border: 1px solid $color-text-d;
-							border-radius: 12px;
-							text-align: center;
-
-							.icon-heartbeat {
-								margin-right: 2px;
-								vertical-align: -2px;
-								font-size: $font-size-large;
-							}
-
-							span {
-								font-size: $font-size-small;
+							.txt {
+								flex: 0 0 50px;
+								text-align: center;
 							}
 						}
 					}

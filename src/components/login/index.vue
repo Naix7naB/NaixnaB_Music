@@ -56,17 +56,16 @@
 	/* uiType 0: 短信登录(注册)  1: 密码登录 */
 	const uType = ref(1);
 	const inputRef = ref(null);
-	const loginStatus = computed(() => store.state.isLogin);
-	const uTitle = computed(() => (uType.value ? '密码登录' : '短信登录'));
+	const loginState = computed(() => store.state.isLogin);
 	const btnText = computed(() => (uType.value ? '登录' : '注册 / 登录'));
 
 	watch(uType, () => {
 		inputRef.value.claerContent();
 	});
 
-	watch(loginStatus, (newStatus) => {
-		if (!newStatus) return;
-		router.back();
+	watch(loginState, (newState) => {
+		if (!newState) return;
+		router.push('/user');
 	});
 
 	/* 输入框内容修改时 */

@@ -1,23 +1,29 @@
 <template>
 	<div class="collection" v-load="!collectionList.length">
-		<h1 h1 class="title">我收藏的专辑 ({{ collectionList.length }})</h1>
-		<ul class="list" @click="pickItem">
-			<li
-				class="item"
-				v-for="(item, index) in collectionList"
-				:key="item.id"
-				:data-index="index"
-			>
-				<div class="icon"><img :src="item.picUrl" /></div>
-				<div class="content">
-					<p class="name">{{ item.name }}</p>
-					<p class="desc">
-						<span>{{ item.artists[0].name }}，</span>
-						<span>{{ item.size }}首</span>
-					</p>
-				</div>
-			</li>
-		</ul>
+		<Scroll class="scroll-wrapper">
+			<div class="content">
+				<h1 h1 class="title">我收藏的专辑 ({{ collectionList.length }})</h1>
+				<ul class="list" @click="pickItem">
+					<li
+						class="item"
+						v-for="(item, index) in collectionList"
+						:key="item.id"
+						:data-index="index"
+					>
+						<div class="icon">
+							<img :src="item.picUrl" />
+						</div>
+						<div class="text">
+							<h1 class="name">{{ item.name }}</h1>
+							<p class="desc">
+								<span>{{ item.artists[0].name }}，</span>
+								<span>{{ item.size }}首</span>
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</Scroll>
 		<!-- vue3 路由组件添加 transition/keep-alive -->
 		<router-view v-slot="{ Component }">
 			<transition name="slide" appear>
@@ -32,6 +38,7 @@
 	import { useRouter } from 'vue-router';
 	import { getCollectAlbum } from '@/service/user';
 	import storage from '@/plugins/storage';
+	import Scroll from '@/components/base/scroll';
 
 	const router = useRouter();
 
@@ -73,56 +80,64 @@
 		bottom: 0;
 		width: 100%;
 
-		.title {
-			width: 90%;
-			line-height: 30px;
-			margin: 10px auto 0;
-			font-size: $font-size-medium;
-			text-decoration: underline;
-		}
+		.scroll-wrapper {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+			overflow: hidden;
 
-		.list {
-			box-sizing: border-box;
-			width: 96%;
-			margin: 0 auto;
-			padding: 20px;
-			border-radius: 10px;
-			background: rgba(86, 79, 79, 0.3);
-			backdrop-filter: blur(2px);
+			.title {
+				width: 90%;
+				line-height: 30px;
+				margin: 10px auto 0;
+				font-size: $font-size-medium;
+				text-decoration: underline;
+			}
 
-			.item {
-				display: flex;
-				align-items: center;
-				margin-bottom: 16px;
+			.list {
+				box-sizing: border-box;
+				width: 96%;
+				margin: 0 auto;
+				padding: 20px;
+				border-radius: 10px;
+				background: rgba(86, 79, 79, 0.3);
+				backdrop-filter: blur(2px);
 
-				&:last-child {
-					margin-bottom: 0;
-				}
+				.item {
+					display: flex;
+					align-items: center;
+					margin-bottom: 16px;
 
-				.icon {
-					width: 50px;
-					height: 50px;
-					border-radius: 10px;
-					overflow: hidden;
-
-					img {
-						width: 100%;
-						height: 100%;
-					}
-				}
-
-				.content {
-					flex: 1;
-					padding: 0 10px;
-					line-height: 20px;
-
-					.name {
-						font-size: $font-size-medium;
+					&:last-child {
+						margin-bottom: 0;
 					}
 
-					.desc {
-						color: $color-text-l;
-						font-size: $font-size-small;
+					.icon {
+						width: 50px;
+						height: 50px;
+						border-radius: 10px;
+						overflow: hidden;
+
+						img {
+							width: 100%;
+							height: 100%;
+						}
+					}
+
+					.text {
+						flex: 1;
+						padding: 0 10px;
+						line-height: 20px;
+
+						.name {
+							font-size: $font-size-medium;
+						}
+
+						.desc {
+							color: $color-text-l;
+							font-size: $font-size-small;
+						}
 					}
 				}
 			}

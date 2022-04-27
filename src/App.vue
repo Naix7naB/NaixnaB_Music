@@ -1,5 +1,5 @@
 <template>
-	<div class="nav">
+	<div class="container">
 		<MusicHeader></MusicHeader>
 		<MusicTab></MusicTab>
 		<router-view :style="viewStyle"></router-view>

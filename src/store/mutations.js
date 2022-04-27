@@ -4,6 +4,11 @@ const mutations = {
 		state.isLogin = isLogin;
 	},
 
+	/* 设置加载标识 */
+	setLoadingState(state, isLoading) {
+		state.isLoading = isLoading;
+	},
+
 	/* 设置当前播放列表 */
 	setCurPlayList(state, list) {
 		state.curPlayList = list;

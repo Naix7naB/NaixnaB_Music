@@ -6,6 +6,7 @@ import storage from '@/plugins/storage';
 export default () => {
 	const store = useStore();
 
+	const isLogin = computed(() => store.state.isLogin);
 	const favoriteList = computed(() => store.state.favoriteList);
 
 	/* 喜欢歌曲图标 */
@@ -40,6 +41,7 @@ export default () => {
 			if (list.length) {
 				store.commit('setFavoriteList', list);
 			} else {
+				if (!isLogin.value) return;
 				/* 如果都没有则请求数据 */
 				const { favoriteSongs } = await getLikeList();
 				store.commit('setFavoriteList', favoriteSongs);

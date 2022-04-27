@@ -1,5 +1,5 @@
 <template>
-	<div class="top-list" v-load="isLoading">
+	<div class="top-list" v-load="!topList.length">
 		<Scroll class="top-list-content">
 			<ul @click="getTopListDetail">
 				<li
@@ -53,7 +53,6 @@
 
 	const topList = ref([]);
 	const topListDetail = ref({});
-	const isLoading = ref(true);
 
 	/* 处理歌单详细文本 */
 	function handlerText(text, idx) {
@@ -78,7 +77,7 @@
 			picUrl: item.picUrl || item.coverImgUrl,
 		};
 		/* 缓存 topListDetail数据 */
-		storage.setLocal('__topListDetail__', topListDetail.value);
+		storage.setSession('__topListDetail__', topListDetail.value);
 		/* 跳转 */
 		router.push({
 			path: `/toplist/${item.id}`,
@@ -89,16 +88,15 @@
 		getTopList().then((res) => {
 			const list = res.list.slice(0, 10);
 			topList.value = list;
-			isLoading.value = false;
 		});
 	});
 </script>
 
 <style lang="scss" scoped>
 	.top-list {
-		position: absolute;
+		position: fixed;
 		width: 100%;
-		top: 44px;
+		top: 88px;
 		bottom: 0;
 
 		.top-list-content {

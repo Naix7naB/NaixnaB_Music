@@ -3,12 +3,12 @@ import { useRoute, useRouter } from 'vue-router';
 import storage from '@/plugins/storage';
 
 export default (params) => {
-	const { props, localKey, api } = params;
+	const { props, sessionKey, api } = params;
 
 	const router = useRouter();
 	const route = useRoute();
-	const isLoading = ref(true);
 	const songs = ref([]);
+	const isLoading = ref(true);
 
 	/* 重新处理歌单详细的数据 */
 	const computedData = computed(() => {
@@ -19,7 +19,7 @@ export default (params) => {
 			result = data;
 		} else {
 			/* props的值不存在时 */
-			const cached = storage.getLocal(localKey);
+			const cached = storage.getSession(sessionKey);
 			if (cached && cached.id === route.params.id / 1) {
 				result = cached;
 			}

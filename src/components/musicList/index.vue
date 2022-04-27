@@ -1,7 +1,7 @@
 <template>
 	<div class="music-list">
 		<!-- 返回按钮 -->
-		<div class="back" @click="goBack">
+		<div class="back" @click="back">
 			<i class="icon-back"></i>
 		</div>
 		<!-- 标题 -->
@@ -111,7 +111,7 @@
 	});
 
 	/* 返回上一级 */
-	function goBack() {
+	function back() {
 		router.back();
 	}
 

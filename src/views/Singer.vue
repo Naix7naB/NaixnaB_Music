@@ -29,7 +29,7 @@
 			picUrl: item.picUrl || item.coverImgUrl,
 		};
 		/* 缓存 singerDetail数据 */
-		storage.setLocal('__singerDetail__', singerDetail.value);
+		storage.setSession('__singerDetail__', singerDetail.value);
 		/* 跳转 */
 		router.push({
 			path: `/singer/${item.id}`,
@@ -38,7 +38,7 @@
 
 	onMounted(() => {
 		/* 先往本地存储获取歌手列表 */
-		let list = storage.getLocal('__singerList__', []);
+		let list = storage.getSession('__singerList__', []);
 		if (list.length) {
 			/* 如果存储存在 */
 			singerList.value = list;
@@ -46,7 +46,7 @@
 			/* 如果存储不存在 */
 			getAllSinger().then((res) => {
 				singerList.value = res;
-				storage.setLocal('__singerList__', res);
+				storage.setSession('__singerList__', res);
 			});
 		}
 	});
@@ -54,9 +54,9 @@
 
 <style lang="scss" scoped>
 	.singer {
-		position: absolute;
+		position: fixed;
 		width: 100%;
-		top: 44px;
+		top: 88px;
 		bottom: 0;
 	}
 </style>

@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Cookies from 'vue-cookie';
+import storage from '@/plugins/storage';
 
 const Recommend = () => import('@/views/Recommend.vue');
 const AlbumDetail = () => import('@/views/AlbumDetail.vue');
@@ -56,6 +58,7 @@ const routes = [
 	{
 		path: '/user',
 		component: UserCenter,
+		meta: { authRequired: true },
 		children: [
 			{
 				path: ':id',
@@ -86,6 +89,22 @@ const routes = [
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes,
+});
+
+/* 路由前置守卫 */
+router.beforeEach((to, from, next) => {
+	if (!to.meta.authRequired) {
+		next();
+	} else {
+		const token =
+			storage.getLocal('__token__', '') || Cookies.get('MUSIC_U') || '';
+		if (!token) {
+			/* 没有登录 或 登录过期 */
+			next('/login');
+		} else {
+			next();
+		}
+	}
 });
 
 export default router;

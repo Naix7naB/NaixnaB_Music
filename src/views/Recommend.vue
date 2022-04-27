@@ -53,14 +53,14 @@
 	const bannerRef = ref(null);
 
 	const recommend = reactive({
-		banners: [{ bannerId: 0, pic: '' }],
+		banners: [],
 		playLists: [],
 	});
 	const albumDetail = ref({});
 
-	const isLoading = computed(
-		() => !recommend.banners.length || !recommend.playLists.length
-	);
+	const isLoading = computed(() => {
+		return !recommend.banners.length || !recommend.playLists.length;
+	});
 
 	/* 获取当前歌单详细 */
 	function getAlbumDetail(e) {
@@ -78,7 +78,7 @@
 			picUrl: item.picUrl || item.coverImgUrl,
 		};
 		/* 缓存 albumDetail数据 */
-		storage.setLocal('__albumDetail__', albumDetail.value);
+		storage.setSession('__albumDetail__', albumDetail.value);
 		/* 跳转 */
 		router.push({
 			path: `/recommend/${item.id}`,
@@ -103,9 +103,9 @@
 
 <style lang="scss" scoped>
 	.recommend {
-		position: absolute;
+		position: fixed;
 		width: 100%;
-		top: 44px;
+		top: 88px;
 		bottom: 0;
 		overflow: scroll;
 

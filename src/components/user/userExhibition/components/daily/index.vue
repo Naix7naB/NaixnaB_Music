@@ -1,11 +1,14 @@
 <template>
 	<div class="daily">
 		<!-- 固定头部 -->
-		<DailyTop
-			:style="visible"
-			:count="songs.length"
-			:play="sequencePlayAll"
-		></DailyTop>
+		<div class="daily-top" :style="visible">
+			<div class="filter">
+				<!-- 日期 历史日推 -->
+				<Date></Date>
+			</div>
+			<!-- 固定播放栏 -->
+			<ListTop :count="songs.length" @play="sequencePlayAll"></ListTop>
+		</div>
 		<!-- 歌曲列表 -->
 		<Scroll
 			class="list"
@@ -13,9 +16,9 @@
 			:style="scrollStyle"
 			@onScroll="onScroll"
 		>
-			<div>
+			<div v-load="!songs.length">
 				<Date></Date>
-				<div class="song-list-wrapper" v-load="isLoading">
+				<div class="song-list-wrapper">
 					<ListTop :count="songs.length" @play="sequencePlayAll"></ListTop>
 					<SongList :songs="songs" :isNum="false"></SongList>
 				</div>
@@ -29,7 +32,6 @@
 	import { useStore } from 'vuex';
 	import { getDailySongs } from '@/service/recommend';
 	import storage from '@/plugins/storage';
-	import DailyTop from './components/dailyTop';
 	import Date from './components/date/index.vue';
 	import Scroll from '@/components/base/scroll';
 	import SongList from '@/components/base/songList/index.vue';
@@ -40,24 +42,19 @@
 	const songs = ref([]);
 	const reason = ref([]);
 	const scrollY = ref(0);
-	const isLoading = ref(true);
-
-	const _style = {
-		zIndex: 0,
-		background: 'rgba(0,0,0,0)',
-		backdropFilter: 'blur(0px)',
-	};
 
 	const playList = computed(() => store.state.playList);
 
 	/* 播放全部固定样式 */
 	const visible = computed(() => {
 		let visibility = 'hidden';
+		const { bgImage } = storage.getLocal('__base__');
 		if (scrollY.value > 30) {
 			visibility = 'visible';
 		}
 		return {
 			visibility,
+			backgroundImage: `url(${bgImage})`,
 		};
 	});
 
@@ -84,21 +81,43 @@
 		const { dailySongs, reasons } = await getDailySongs();
 		reason.value = reasons;
 		songs.value = dailySongs;
-		isLoading.value = false;
-	});
-
-	defineExpose({
-		_style,
 	});
 </script>
 
 <style lang="scss" scoped>
 	.daily {
-		z-index: -1;
 		position: fixed;
 		top: 0;
 		bottom: 0;
 		width: 100%;
+
+		.daily-top {
+			z-index: 50;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			visibility: hidden;
+			background-position: 0 -160px;
+			background-size: cover;
+
+			.filter {
+				padding-bottom: 10px;
+				background: rgba(0, 0, 0, 0.5);
+				backdrop-filter: blur(2px);
+
+				&::before {
+					content: '';
+					display: block;
+					height: 50px;
+				}
+			}
+
+			&::v-deep(.list-top) {
+				background: rgba(42, 40, 40, 0.7);
+				box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+			}
+		}
 
 		.list {
 			z-index: 0;
@@ -108,7 +127,7 @@
 			width: 100%;
 
 			.song-list-wrapper {
-				min-height: 350px;
+				min-height: 100vh;
 				margin-top: 10px;
 				border-top-left-radius: 30px;
 				border-top-right-radius: 30px;

@@ -1,5 +1,5 @@
 <template>
-	<!-- 导航栏选项 -->
+	<!-- 导航栏选项卡 -->
 	<div class="tab">
 		<router-link
 			class="tab-item"

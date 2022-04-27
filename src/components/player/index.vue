@@ -20,15 +20,15 @@
 				<div class="middle" @click="toggleMiddle">
 					<div class="middle-l" :style="middleLStyle">
 						<!-- CD转盘 -->
-						<div class="cd-wrapper playing" :style="cdStyle">
-							<div class="cd">
+						<div class="cd-wrapper">
+							<div class="cd playing" :style="cdStyle">
 								<img class="image" :src="currentSong.al.picUrl" />
 							</div>
 						</div>
 						<!-- 歌词 -->
 						<div class="playing-lyric-wrapper">
-							<div class="playing-lyric">{{ curLyric }}</div>
-							<div class="check-more">点击查看全部歌词</div>
+							<p class="playing-lyric">{{ curLyric }}</p>
+							<p class="check-more">点击查看全部歌词</p>
 						</div>
 					</div>
 					<Scroll class="middle-r" :style="middleRStyle" ref="lyricScrollRef">
@@ -49,11 +49,6 @@
 				</div>
 				<!-- 底部 -->
 				<div class="bottom">
-					<!-- 标识 -->
-					<!-- <div class="dot-wrapper">
-						<span class="dot"></span>
-						<span class="dot"></span>
-					</div> -->
 					<!-- 歌曲进度条 -->
 					<div class="progress-wrapper">
 						<span class="time time-l">{{ formatTime(curTime) }}</span>
@@ -401,32 +396,41 @@
 				white-space: nowrap;
 				font-size: 0;
 
-				.middle-l {
-					vertical-align: top;
+				.middle-l,
+				.middle-r {
 					position: absolute;
 					width: 100%;
-					height: 0;
-					padding-top: 80%;
+					height: 100%;
 					transition: all 0.4s ease-out;
+				}
+
+				.middle-l {
+					z-index: 1;
+					display: flex;
+					flex-direction: column;
 
 					// CD转盘
 					.cd-wrapper {
-						position: absolute;
-						left: 10%;
-						top: 0;
-						width: 80%;
-						height: 100%;
-						overflow: hidden;
-						border-radius: 50%;
-						border: 10px solid rgba(255, 255, 255, 0.1);
-						box-sizing: border-box;
-
-						&.playing {
-							animation: rotate 30s linear infinite;
-						}
+						vertical-align: top;
+						position: relative;
+						width: 100%;
+						height: 0;
+						padding-top: 80%;
 
 						.cd {
-							width: 100%;
+							position: absolute;
+							left: 10%;
+							top: 0;
+							width: 80%;
+							height: 100%;
+							overflow: hidden;
+							border-radius: 50%;
+							border: 10px solid rgba(255, 255, 255, 0.1);
+							box-sizing: border-box;
+
+							&.playing {
+								animation: rotate 30s linear infinite;
+							}
 
 							img {
 								position: absolute;
@@ -441,9 +445,13 @@
 
 					// 歌词
 					.playing-lyric-wrapper {
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
 						width: 80%;
+						margin: 0 auto;
 						line-height: 20px;
-						margin: 20px auto 0;
 						overflow: hidden;
 						text-align: center;
 						color: $color-text-l;
@@ -462,12 +470,7 @@
 
 				.middle-r {
 					opacity: 0;
-					vertical-align: top;
-					position: absolute;
-					width: 100%;
-					height: 100%;
 					overflow: hidden;
-					transition: all 0.4s ease-out;
 
 					// 全部歌词
 					.lyric-wrapper {
@@ -486,13 +489,6 @@
 								color: $color-text;
 							}
 						}
-
-						.pure-music {
-							padding-top: 50%;
-							line-height: 32px;
-							color: $color-text-l;
-							font-size: $font-size-medium;
-						}
 					}
 				}
 			}
@@ -502,28 +498,6 @@
 				position: absolute;
 				bottom: 50px;
 				width: 100%;
-
-				// 标识
-				.dot-wrapper {
-					text-align: center;
-					font-size: 0;
-
-					.dot {
-						display: inline-block;
-						vertical-align: middle;
-						margin: 0 4px;
-						width: 8px;
-						height: 8px;
-						border-radius: 50%;
-						background: $color-text-l;
-
-						&.active {
-							width: 20px;
-							border-radius: 5px;
-							background: $color-text-ll;
-						}
-					}
-				}
 
 				// 歌曲进度条
 				.progress-wrapper {

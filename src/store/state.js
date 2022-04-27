@@ -2,6 +2,9 @@ const state = {
 	/* 登录标识 */
 	isLogin: false,
 
+	/* 加载标识 */
+	isLoading: true,
+
 	/* 源播放列表 */
 	playList: [],
 

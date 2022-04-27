@@ -34,14 +34,14 @@
 	const store = useStore();
 	const props = defineProps({
 		type: {
-			type: Number,
-			default: 0,
+			type: String,
+			default: 'favorite',
 		},
 	});
 
 	const listScrollRef = ref(null);
 	const scrollY = ref(0);
-	const switchNum = ref(props.type);
+	const switchNum = ref(props.type === 'favorite' ? 0 : 1);
 
 	const playList = computed(() => store.state.playList);
 	const favoriteList = computed(() => store.state.favoriteList);
@@ -85,20 +85,20 @@
 		top: 50px;
 		bottom: 0;
 		width: 100%;
+		background: rgba(69, 65, 65, 0.3);
+		backdrop-filter: blur(2px);
 
 		.top {
 			display: flex;
 			flex-direction: column;
 			height: 100px;
-			padding-top: 20px;
-			background: rgba(69, 65, 65, 0.3);
-			backdrop-filter: blur(2px);
 			box-sizing: border-box;
 
 			/* scss样式穿透 */
 			&::v-deep(.switch) {
 				flex: 1;
 				width: 200px;
+				margin-top: 20px;
 
 				.switch-wrapper {
 					border: 1px solid rgb(146, 129, 108);
@@ -128,8 +128,6 @@
 			top: 100px;
 			bottom: 0;
 			width: 100%;
-			background: rgba(69, 65, 65, 0.3);
-			backdrop-filter: blur(2px);
 			overflow: hidden;
 
 			.song-list-wrapper {

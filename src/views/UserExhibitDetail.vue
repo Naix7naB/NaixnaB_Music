@@ -1,26 +1,25 @@
 <template>
-	<div class="exhibit" :style="{ backgroundImage: `url(${bgImage})` }">
+	<div
+		class="user-exhibit"
+		:style="{ backgroundImage: `url(${bgImage})` }"
+		v-if="bgImage"
+	>
 		<!-- 模糊层 -->
-		<div class="filter"></div>
-		<!-- 返回按钮 -->
-		<div class="back" @click="back" :style="{ zIndex: Style ? 1 : 0 }">
-			<i class="icon-back"></i>
-		</div>
-		<!-- 标题  -->
-		<div class="title" :style="Style">
-			<p class="name">{{ title }}</p>
-		</div>
+		<Filter></Filter>
+		<!-- 顶部标题 -->
+		<UserTitle :text="title" :style="titleStyle" @back="back"></UserTitle>
 		<!-- 内容区 不同组件渲染 -->
-		<div class="content">
-			<component ref="cmpRef" :type="type" :is="curComponent" />
-		</div>
+		<component :type="type" :is="curComponent" />
 	</div>
 </template>
 
 <script setup>
-	import { computed, onMounted, ref } from 'vue';
+	import { computed, onMounted } from 'vue';
 	import { useRouter, useRoute } from 'vue-router';
 	import storage from '@/plugins/storage';
+
+	import Filter from '@/components/user/filter';
+	import UserTitle from '@/components/user/userTitle';
 	import Daily from '@/components/user/userExhibition/components/daily';
 	import Friend from '@/components/user/userExhibition/components/friend';
 	import Collection from '@/components/user/userExhibition/components/collection';
@@ -36,13 +35,6 @@
 		},
 	});
 
-	const cmpRef = ref(null);
-
-	/* 背景图片 */
-	const bgImage = computed(() => {
-		return props.detailObj.bgImage || storage.getLocal('__bgImage__', '');
-	});
-
 	/* 重新处理的数据 */
 	const computedData = computed(() => {
 		let result = null;
@@ -52,11 +44,15 @@
 			result = data;
 		} else {
 			/* props的值不存在时 */
-			const cached = storage.getLocal('__exhibitDetail__');
+			const cached = storage.getSession('__exhibitDetail__');
 			if (!cached) return;
 			result = cached;
 		}
 		return result;
+	});
+
+	const bgImage = computed(() => {
+		return computedData.value ? computedData.value.bgImage : '';
 	});
 
 	/* 标题 */
@@ -65,13 +61,18 @@
 	});
 
 	/* 标题样式 */
-	const Style = computed(() => {
-		return cmpRef.value ? cmpRef.value._style : {};
+	const titleStyle = computed(() => {
+		const index = computedData.value ? computedData.value.index : -1;
+		if (index === 0) {
+			return {
+				background: 'rgba(0,0,0,0)',
+			};
+		}
 	});
 
 	/* 我喜欢的 和 历史播放 */
 	const type = computed(() => {
-		return computedData.value.type ? computedData.value.type : 0;
+		return computedData.value.type ? computedData.value.type : '';
 	});
 
 	/* 当前索引值 */
@@ -95,9 +96,7 @@
 
 	/* 返回上一级 */
 	function back() {
-		router.push({
-			path: route.matched[0].path,
-		});
+		router.back();
 	}
 
 	onMounted(() => {
@@ -113,52 +112,13 @@
 </script>
 
 <style lang="scss" scoped>
-	.exhibit {
+	.user-exhibit {
+		z-index: 50;
 		position: fixed;
 		top: 0;
+		left: 0;
 		bottom: 0;
-		width: 100%;
+		right: 0;
 		background: 0 -160px / contain fixed;
-
-		.filter {
-			z-index: -1;
-			position: fixed;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			background: rgba(0, 0, 0, 0.4);
-		}
-
-		.back {
-			position: absolute;
-			top: 4px;
-			left: 6px;
-
-			.icon-back {
-				display: block;
-				padding: 10px;
-				font-size: $font-size-large-x;
-				color: $color-theme;
-			}
-		}
-
-		.title {
-			z-index: -1;
-			position: absolute;
-			left: 0;
-			right: 0;
-			line-height: 50px;
-			background: rgba(110, 91, 66, 0.8);
-			backdrop-filter: blur(10px);
-
-			.name {
-				width: 50%;
-				margin: 0 auto;
-				@include no-wrap();
-				text-align: center;
-				font-size: $font-size-medium-x;
-			}
-		}
 	}
 </style>
